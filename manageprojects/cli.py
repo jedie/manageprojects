@@ -1,37 +1,12 @@
+#!/usr/bin/python3
+
 import os
 import platform
 import subprocess
 import sys
 from pathlib import Path
 
-
-def bootstrap():
-    """
-    Called when first non-standard lib import fails.
-
-    We need at least pip-tools, typer and rich to use this script.
-    """
-
-    def get_base_prefix_compat():
-        """Get base/real prefix, or sys.prefix if there is none."""
-        return getattr(sys, "base_prefix", None) or getattr(sys, "real_prefix", None) or sys.prefix
-
-    def in_virtualenv():
-        return get_base_prefix_compat() != sys.prefix
-
-    if not in_virtualenv():
-        print("Please create a virtual environment first and activate it!")
-        sys.exit(1)
-    print("Empty virtualenv, installing development requirements..")
-    subprocess.call([sys.executable, "-m", "pip", "install", "-r", "requirements/develop.txt"])
-
-
-try:
-    import typer
-except ImportError:
-    bootstrap()
-    import typer
-
+import typer
 from rich import print  # noqa
 
 cli = typer.Typer()
@@ -111,5 +86,10 @@ def update():
     subprocess.call([sys.executable, "-m", "piptools", "sync", "requirements/develop.txt"])
 
 
-if __name__ == "__main__":
-    cli()
+@cli.command()
+def version():
+    """Print version and exit"""
+    print('manageprojects v', end="")
+    from manageprojects import __version__
+
+    print(__version__)
