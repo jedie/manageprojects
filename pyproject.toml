@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [{name = 'Jens Diemer', email = 'python@jensdiemer.de'}]
 license = {text = "GNU General Public License v3.0"}
 #packages = [
-#    { include = "dev_shell" },
+#    { include = "manageprojects" },
 #]
 
 [tool.setuptools]
@@ -14,7 +14,6 @@ packages = ["manageprojects"]
 
 [project.scripts]
 manageprojects = "manageprojects.cli:cli"
-
 
 [build-system]
 requires = ["setuptools>=61.0"]
