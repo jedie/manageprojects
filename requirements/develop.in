@@ -1,0 +1,7 @@
+darker
+coverage
+mypy
+pip-tools
+pyproject-flake8
+rich
+typer[all]

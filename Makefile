@@ -7,3 +7,8 @@ help: ## List all commands
 install: ## Install the project in a Python virtualenv
 	python3 -m venv .venv
 	./.venv/bin/pip install -U pip
+
+update-requirements: ## Update requirements via pip-compile
+	./.venv/bin/pip-compile --upgrade --allow-unsafe --generate-hashes requirements/production.in requirements/develop.in --output-file requirements/production.txt
+	./.venv/bin/pip-compile --upgrade --allow-unsafe --generate-hashes requirements/develop.in --output-file requirements/develop.txt
+	./.venv/bin/pip-sync requirements/develop.txt
