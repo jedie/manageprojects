@@ -1,0 +1,2 @@
+import cookiecutter
+cookiecutter.cli.list_installed_templates(default_config, passed_config_file)
