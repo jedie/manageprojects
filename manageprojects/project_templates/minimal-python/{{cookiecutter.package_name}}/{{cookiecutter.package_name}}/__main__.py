@@ -8,5 +8,5 @@ def hello_world():
     print('Hello World from {{ cookiecutter.package_name }}')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     hello_world()
