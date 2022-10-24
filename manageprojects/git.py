@@ -46,28 +46,23 @@ class Git:
         if not self.git_root:
             raise NoGitRepoError(path)
 
-    def verbose_check_call(self, *popenargs, cwd: Path = None, verbose=True):
+    def git_verbose_check_call(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
-        return verbose_check_call(*popenargs, cwd=cwd or self.cwd, verbose=verbose)
+        return verbose_check_call(*popenargs, **kwargs)
 
-    def verbose_check_output(self, *popenargs, cwd: Path = None, verbose=True, print_error=True):
+    def git_verbose_check_output(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
-        return verbose_check_output(
-            *popenargs, cwd=cwd or self.cwd, verbose=verbose, print_error=print_error
-        )
+        return verbose_check_output(*popenargs, **kwargs)
 
     def get_current_hash(self, cwd: Path = None, verbose=True):
-        output = self.verbose_check_output('rev-parse', '--short', 'HEAD', cwd=cwd, verbose=verbose)
+        output = self.git_verbose_check_output(
+            'rev-parse', '--short', 'HEAD', cwd=cwd, verbose=verbose
+        )
         if rev := output.strip():
             return rev
 
         raise AssertionError(f'No git hash from: {output!r}')
 
     def get_patch(self, from_path, to_path):
-        try:
-            output = self.verbose_check_output('diff', from_path, to_path, print_error=False)
-        except CalledProcessError as err:
-            if err.returncode == 1:
-                return err.stdout
-            raise
+        output = self.git_verbose_check_output('diff', from_path, to_path, exit_on_error=True)
         return output

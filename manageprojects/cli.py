@@ -1,5 +1,6 @@
 import logging
 import platform
+import shutil
 import sys
 from pathlib import Path
 
@@ -11,14 +12,18 @@ from rich import print  # noqa
 import manageprojects
 from manageprojects.git import Git, get_git_root
 from manageprojects.log_utils import log_config
-from manageprojects.path_utils import assert_is_dir
+from manageprojects.path_utils import assert_is_dir, assert_is_file
 from manageprojects.subprocess_utils import verbose_check_call
 
 logger = logging.getLogger(__name__)
 
 
-BASE_PATH = Path(manageprojects.__file__).parent
-PROJECT_TEMPLATE_PATH = BASE_PATH / 'project_templates'
+PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
+assert_is_dir(PACKAGE_ROOT)
+assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
+
+
+PROJECT_TEMPLATE_PATH = PACKAGE_ROOT / 'manageprojects' / 'project_templates'
 assert_is_dir(PROJECT_TEMPLATE_PATH)
 
 
@@ -42,7 +47,10 @@ def mypy():
 
 @cli.command()
 def test():
-    verbose_check_call(sys.executable, '-m', 'pytest')
+    """
+    Run "manageprojects" tests
+    """
+    verbose_check_call(sys.executable, '-m', 'pytest', verbose=False, exit_on_error=True)
 
 
 @cli.command()
@@ -51,12 +59,23 @@ def coverage():
     Run and show coverage.
     """
     coverage_bin = which('coverage')
-    verbose_check_call(coverage_bin, 'run', '-m', 'pytest')
+    verbose_check_call(coverage_bin, 'run', '-m', 'pytest', verbose=False, exit_on_error=True)
     verbose_check_call(coverage_bin, 'html')
     if platform.system() == 'Darwin':
         verbose_check_call('open', 'htmlcov/index.html')
     elif platform.system() == 'Linux' and 'Microsoft' in platform.release():  # on WSL
         verbose_check_call('explorer.exe', r'htmlcov\index.html')
+
+
+@cli.command()
+def install():
+    """
+    Run pip-sync and install "manageprojects" via pip as editable.
+    """
+    pip_sync_bin = which('pip-sync')
+    pip_bin = which('pip')
+    verbose_check_call(pip_sync_bin, PACKAGE_ROOT / 'requirements' / 'develop.txt')
+    verbose_check_call(pip_bin, 'install', '-e', '.')
 
 
 @cli.command()
@@ -97,7 +116,7 @@ def version():
 
     print(__version__, end=' ')
 
-    git = Git(cwd=get_git_root(path=BASE_PATH))
+    git = Git(cwd=get_git_root(path=PACKAGE_ROOT))
     current_hash = git.get_current_hash(verbose=False)
     print(current_hash)
 
@@ -135,6 +154,26 @@ def start_project(template: str, destination: Path):
         print('Existing templates are:')
         print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
         sys.exit(1)
+
+
+@cli.command()
+def publish():
+    """
+    Build and upload this project to PyPi
+    """
+    test()  # Don't publish a broken state
+
+    # TODO: Add the checks from:
+    #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
+
+    twine_bin = which('twine')
+
+    dist_path = PACKAGE_ROOT / 'dist'
+    if dist_path.exists():
+        shutil.rmtree(dist_path)
+
+    verbose_check_call(sys.executable, '-m', 'build')
+    verbose_check_call(twine_bin, 'upload', 'dist/*')
 
 
 def main():
