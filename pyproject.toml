@@ -48,4 +48,7 @@ command_line = "-m pytest"
 
 [tool.mypy]
 ignore_missing_imports = true
-plugins = ["mypy_django_plugin.main"]
+plugins = []
+exclude = [
+    "manageprojects/project_templates",
+]
