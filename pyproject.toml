@@ -9,6 +9,10 @@ license = {text = "GNU General Public License v3.0"}
 #    { include = "manageprojects" },
 #]
 
+[project.urls]
+"Homepage" = "https://github.com/jedie/manageproject"
+"Bug Tracker" = "https://github.com/jedie/manageproject/issues"
+
 [tool.setuptools]
 packages = ["manageprojects"]
 

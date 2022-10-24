@@ -21,3 +21,14 @@ def get_user_config_path() -> Path:
 
     config_path = Path.home()
     logger.warning('Fallback user config path to: %s', config_path)
+
+def get_mp_config_path()->Path:
+    user_config_path = get_user_config_path()
+    mp_config_path = user_config_path / 'manageprojects'
+    mp_config_path.mkdir(exist_ok=True)
+    return mp_config_path
+def get_patch_path()->Path:
+    mp_config_path=get_mp_config_path()
+    patch_path = mp_config_path / 'patches'
+    patch_path.mkdir(exist_ok=True)
+    return patch_path
