@@ -9,42 +9,57 @@ license = {text = "GNU General Public License v3.0"}
 #    { include = "manageprojects" },
 #]
 
+
 [project.urls]
 "Homepage" = "https://github.com/jedie/manageproject"
 "Bug Tracker" = "https://github.com/jedie/manageproject/issues"
 
+
 [tool.setuptools]
 packages = ["manageprojects"]
 
+
 [project.scripts]
 manageprojects = "manageprojects.cli:main"
+
 
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-line-length = 119
+
+[tool.darker]
+src = ['.']
+revision = "origin/main..."
+line_length = 100
+verbose = true
+skip_string_normalization = true
+diff = false
+check = false
+stdout = false
+isort = true
+lint = [
+    "flake8",
+]
+log_level = "INFO"
+
 
 [tool.isort]
-profile = "black"
+# https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
+atomic=true
+profile='black'
+skip_glob=['.*', '*/htmlcov/*']
+known_first_party=['manageprojects']
+line_length=100
+lines_after_imports=2
 
-[tool.flake8]
-statistics = "True"
-ignore = ["D203" , "W503"]
-max-line-length = 119
-exclude = '''
-    .git,
-'''
-
-[tool.pytest.ini_options]
-filterwarnings = []
 
 [tool.coverage.run]
 branch = true
-source = ["apps"]
-omit = ["apps/*/tests/*", "apps/*/migrations/*"]
-command_line = "-m pytest"
+source = ['.']
+omit = ['*/tests/*']
+command_line = "-m unittest"
+
 
 [tool.mypy]
 ignore_missing_imports = true
