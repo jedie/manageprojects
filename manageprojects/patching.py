@@ -1,16 +1,15 @@
 import logging
 import shutil
-import tempfile
 from pathlib import Path
 
 from cookiecutter.main import cookiecutter
 from rich import print  # noqa
 
-import manageprojects
 from manageprojects.git import Git
 from manageprojects.path_utils import assert_is_dir
 from manageprojects.subprocess_utils import verbose_check_call
 from manageprojects.user_config import get_patch_path
+
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,10 @@
 import logging
 from pathlib import Path
 from shutil import which
-from subprocess import CalledProcessError
 from typing import Union
 
 from manageprojects.subprocess_utils import verbose_check_call, verbose_check_output
+
 
 logger = logging.getLogger(__name__)
 

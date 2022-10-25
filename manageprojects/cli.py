@@ -1,19 +1,24 @@
 import logging
+import os
 import platform
 import shutil
 import sys
 from pathlib import Path
+from unittest import TestLoader, TestResult, TestSuite, TextTestRunner
 
 import typer
 from cookiecutter.exceptions import RepositoryNotFound
-from cookiecutter.main import cookiecutter
+from darker.__main__ import main as darker_main
+from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
+from manageprojects.cookiecutter_templates import run_cookiecutter
 from manageprojects.git import Git, get_git_root
 from manageprojects.log_utils import log_config
 from manageprojects.path_utils import assert_is_dir, assert_is_file
 from manageprojects.subprocess_utils import verbose_check_call
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,11 +51,20 @@ def mypy():
 
 
 @cli.command()
-def test():
+def unittest(
+    verbosity: int = 2,
+    failfast: bool = False,
+    locals: bool = True,
+):
     """
-    Run "manageprojects" tests
+    Run unittests
     """
-    verbose_check_call(sys.executable, '-m', 'pytest', verbose=False, exit_on_error=True)
+    runner = TextTestRunner(verbosity=verbosity, failfast=failfast, tb_locals=locals)
+    test_loader = TestLoader()
+    test_suite: TestSuite = test_loader.discover(start_dir=PACKAGE_ROOT)
+    result: TestResult = runner.run(test_suite)
+    if not result.wasSuccessful:
+        sys.exit(1)
 
 
 @cli.command()
@@ -70,7 +84,7 @@ def coverage():
 @cli.command()
 def install():
     """
-    Run pip-sync and install "manageprojects" via pip as editable.
+    Run pip-sync and install 'manageprojects' via pip as editable.
     """
     pip_sync_bin = which('pip-sync')
     pip_bin = which('pip')
@@ -106,6 +120,7 @@ def update():
         'requirements/production.txt',
     )
     verbose_check_call(which('pip-sync'), 'requirements/develop.txt')
+    install()
 
 
 @cli.command()
@@ -122,7 +137,14 @@ def version():
 
 
 @cli.command()
-def start_project(template: str, destination: Path):
+def start_project(
+    template: str,
+    destination: Path,
+    no_input: bool = False,
+    replay: bool = False,
+    directory: str = None,
+    config_file: Path = None,
+):
     """
     Start a new project via a CookieCutter Template
     """
@@ -130,10 +152,9 @@ def start_project(template: str, destination: Path):
     template_path = PROJECT_TEMPLATE_PATH / template
     if template_path.is_dir():
         directory = str(template_path)
-        logging.info(f'Use own template: {template}')
+        logger.info(f'Use own template: {template}')
     else:
-        logging.info(f'Assume it is a external template: {template}')
-        directory = None
+        logger.info(f'Assume it is a external template: {template}')
 
     print(f'Destination: {destination}')
     if destination.exists():
@@ -143,12 +164,15 @@ def start_project(template: str, destination: Path):
         print(f'Error: Destination parent "{destination.parent}" does not exists')
         sys.exit(1)
 
-    cookiecutter_kwargs = dict(
-        template=template, replay=True, directory=directory, output_dir=destination
-    )
-    logging.debug('Call cookiecutter with: %r', cookiecutter_kwargs)
     try:
-        cookiecutter(**cookiecutter_kwargs)
+        run_cookiecutter(
+            template=template,
+            output_dir=destination,
+            no_input=no_input,
+            replay=replay,
+            directory=directory,
+            config_file=config_file,
+        )
     except RepositoryNotFound as err:
         print(f'Error: {err}')
         print('Existing templates are:')
@@ -161,7 +185,7 @@ def publish():
     """
     Build and upload this project to PyPi
     """
-    test()  # Don't publish a broken state
+    unittest()  # Don't publish a broken state
 
     # TODO: Add the checks from:
     #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
@@ -174,6 +198,46 @@ def publish():
 
     verbose_check_call(sys.executable, '-m', 'build')
     verbose_check_call(twine_bin, 'upload', 'dist/*')
+
+
+def _call_darker(*, argv):
+    # Work-a-round for:
+    #
+    #   File ".../site-packages/darker/linting.py", line 148, in _check_linter_output
+    #     with Popen(  # nosec
+    #   ...
+    #   File "/usr/lib/python3.10/subprocess.py", line 1845, in _execute_child
+    #     raise child_exception_type(errno_num, err_msg, err_filename)
+    # FileNotFoundError: [Errno 2] No such file or directory: 'flake8'
+    #
+    # Just add .venv/bin/ to PATH:
+    venv_path = PACKAGE_ROOT / '.venv' / 'bin'
+
+    assert_is_dir(venv_path)
+    assert_is_file(venv_path / 'flake8')
+    venv_path = str(venv_path)
+    if venv_path not in os.environ['PATH']:
+        os.environ['PATH'] = venv_path + os.pathsep + os.environ['PATH']
+
+    darker_main(argv=argv)
+
+
+@cli.command()
+def fix_code_style():
+    """
+    Fix code style via darker
+    """
+    _call_darker(argv=['--color'])
+
+
+@cli.command()
+def check_code_style(verbose: bool = True):
+    _call_darker(argv=['--color', '--check'])
+    if verbose:
+        argv = ['--verbose']
+    else:
+        argv = []
+    flake8_main(argv=argv)
 
 
 def main():
