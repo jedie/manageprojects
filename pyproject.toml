@@ -8,7 +8,7 @@ license = {text = "GNU General Public License v3.0"}
 #packages = [
 #    { include = "manageprojects" },
 #]
-
+requires-python = ">=3.9,<4.0.0"
 
 [project.urls]
 "Homepage" = "https://github.com/jedie/manageproject"
