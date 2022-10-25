@@ -8,6 +8,16 @@
 
 Mix the idea of Ansible with CookieCutter Templates and Django Migrations to manage and update your Python Packages and Django Projects...
 
+
+## start hacking
+
+```bash
+~$ git clone https://github.com/jedie/manageprojects.git
+~$ cd manageprojects
+~/manageprojects$ ./mp.py --help
+```
+
+
 ## Links
 
 * https://github.com/cookiecutter/cookiecutter
