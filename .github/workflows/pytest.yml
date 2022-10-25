@@ -38,7 +38,7 @@ jobs:
 
     - name: 'Run tests with Python v${{ matrix.python-version }}'
       run: |
-        python3 mp.py test
+        python3 mp.py unittest
 
     - name: 'Upload coverage report'
       uses: codecov/codecov-action@v2
