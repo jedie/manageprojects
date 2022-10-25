@@ -197,6 +197,7 @@ def publish():
         shutil.rmtree(dist_path)
 
     verbose_check_call(sys.executable, '-m', 'build')
+    verbose_check_call(twine_bin, 'check', 'dist/*')
     verbose_check_call(twine_bin, 'upload', 'dist/*')
 
 
