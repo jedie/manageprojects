@@ -1,6 +1,5 @@
 import logging
 import os
-import platform
 import shutil
 import sys
 from pathlib import Path
@@ -13,8 +12,8 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import run_cookiecutter
-from manageprojects.git import Git, get_git_root
+from manageprojects.cookiecutter_templates import CookiecutterResult, run_cookiecutter
+from manageprojects.git import Git
 from manageprojects.log_utils import log_config
 from manageprojects.path_utils import assert_is_dir, assert_is_file
 from manageprojects.subprocess_utils import verbose_check_call
@@ -127,7 +126,7 @@ def version():
 
     print(__version__, end=' ')
 
-    git = Git(cwd=get_git_root(path=PACKAGE_ROOT))
+    git = Git(cwd=PACKAGE_ROOT)
     current_hash = git.get_current_hash(verbose=False)
     print(current_hash)
 
@@ -136,8 +135,10 @@ def version():
 def start_project(
     template: str,
     destination: Path,
+    checkout: str = None,
     no_input: bool = False,
     replay: bool = False,
+    password: str = None,
     directory: str = None,
     config_file: Path = None,
 ):
@@ -161,11 +162,13 @@ def start_project(
         sys.exit(1)
 
     try:
-        run_cookiecutter(
+        result: CookiecutterResult = run_cookiecutter(
             template=template,
+            checkout=checkout,
             output_dir=destination,
             no_input=no_input,
             replay=replay,
+            password=password,
             directory=directory,
             config_file=config_file,
         )
@@ -174,6 +177,12 @@ def start_project(
         print('Existing templates are:')
         print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
         sys.exit(1)
+    print(
+        f'CookieCutter template {template!r}'
+        f' with git hash {result.git_hash}'
+        f' was created here: {destination}'
+    )
+    return result
 
 
 @cli.command()

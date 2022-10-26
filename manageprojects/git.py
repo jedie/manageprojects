@@ -1,7 +1,7 @@
+import datetime
 import logging
 from pathlib import Path
 from shutil import which
-from typing import Union
 
 from manageprojects.subprocess_utils import verbose_check_call, verbose_check_output
 
@@ -34,34 +34,42 @@ def get_git_root(path: Path):
 
 
 class Git:
-    def __init__(self, cwd: Union[Path, None]):
-        self.cwd = cwd
+    def __init__(self, *, cwd: Path, detect_root: bool = True):
+        if detect_root:
+            self.cwd = get_git_root(cwd)
+            if not self.cwd:
+                raise NoGitRepoError(cwd)
+        else:
+            self.cwd = cwd
 
         self.git_bin = which('git')
         if not self.git_bin:
             raise GitBinNotFoundError()
 
-    def set_cwd_by_path(self, path: Path):
-        self.git_root = get_git_root(path)
-        if not self.git_root:
-            raise NoGitRepoError(path)
-
     def git_verbose_check_call(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
-        return verbose_check_call(*popenargs, **kwargs)
+        return verbose_check_call(*popenargs, cwd=self.cwd, **kwargs)
 
     def git_verbose_check_output(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
-        return verbose_check_output(*popenargs, **kwargs)
+        return verbose_check_output(*popenargs, cwd=self.cwd, **kwargs)
 
-    def get_current_hash(self, cwd: Path = None, verbose=True):
-        output = self.git_verbose_check_output(
-            'rev-parse', '--short', 'HEAD', cwd=cwd, verbose=verbose
-        )
+    def get_current_hash(self, commit='HEAD', verbose=True):
+        output = self.git_verbose_check_output('rev-parse', '--short', commit, verbose=verbose)
         if rev := output.strip():
             return rev
 
         raise AssertionError(f'No git hash from: {output!r}')
+
+    def get_commit_date(self, commit='HEAD', verbose=True):
+        output = self.git_verbose_check_output(
+            'show', '-s', '--format=%cI', commit, verbose=verbose
+        )
+        if raw_date := output.strip():
+            # e.g.: "2022-10-25 20:43:10 +0200"
+            return datetime.datetime.fromisoformat(raw_date)
+
+        raise AssertionError(f'No commit date from: {output!r}')
 
     def get_patch(self, from_path, to_path):
         output = self.git_verbose_check_output('diff', from_path, to_path, exit_on_error=True)
