@@ -68,17 +68,13 @@ def unittest(
 
 
 @cli.command()
-def coverage():
+def coverage(verbose: bool = True):
     """
     Run and show coverage.
     """
     coverage_bin = which('coverage')
-    verbose_check_call(coverage_bin, 'run', '-m', 'pytest', verbose=False, exit_on_error=True)
-    verbose_check_call(coverage_bin, 'html')
-    if platform.system() == 'Darwin':
-        verbose_check_call('open', 'htmlcov/index.html')
-    elif platform.system() == 'Linux' and 'Microsoft' in platform.release():  # on WSL
-        verbose_check_call('explorer.exe', r'htmlcov\index.html')
+    verbose_check_call(coverage_bin, 'run', verbose=verbose, exit_on_error=True)
+    verbose_check_call(coverage_bin, 'report', verbose=verbose, exit_on_error=True)
 
 
 @cli.command()
