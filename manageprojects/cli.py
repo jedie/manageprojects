@@ -74,6 +74,7 @@ def coverage(verbose: bool = True):
     coverage_bin = which('coverage')
     verbose_check_call(coverage_bin, 'run', verbose=verbose, exit_on_error=True)
     verbose_check_call(coverage_bin, 'report', verbose=verbose, exit_on_error=True)
+    verbose_check_call(coverage_bin, 'json', verbose=verbose, exit_on_error=True)
 
 
 @cli.command()
