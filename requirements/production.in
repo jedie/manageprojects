@@ -1,3 +1,4 @@
 cookiecutter
+tomlkit
 rich
 typer[all]

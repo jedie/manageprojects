@@ -5,13 +5,8 @@ from unittest import TestCase
 import tomli
 
 import manageprojects
-from manageprojects.cli import check_code_style, fix_code_style
-from manageprojects.path_utils import assert_is_dir, assert_is_file
-
-
-PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
-assert_is_dir(PACKAGE_ROOT)
-assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
+from manageprojects.cli import PACKAGE_ROOT, check_code_style, fix_code_style
+from manageprojects.path_utils import assert_is_file
 
 
 class ProjectSetupTestCase(TestCase):

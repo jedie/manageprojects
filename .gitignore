@@ -2,6 +2,7 @@
 dist
 *.egg-info
 __pycache__
+coverage.json
 
 !.github
 !.editorconfig

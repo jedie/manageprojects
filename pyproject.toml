@@ -57,8 +57,12 @@ lines_after_imports=2
 [tool.coverage.run]
 branch = true
 source = ['.']
-omit = ['*/tests/*']
+omit = ['.*', '*/tests/*']
 command_line = "-m unittest"
+
+[tool.coverage.report]
+skip_empty = true
+fail_under = 45
 
 
 [tool.mypy]
