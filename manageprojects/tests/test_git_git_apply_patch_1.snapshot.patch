@@ -1,0 +1,13 @@
+diff --git a/directory1/pyproject.toml b/directory1/pyproject.toml
+index 059da13..7a83354 100644
+--- a/directory1/pyproject.toml
++++ b/directory1/pyproject.toml
+@@ -1,6 +1,6 @@
+ [tool.darker]
+ src = ['.']
+ revision = "origin/main..."
+-line_length = 79  # 79 is initial, change to 100 later
++line_length = 100  # 79 is initial, change to 100 later
+ verbose = true
+ diff = false
+\ No newline at end of file

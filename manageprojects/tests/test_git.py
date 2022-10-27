@@ -1,6 +1,9 @@
 import contextlib
 import datetime
+import filecmp
+import inspect
 import io
+import shutil
 from pathlib import Path
 from unittest import TestCase
 
@@ -76,7 +79,7 @@ class GitTestCase(TestCase):
             self.assertEqual(file_paths, expected_paths)
 
     def test_git_diff(self):
-        with TemporaryDirectory(prefix='ttest_init_git_') as temp_path:
+        with TemporaryDirectory(prefix='test_git_diff_') as temp_path:
             change_txt_path = Path(temp_path, 'change.txt')
             change_txt_path.write_text('This is the first revision!')
             Path(temp_path, 'unchange.txt').write_text('This file will be not changed')
@@ -100,7 +103,112 @@ class GitTestCase(TestCase):
             self.assertIn(second_hash, reflog)
 
             diff_txt = git.diff(first_hash, second_hash)
-            self.assertIn('--- change.txt', diff_txt)
-            self.assertIn('+++ change.txt', diff_txt)
+            self.assertIn('--- a/change.txt', diff_txt)
+            self.assertIn('+++ b/change.txt', diff_txt)
             self.assertIn('@@ -1 +1 @@', diff_txt)
             assert_text_snapshot(got=diff_txt, extension='.patch')
+
+    def test_git_apply_patch(self):
+        with TemporaryDirectory(prefix='test_git_apply_patch_') as temp_path:
+            repo_path = temp_path / 'git-repo'
+            project_path = temp_path / 'project'
+
+            repo_change_path = repo_path / 'directory1' / 'pyproject.toml'
+            repo_change_path.parent.mkdir(parents=True)
+            repo_change_path.write_text(
+                inspect.cleandoc(
+                    '''
+                    [tool.darker]
+                    src = ['.']
+                    revision = "origin/main..."
+                    line_length = 79  # 79 is initial, change to 100 later
+                    verbose = true
+                    diff = false
+                    '''
+                )
+            )
+            Path(repo_path, 'directory1', 'unchanged.txt').write_text('Will be not changed file')
+
+            shutil.copytree(repo_path, project_path)  # "fake" cookiecutter output
+            project_git, project_first_hash = init_git(project_path)  # init project
+
+            # 1:1 copy?
+            project_change_path = project_path / 'directory1' / 'pyproject.toml'
+            self.assertTrue(filecmp.cmp(project_change_path, repo_change_path))
+
+            # init "cookiecutter" source project:
+            repo_git, repo_first_hash = init_git(repo_path)
+
+            # Add a change to "fake" source:
+            repo_change_path.write_text(
+                inspect.cleandoc(
+                    '''
+                    [tool.darker]
+                    src = ['.']
+                    revision = "origin/main..."
+                    line_length = 100  # 79 is initial, change to 100 later
+                    verbose = true
+                    diff = false
+                    '''
+                )
+            )
+            repo_git.add('.', verbose=False)
+            repo_git.commit('The second commit', verbose=False)
+            second_hash = repo_git.get_current_hash(verbose=False)
+
+            # Generate a patch via git diff:
+            diff_txt = repo_git.diff(repo_first_hash, second_hash)
+            self.assertIn('directory1/pyproject.toml', diff_txt)
+            patch_file_path = temp_path / 'git-diff-1.patch'
+            patch_file_path.write_text(diff_txt)
+            assert_text_snapshot(got=diff_txt, extension='.patch')
+
+            # Change the project a little bit, before apply the git diff patch:
+
+            # Just add a new file, unrelated to the diff patch:
+            Path(project_path, 'directory1', 'new.txt').write_text('A new project file')
+
+            # Commit the new file:
+            project_git.add('.', verbose=False)
+            project_git.commit('Add a new project file', verbose=False)
+
+            # Change a diff related file:
+            project_change_path.write_text(
+                inspect.cleandoc(
+                    '''
+                    [tool.darker]
+                    src = ['.']
+                    revision = "origin/main..."
+                    line_length = 79  # 79 is initial, change to 100 later
+                    verbose = true
+                    skip_string_normalization = true  # Added from project
+                    diff = false
+                    '''
+                )
+            )
+
+            # Commit the changes, too:
+            project_git.add('.', verbose=False)
+            project_git.commit('Existing project file changed', verbose=False)
+
+            # Now: Merge the project changes with the "fake" cookiecutter changes:
+            project_git.apply(patch_file_path)
+
+            # Merge successful?
+            #  * line_length <<< change from "fake" cookiecutter changed
+            #  * skip_string_normalization <<< added by project
+            # The Rest is unchanged
+            self.assertEqual(
+                project_change_path.read_text(),
+                inspect.cleandoc(
+                    '''
+                    [tool.darker]
+                    src = ['.']
+                    revision = "origin/main..."
+                    line_length = 100  # 79 is initial, change to 100 later
+                    verbose = true
+                    skip_string_normalization = true  # Added from project
+                    diff = false
+                    '''
+                ),
+            )
