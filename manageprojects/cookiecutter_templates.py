@@ -2,6 +2,7 @@ import dataclasses
 import datetime
 import logging
 from pathlib import Path
+from typing import Optional
 
 import tomli
 import tomlkit
@@ -26,11 +27,11 @@ class CookiecutterResult:
     Store information about a created Cookiecutter template
     """
 
-    destination_path: Path = None
-    git_path: Path = None
-    git_hash: str = None
-    commit_date: datetime.datetime = None
-    pyproject_toml_path: Path = None
+    destination_path: Path
+    git_path: Path
+    git_hash: str
+    commit_date: Optional[datetime.datetime]
+    pyproject_toml_path: Path
 
     def get_comment(self):
         if self.commit_date:
@@ -44,9 +45,9 @@ class ManageProjectsMeta:
     Information about 'manageprojects' git hashes
     """
 
-    initial_revision: str = None
-    initial_date: datetime.datetime = None
-    applied_migrations: list[str] = None
+    applied_migrations: list[str]
+    initial_revision: Optional[str] = None
+    initial_date: Optional[datetime.datetime] = None
 
 
 def parse_pyproject_toml(path: Path) -> ManageProjectsMeta:
@@ -69,7 +70,7 @@ def parse_pyproject_toml(path: Path) -> ManageProjectsMeta:
     return result
 
 
-def get_last_git_hash(path: Path) -> str:
+def get_last_git_hash(path: Path) -> Optional[str]:
     """
     Get the lash git hash from 'pyproject.toml' file.
     """
@@ -77,13 +78,14 @@ def get_last_git_hash(path: Path) -> str:
         if migrations := meta.applied_migrations:
             return migrations[-1]
         return meta.initial_revision
+    return None
 
 
-def update_pyproject_toml(result: CookiecutterResult) -> Path:
+def update_pyproject_toml(result: CookiecutterResult) -> None:
     """
     Store git hash/migration information into 'pyproject.toml' in destination path.
     """
-    pyproject_toml_path = result.destination_path / 'pyproject.toml'
+    pyproject_toml_path = result.pyproject_toml_path
     if pyproject_toml_path.exists():
         doc = tomlkit.parse(pyproject_toml_path.read_text(encoding='UTF-8'))
     else:
@@ -98,18 +100,17 @@ def update_pyproject_toml(result: CookiecutterResult) -> Path:
             manageprojects.add(INITIAL_DATE, result.get_comment())
         doc['manageprojects'] = manageprojects
     else:
-        manageprojects = doc['manageprojects']
+        manageprojects = doc['manageprojects']  # type: ignore
 
         if 'applied_migrations' not in manageprojects:
             applied_migrations = tomlkit.array()
             applied_migrations.multiline(multiline=True)
             manageprojects.add(APPLIED_MIGRATIONS, applied_migrations)
         else:
-            applied_migrations = manageprojects[APPLIED_MIGRATIONS]
+            applied_migrations = manageprojects[APPLIED_MIGRATIONS]  # type: ignore
         applied_migrations.add_line(result.git_hash, comment=result.get_comment())
 
     pyproject_toml_path.write_text(tomlkit.dumps(doc), encoding='UTF-8')
-    return pyproject_toml_path
 
 
 def run_cookiecutter(
@@ -159,14 +160,14 @@ def run_cookiecutter(
     commit_date = git.get_commit_date()
     logger.info('Cookiecutter git repro: %s hash: %r %s', git.cwd, current_hash, commit_date)
 
+    pyproject_toml_path = destination_path / 'pyproject.toml'
+
     result = CookiecutterResult(
         destination_path=destination_path,
         git_path=git.cwd,
         git_hash=current_hash,
         commit_date=commit_date,
+        pyproject_toml_path=pyproject_toml_path,
     )
-
-    pyproject_toml_path = update_pyproject_toml(result)
-    result.pyproject_toml_path = pyproject_toml_path
-
+    update_pyproject_toml(result)
     return result

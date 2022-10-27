@@ -21,16 +21,16 @@ class GitSwitcher:
         self.git_src_path = git_src_path
         self.git_src_path.mkdir(exist_ok=True)
 
+        self.git = None
         self._tmp = None
         self.src_path = None
-        self.git = None
 
     def __enter__(self):
         self.git = Git(cwd=self.git_src_path)
-        self.git.verbose_check_call('clone', '--no-checkout', self.git_url, self.git_src_path)
+        self.git.git_verbose_check_call('clone', '--no-checkout', self.git_url, self.git_src_path)
         verbose_check_call('ls', '-la', cwd=self.git_src_path)
-        self.git.verbose_check_call('fetch')
-        self.git.verbose_check_call('sparse-checkout', 'set', self.sub_dir)
+        self.git.git_verbose_check_call('fetch')
+        self.git.git_verbose_check_call('sparse-checkout', 'set', self.sub_dir)
 
         verbose_check_call('ls', '-la', cwd=self.git_src_path)
         verbose_check_call('tree', cwd=self.git_src_path)
@@ -38,7 +38,8 @@ class GitSwitcher:
         return self
 
     def cp_rev(self, rev: str, dst: Path):
-        self.git.verbose_check_call('reset', '--hard', rev)
+        assert self.git is not None
+        self.git.git_verbose_check_call('reset', '--hard', rev)
         verbose_check_call('git', 'reflog', cwd=self.git_src_path)
         verbose_check_call('ls', '-la', cwd=self.git_src_path)
         verbose_check_call('tree', cwd=self.git_src_path)
