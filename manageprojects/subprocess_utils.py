@@ -204,9 +204,11 @@ def verbose_check_output(
             **kwargs,
         )
     except subprocess.CalledProcessError as err:
-        if verbose:
-            print(f'Process "{popenargs[0]}" finished with exit code {err.returncode!r}')
         if exit_on_error:
+            print('-' * 79)
+            print(err.stdout)
+            print('-' * 79)
+            print(f'Process "{popenargs[0]}" finished with exit code {err.returncode!r}')
             sys.exit(err.returncode)
         raise
     else:

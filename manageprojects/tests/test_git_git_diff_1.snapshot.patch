@@ -1,7 +1,7 @@
-diff --git change.txt change.txt
+diff --git a/change.txt b/change.txt
 index bfeaabc..0733e36 100644
---- change.txt
-+++ change.txt
+--- a/change.txt
++++ b/change.txt
 @@ -1 +1 @@
 -This is the first revision!
 \ No newline at end of file
