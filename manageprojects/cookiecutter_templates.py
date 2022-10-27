@@ -5,12 +5,12 @@ from pathlib import Path
 
 import tomli
 import tomlkit
+from bx_py_utils.path import assert_is_dir, assert_is_file
 from cookiecutter.config import get_user_config
 from cookiecutter.main import cookiecutter
 from cookiecutter.repository import determine_repo_dir
 
 from manageprojects.git import Git
-from manageprojects.path_utils import assert_is_dir, assert_is_file
 
 
 logger = logging.getLogger(__name__)

@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest import TestLoader, TestResult, TestSuite, TextTestRunner
 
 import typer
+from bx_py_utils.path import assert_is_dir, assert_is_file
 from cookiecutter.exceptions import RepositoryNotFound
 from darker.__main__ import main as darker_main
 from flake8.main.cli import main as flake8_main
@@ -15,7 +16,6 @@ import manageprojects
 from manageprojects.cookiecutter_templates import CookiecutterResult, run_cookiecutter
 from manageprojects.git import Git
 from manageprojects.log_utils import log_config
-from manageprojects.path_utils import assert_is_dir, assert_is_file
 from manageprojects.subprocess_utils import verbose_check_call
 
 

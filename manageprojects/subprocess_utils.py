@@ -6,9 +6,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+from bx_py_utils.path import assert_is_dir
 from rich import print  # noqa
 
-from manageprojects.path_utils import assert_is_dir
 
 DEFAULT_TIMEOUT = 5 * 60
 

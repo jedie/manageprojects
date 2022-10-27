@@ -3,10 +3,10 @@ from pathlib import Path
 from unittest import TestCase
 
 import tomli
+from bx_py_utils.path import assert_is_file
 
 import manageprojects
 from manageprojects.cli import PACKAGE_ROOT, check_code_style, fix_code_style
-from manageprojects.path_utils import assert_is_file
 
 
 class ProjectSetupTestCase(TestCase):

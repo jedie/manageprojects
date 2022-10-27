@@ -2,11 +2,11 @@ import logging
 import shutil
 from pathlib import Path
 
+from bx_py_utils.path import assert_is_dir
 from cookiecutter.main import cookiecutter
 from rich import print  # noqa
 
 from manageprojects.git import Git
-from manageprojects.path_utils import assert_is_dir
 from manageprojects.subprocess_utils import verbose_check_call
 from manageprojects.user_config import get_patch_path
 

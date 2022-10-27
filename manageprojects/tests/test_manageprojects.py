@@ -4,6 +4,7 @@ from unittest import TestCase
 
 import tomli
 import yaml
+from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
@@ -16,7 +17,6 @@ from manageprojects.cookiecutter_templates import (
     run_cookiecutter,
     update_pyproject_toml,
 )
-from manageprojects.path_utils import assert_is_dir, assert_is_file
 from manageprojects.tests.utilities.temp_utils import TemporaryDirectory
 
 
