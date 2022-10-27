@@ -74,9 +74,28 @@ class Git:
 
         raise AssertionError(f'No commit date from: {output!r}')
 
-    def get_patch(self, from_path, to_path, verbose=True) -> str:
+    def diff(
+        self,
+        reference1,
+        reference2,
+        patch=True,
+        minimal=True,
+        no_prefix=True,
+        no_color=True,
+        verbose=True,
+    ) -> str:
+        args = []
+        if patch:
+            args.append('--patch')
+        if minimal:
+            args.append('--minimal')
+        if no_prefix:
+            args.append('--no-prefix')
+        if no_color:
+            args.append('--no-color')
+
         output = self.git_verbose_check_output(
-            'diff', from_path, to_path, verbose=verbose, exit_on_error=True
+            'diff', *args, reference1, reference2, verbose=verbose, exit_on_error=True
         )
         return output
 
