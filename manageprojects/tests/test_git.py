@@ -11,6 +11,7 @@ from manageprojects import __version__
 from manageprojects.cli import PACKAGE_ROOT, version
 from manageprojects.git import Git
 from manageprojects.tests.utilities.fixtures import copy_fixtures
+from manageprojects.tests.utilities.git_utils import init_git
 from manageprojects.tests.utilities.temp_utils import TemporaryDirectory
 
 
@@ -36,6 +37,18 @@ class GitTestCase(TestCase):
         self.assertGreater(commit_date, parse_dt('2022-10-25T00:00:00+0000'))
         self.assertLess(commit_date, parse_dt('2023-01-01T00:00:00+0000'))  # ;)
 
+    def test_init_git(self):
+        with TemporaryDirectory(prefix='ttest_init_git_') as temp_path:
+            Path(temp_path, 'foo.txt').touch()
+            Path(temp_path, 'bar.txt').touch()
+
+            git, git_hash = init_git(temp_path)
+            self.assertEqual(len(git_hash), 7)
+            self.assertEqual(
+                git.ls_files(verbose=False),
+                [Path(temp_path, 'bar.txt'), Path(temp_path, 'foo.txt')],
+            )
+
     def test_create_cookiecutter_template(self):
         with TemporaryDirectory(prefix='test_create_cookiecutter_template_') as temp_path:
 
@@ -51,27 +64,8 @@ class GitTestCase(TestCase):
                 template_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
             )
 
-            git = Git(cwd=temp_path, detect_root=False)
-            path = git.init(verbose=False)
-            self.assertEqual(temp_path, path)
-            assert_is_dir(temp_path / '.git')
-            assert_is_file(temp_path / '.git' / 'config')
-
-            git.config('user.name', 'Mr. Test', verbose=False)
-            self.assertEqual(git.get_config('user.name', verbose=False), 'Mr. Test')
-
-            git.config('user.email', 'foo-bar@test.tld', verbose=False)
-            self.assertEqual(git.get_config('user.email', verbose=False), 'foo-bar@test.tld')
-
-            git.add('.', verbose=False)
-            git.commit('The initial commit ;)', verbose=False)
-            reflog = git.reflog(verbose=False)
-            self.assertIn(' commit (initial)', reflog)
-            self.assertIn('The initial commit ;)', reflog)
-
-            hash = git.get_current_hash(verbose=False)
-            assert hash, repr(hash)
-            self.assertIn(f'{hash} HEAD@', reflog)
+            git, git_hash = init_git(temp_path)
+            self.assertEqual(len(git_hash), 7)
 
             file_paths = git.ls_files(verbose=False)
             expected_paths = [

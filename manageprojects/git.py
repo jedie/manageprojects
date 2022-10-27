@@ -58,8 +58,9 @@ class Git:
 
     def get_current_hash(self, commit='HEAD', verbose=True) -> str:
         output = self.git_verbose_check_output('rev-parse', '--short', commit, verbose=verbose)
-        if rev := output.strip():
-            return rev
+        if git_hash := output.strip():
+            assert len(git_hash) == 7, f'No git hash from: {output!r}'
+            return git_hash
 
         raise AssertionError(f'No git hash from: {output!r}')
 
@@ -120,4 +121,4 @@ class Git:
             file_path = self.cwd / line
             assert_is_file(file_path)
             file_paths.append(file_path)
-        return file_paths
+        return sorted(file_paths)
