@@ -6,7 +6,7 @@ import tomli
 from bx_py_utils.path import assert_is_file
 
 import manageprojects
-from manageprojects.cli import PACKAGE_ROOT, check_code_style, fix_code_style
+from manageprojects.cli import PACKAGE_ROOT, check_code_style, fix_code_style, mypy
 
 
 class ProjectSetupTestCase(TestCase):
@@ -28,3 +28,6 @@ class ProjectSetupTestCase(TestCase):
     def test_code_style(self):
         fix_code_style()
         check_code_style(verbose=False)
+
+    def test_mypy(self):
+        mypy(verbose=False)

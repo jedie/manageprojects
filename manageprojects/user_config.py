@@ -22,6 +22,7 @@ def get_user_config_path() -> Path:
 
     config_path = Path.home()
     logger.warning('Fallback user config path to: %s', config_path)
+    return config_path
 
 
 def get_mp_config_path() -> Path:

@@ -28,11 +28,14 @@ class ManageProjectsTestCase(TestCase):
 
     def test_pyproject_toml_utils(self):
         with TemporaryDirectory(prefix='test_update_pyproject_toml_') as temp_path:
-            pyproject_toml_path = update_pyproject_toml(
+            pyproject_toml_path = temp_path / 'pyproject.toml'
+            update_pyproject_toml(
                 result=CookiecutterResult(
                     destination_path=temp_path,
+                    git_path=temp_path / 'foo' / 'bar',  # not relevant here
                     git_hash='abc0001',
                     commit_date=parse_dt('2000-01-01T00:00:00+0000'),
+                    pyproject_toml_path=pyproject_toml_path,
                 )
             )
             self.assert_tomli(
@@ -62,11 +65,13 @@ class ManageProjectsTestCase(TestCase):
             new = f'[project]\nname = "foo bar"\n\n\n{origin}'
             pyproject_toml_path.write_text(new)
 
-            pyproject_toml_path = update_pyproject_toml(
+            update_pyproject_toml(
                 result=CookiecutterResult(
                     destination_path=temp_path,
+                    git_path=temp_path / 'foo' / 'bar',  # not relevant here
                     git_hash='abc0002',
                     commit_date=parse_dt('2000-02-02T00:00:00+0000'),
+                    pyproject_toml_path=pyproject_toml_path,
                 )
             )
             self.assert_tomli(
@@ -88,11 +93,13 @@ class ManageProjectsTestCase(TestCase):
             new = f'{origin}\n\n[foo]\nbar = 1\n'
             pyproject_toml_path.write_text(new)
 
-            pyproject_toml_path = update_pyproject_toml(
+            update_pyproject_toml(
                 result=CookiecutterResult(
                     destination_path=temp_path,
+                    git_path=temp_path / 'foo' / 'bar',  # not relevant here
                     git_hash='abc0003',
-                    # No: commit_date
+                    commit_date=None,  # No: commit_date
+                    pyproject_toml_path=pyproject_toml_path,
                 )
             )
             self.assert_tomli(
@@ -110,11 +117,13 @@ class ManageProjectsTestCase(TestCase):
             last_migration_hash = get_last_git_hash(pyproject_toml_path)
             self.assertEqual(last_migration_hash, 'abc0003')
 
-            pyproject_toml_path = update_pyproject_toml(
+            update_pyproject_toml(
                 result=CookiecutterResult(
                     destination_path=temp_path,
+                    git_path=temp_path / 'foo' / 'bar',  # not relevant here
                     git_hash='abc0004',
                     commit_date=parse_dt('2000-04-04T00:00:00+0000'),
+                    pyproject_toml_path=pyproject_toml_path,
                 )
             )
             self.assert_tomli(

@@ -69,5 +69,7 @@ fail_under = 45
 ignore_missing_imports = true
 plugins = []
 exclude = [
-    "manageprojects/project_templates",
+    '.venv',
+    'tests',
+    'manageprojects/project_templates',
 ]
