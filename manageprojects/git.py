@@ -3,6 +3,8 @@ import logging
 from pathlib import Path
 from shutil import which
 
+from bx_py_utils.path import assert_is_file
+
 from manageprojects.subprocess_utils import verbose_check_call, verbose_check_output
 
 
@@ -54,14 +56,14 @@ class Git:
         popenargs = [self.git_bin, *popenargs]
         return verbose_check_output(*popenargs, cwd=self.cwd, **kwargs)
 
-    def get_current_hash(self, commit='HEAD', verbose=True):
+    def get_current_hash(self, commit='HEAD', verbose=True) -> str:
         output = self.git_verbose_check_output('rev-parse', '--short', commit, verbose=verbose)
         if rev := output.strip():
             return rev
 
         raise AssertionError(f'No git hash from: {output!r}')
 
-    def get_commit_date(self, commit='HEAD', verbose=True):
+    def get_commit_date(self, commit='HEAD', verbose=True) -> datetime.datetime:
         output = self.git_verbose_check_output(
             'show', '-s', '--format=%cI', commit, verbose=verbose
         )
@@ -71,6 +73,51 @@ class Git:
 
         raise AssertionError(f'No commit date from: {output!r}')
 
-    def get_patch(self, from_path, to_path):
-        output = self.git_verbose_check_output('diff', from_path, to_path, exit_on_error=True)
+    def get_patch(self, from_path, to_path, verbose=True) -> str:
+        output = self.git_verbose_check_output(
+            'diff', from_path, to_path, verbose=verbose, exit_on_error=True
+        )
         return output
+
+    def init(self, branch_name='main', verbose=True) -> Path:
+        output = self.git_verbose_check_output(
+            'init', '-b', branch_name, verbose=verbose, exit_on_error=True
+        )
+        assert 'initialized' in output.lower(), f'Seems there is an error: {output}'
+        self.cwd = get_git_root(self.cwd)
+        return self.cwd
+
+    def config(self, key, value, verbose=True):
+        output = self.git_verbose_check_output(
+            'config', key, value, verbose=verbose, exit_on_error=True
+        )
+        assert not output, f'Seems there is an error: {output}'
+
+    def get_config(self, key, verbose=True):
+        output = self.git_verbose_check_output(
+            'config', '--get', key, verbose=verbose, exit_on_error=True
+        )
+        return output.strip()
+
+    def add(self, spec, verbose=True) -> None:
+        output = self.git_verbose_check_output('add', spec, verbose=verbose, exit_on_error=True)
+        assert not output, f'Seems there is an error: {output}'
+
+    def commit(self, comment, verbose=True) -> str:
+        output = self.git_verbose_check_output(
+            'commit', '--message', comment, verbose=verbose, exit_on_error=True
+        )
+        assert comment in output, f'Seems there is an error: {output}'
+        return output
+
+    def reflog(self, verbose=True) -> str:
+        return self.git_verbose_check_output('reflog', verbose=verbose, exit_on_error=True)
+
+    def ls_files(self, verbose=True) -> list[Path]:
+        output = self.git_verbose_check_output('ls-files', verbose=verbose, exit_on_error=True)
+        file_paths = []
+        for line in output.splitlines():
+            file_path = self.cwd / line
+            assert_is_file(file_path)
+            file_paths.append(file_path)
+        return file_paths
