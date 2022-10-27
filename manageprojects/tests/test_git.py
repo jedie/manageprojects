@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
+from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
 from manageprojects import __version__
 from manageprojects.cli import PACKAGE_ROOT, version
@@ -16,7 +17,7 @@ from manageprojects.tests.utilities.temp_utils import TemporaryDirectory
 
 
 class GitTestCase(TestCase):
-    def test_basic(self):
+    def test_own_git_repo(self):
         deep_path = Path(__file__).parent
         git = Git(cwd=deep_path)
         git_root_path = git.cwd
@@ -73,3 +74,33 @@ class GitTestCase(TestCase):
                 Path(template_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'),
             ]
             self.assertEqual(file_paths, expected_paths)
+
+    def test_git_diff(self):
+        with TemporaryDirectory(prefix='ttest_init_git_') as temp_path:
+            change_txt_path = Path(temp_path, 'change.txt')
+            change_txt_path.write_text('This is the first revision!')
+            Path(temp_path, 'unchange.txt').write_text('This file will be not changed')
+
+            git, first_hash = init_git(temp_path)
+            self.assertEqual(len(first_hash), 7)
+            self.assertEqual(
+                git.ls_files(verbose=False),
+                [Path(temp_path, 'change.txt'), Path(temp_path, 'unchange.txt')],
+            )
+
+            change_txt_path.write_text('This is the second revision!')
+
+            git.add('.', verbose=False)
+            git.commit('The second commit', verbose=False)
+
+            second_hash = git.get_current_hash(verbose=False)
+            reflog = git.reflog(verbose=False)
+            self.assertIn('The second commit', reflog)
+            self.assertIn(first_hash, reflog)
+            self.assertIn(second_hash, reflog)
+
+            diff_txt = git.diff(first_hash, second_hash)
+            self.assertIn('--- change.txt', diff_txt)
+            self.assertIn('+++ change.txt', diff_txt)
+            self.assertIn('@@ -1 +1 @@', diff_txt)
+            assert_text_snapshot(got=diff_txt, extension='.patch')

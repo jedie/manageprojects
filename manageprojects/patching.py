@@ -97,7 +97,7 @@ def generate_template_patch():
     # verbose_check_call('git', 'diff', compiled_from_path, compiled_to_path, cwd=tmpdir)
 
     git = Git(cwd=temp_path)
-    patch = git.get_patch(compiled_from_path, compiled_to_path)
+    patch = git.diff(compiled_from_path, compiled_to_path)
     if patch:
         logger.info('Write patch file: %s', patch_file_path)
         patch_file_path.write_text(patch)
