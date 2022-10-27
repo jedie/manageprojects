@@ -1,7 +1,8 @@
 from pathlib import Path
 from unittest import TestCase
 
-from manageprojects.path_utils import assert_is_file
+from bx_py_utils.path import assert_is_file
+
 from manageprojects.tests.utilities.temp_utils import TempContentFile
 
 
