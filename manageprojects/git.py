@@ -5,7 +5,7 @@ from shutil import which
 
 from bx_py_utils.path import assert_is_file
 
-from manageprojects.subprocess_utils import verbose_check_call, verbose_check_output
+from manageprojects.utilities.subprocess_utils import verbose_check_call, verbose_check_output
 
 
 logger = logging.getLogger(__name__)
@@ -144,6 +144,13 @@ class Git:
 
     def reflog(self, verbose=True) -> str:
         return self.git_verbose_check_output('reflog', verbose=verbose, exit_on_error=True)
+
+    def log(self, format='%h - %an, %ar : %s', verbose=True) -> list[str]:
+        output = self.git_verbose_check_output(
+            'log', f'--pretty=format:{format}', verbose=verbose, exit_on_error=True
+        )
+        lines = output.splitlines()
+        return lines
 
     def ls_files(self, verbose=True) -> list[Path]:
         output = self.git_verbose_check_output('ls-files', verbose=verbose, exit_on_error=True)

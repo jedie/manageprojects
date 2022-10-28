@@ -1,116 +1,18 @@
-import dataclasses
-import datetime
 import logging
 from pathlib import Path
-from typing import Optional
 
-import tomli
-import tomlkit
-from bx_py_utils.path import assert_is_dir, assert_is_file
+from bx_py_utils.path import assert_is_dir
 from cookiecutter.config import get_user_config
 from cookiecutter.main import cookiecutter
 from cookiecutter.repository import determine_repo_dir
 
+from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
 from manageprojects.git import Git
+from manageprojects.patching import generate_template_patch
+from manageprojects.utilities.pyproject_toml import parse_pyproject_toml, update_pyproject_toml
 
 
 logger = logging.getLogger(__name__)
-
-INITIAL_REVISION = 'initial_revision'
-INITIAL_DATE = 'initial_date'
-APPLIED_MIGRATIONS = 'applied_migrations'
-
-
-@dataclasses.dataclass
-class CookiecutterResult:
-    """
-    Store information about a created Cookiecutter template
-    """
-
-    destination_path: Path
-    git_path: Path
-    git_hash: str
-    commit_date: Optional[datetime.datetime]
-    pyproject_toml_path: Path
-
-    def get_comment(self):
-        if self.commit_date:
-            return self.commit_date.isoformat()
-        return ''
-
-
-@dataclasses.dataclass
-class ManageProjectsMeta:
-    """
-    Information about 'manageprojects' git hashes
-    """
-
-    applied_migrations: list[str]
-    initial_revision: Optional[str] = None
-    initial_date: Optional[datetime.datetime] = None
-
-
-def parse_pyproject_toml(path: Path) -> ManageProjectsMeta:
-    """
-    Load 'manageprojects' information from 'pyproject.toml' file.
-    """
-    assert_is_file(path)
-    toml_dict = tomli.loads(path.read_text(encoding='UTF-8'))
-
-    result = ManageProjectsMeta(applied_migrations=[])
-    if data := toml_dict.get('manageprojects'):
-        result.initial_revision = data.get(INITIAL_REVISION)
-        if raw_date := data.get(INITIAL_DATE):
-            try:
-                result.initial_date = datetime.datetime.fromisoformat(raw_date)
-            except ValueError as err:
-                logger.warning(f'Can not parse initial date: {err}')
-        if applied_migrations := data.get(APPLIED_MIGRATIONS):
-            result.applied_migrations = applied_migrations
-    return result
-
-
-def get_last_git_hash(path: Path) -> Optional[str]:
-    """
-    Get the lash git hash from 'pyproject.toml' file.
-    """
-    if meta := parse_pyproject_toml(path):
-        if migrations := meta.applied_migrations:
-            return migrations[-1]
-        return meta.initial_revision
-    return None
-
-
-def update_pyproject_toml(result: CookiecutterResult) -> None:
-    """
-    Store git hash/migration information into 'pyproject.toml' in destination path.
-    """
-    pyproject_toml_path = result.pyproject_toml_path
-    if pyproject_toml_path.exists():
-        doc = tomlkit.parse(pyproject_toml_path.read_text(encoding='UTF-8'))
-    else:
-        doc = tomlkit.document()
-        doc.add(tomlkit.comment('Created by manageprojects'))
-
-    if 'manageprojects' not in doc:
-        manageprojects = tomlkit.table()
-        manageprojects.comment('https://github.com/jedie/manageprojects')
-        manageprojects.add(INITIAL_REVISION, result.git_hash)
-        if result.commit_date:
-            manageprojects.add(INITIAL_DATE, result.get_comment())
-        doc['manageprojects'] = manageprojects
-    else:
-        manageprojects = doc['manageprojects']  # type: ignore
-
-        if 'applied_migrations' not in manageprojects:
-            applied_migrations = tomlkit.array()
-            applied_migrations.multiline(multiline=True)
-            manageprojects.add(APPLIED_MIGRATIONS, applied_migrations)
-        else:
-            applied_migrations = manageprojects[APPLIED_MIGRATIONS]  # type: ignore
-        applied_migrations.add_line(result.git_hash, comment=result.get_comment())
-
-    pyproject_toml_path.write_text(tomlkit.dumps(doc), encoding='UTF-8')
 
 
 def run_cookiecutter(
@@ -171,3 +73,11 @@ def run_cookiecutter(
     )
     update_pyproject_toml(result)
     return result
+
+
+def update_project(project_path: Path):
+    pyproject_toml_path = project_path / 'pyproject.toml'
+
+    meta: ManageProjectsMeta = parse_pyproject_toml(pyproject_toml_path)
+
+    generate_template_patch(meta)

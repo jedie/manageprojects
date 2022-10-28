@@ -2,8 +2,6 @@
 name = "foo bar"
 
 
-# Created by manageprojects
-
 [manageprojects] # https://github.com/jedie/manageprojects
 initial_revision = "abc0001"
 initial_date = "2000-01-01T00:00:00+00:00"
