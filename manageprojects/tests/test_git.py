@@ -55,17 +55,15 @@ class GitTestCase(TestCase):
 
     def test_create_cookiecutter_template(self):
         with TemporaryDirectory(prefix='test_create_cookiecutter_template_') as temp_path:
-
-            template_path = copy_fixtures(
-                fixtures_dir_name='cookiecutter_simple_template_rev1',
-                temp_path=temp_path,
-                dst_dir_name='test-template',
+            destination = temp_path / 'test-template'
+            copy_fixtures(
+                fixtures_dir_name='cookiecutter_simple_template_rev1', destination=destination
             )
 
-            self.assertEqual(template_path, temp_path / 'test-template')
-            assert_is_dir(template_path)
+            self.assertEqual(destination, temp_path / 'test-template')
+            assert_is_dir(destination)
             assert_is_file(
-                template_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
+                destination / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
             )
 
             git, git_hash = init_git(temp_path)
@@ -73,8 +71,8 @@ class GitTestCase(TestCase):
 
             file_paths = git.ls_files(verbose=False)
             expected_paths = [
-                Path(template_path / 'cookiecutter.json'),
-                Path(template_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'),
+                Path(destination / 'cookiecutter.json'),
+                Path(destination / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'),
             ]
             self.assertEqual(file_paths, expected_paths)
 
