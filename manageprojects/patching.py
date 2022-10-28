@@ -6,9 +6,10 @@ from bx_py_utils.path import assert_is_dir
 from cookiecutter.main import cookiecutter
 from rich import print  # noqa
 
+from manageprojects.data_classes import ManageProjectsMeta
 from manageprojects.git import Git
-from manageprojects.subprocess_utils import verbose_check_call
-from manageprojects.user_config import get_patch_path
+from manageprojects.utilities.subprocess_utils import verbose_check_call
+from manageprojects.utilities.user_config import get_patch_path
 
 
 logger = logging.getLogger(__name__)
@@ -52,7 +53,11 @@ class GitSwitcher:
             return False
 
 
-def generate_template_patch():
+def generate_template_patch(meta: ManageProjectsMeta):
+    from_rev = meta.get_last_git_hash()
+
+    raise NotImplementedError('TODO')
+
     from_rev = '409f581'
     to_rev = 'ad03e9e'
     git_url = 'https://github.com/jedie/manageproject.git'
@@ -102,7 +107,3 @@ def generate_template_patch():
     if patch:
         logger.info('Write patch file: %s', patch_file_path)
         patch_file_path.write_text(patch)
-
-
-if __name__ == '__main__':
-    generate_template_patch()

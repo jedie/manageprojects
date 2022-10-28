@@ -13,10 +13,11 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import CookiecutterResult, run_cookiecutter
+from manageprojects.cookiecutter_templates import run_cookiecutter
+from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
-from manageprojects.log_utils import log_config
-from manageprojects.subprocess_utils import verbose_check_call
+from manageprojects.utilities.log_utils import log_config
+from manageprojects.utilities.subprocess_utils import verbose_check_call
 
 
 logger = logging.getLogger(__name__)
