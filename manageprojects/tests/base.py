@@ -27,3 +27,15 @@ class BaseTestCase(TestCase):
     def assert_datetime_now_range(self, dt: datetime.datetime, max_diff_sec: int = 5):
         now = datetime.datetime.now(tz=dt.tzinfo)
         self.assert_datetime_range(dt=dt, reference=now, max_diff_sec=max_diff_sec)
+
+    def assert_file_content(self, path: Path, content: str):
+        assert_is_file(path)
+        file_content = path.read_text().strip()
+        content = content.strip()
+        try:
+            self.assertEqual(file_content, content)
+        except AssertionError:
+            print('-' * 79)
+            print(file_content)
+            print('-' * 79)
+            raise

@@ -1,19 +1,20 @@
 import filecmp
 import json
-import shutil
 from pathlib import Path
 
+import tomli
 import yaml
+from bx_py_utils.environ import OverrideEnviron
 from bx_py_utils.path import assert_is_dir, assert_is_file
 
 from manageprojects.cookiecutter_templates import run_cookiecutter, update_project
 from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
-from manageprojects.git import Git
+from manageprojects.patching import GenerateTemplatePatchResult
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.tests.utilities.fixtures import copy_fixtures
 from manageprojects.tests.utilities.git_utils import init_git
-from manageprojects.tests.utilities.temp_utils import TemporaryDirectory
-from manageprojects.utilities.pyproject_toml import parse_pyproject_toml
+from manageprojects.utilities.pyproject_toml import PyProjectToml
+from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class ManageProjectsTestCase(BaseTestCase):
@@ -91,41 +92,38 @@ class ManageProjectsTestCase(BaseTestCase):
     def test_start_project(self):
         with TemporaryDirectory(prefix='test_start_project_') as main_temp_path:
 
-            directory_rev1 = 'template-rev1'
-            template_rev1_path = main_temp_path / directory_rev1
-            template_file_rev1_path = (
-                template_rev1_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
+            cookiecutter_directory = 'cookiecutter_directory'
+            template_path = main_temp_path / cookiecutter_directory
+            template_file_path = (
+                template_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
             )
 
-            directory_rev2 = 'template-rev2'
-            template_rev2_path = main_temp_path / directory_rev2
-            template_file_rev2_path = (
-                template_rev2_path / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
-            )
-            new_file_rev2_path = template_rev2_path / '{{cookiecutter.dir_name}}' / 'new_file.py'
+            new_file_path = template_path / '{{cookiecutter.dir_name}}' / 'new_file.py'
 
             cookiecutter_destination = main_temp_path / 'cookiecutter_output_dir'
             project_path = cookiecutter_destination / 'default_directory_name'
+            destination_file_path = project_path / 'default_file_name.py'
+            pyproject_toml_path = project_path / 'pyproject.toml'
 
             #########################################################################
             # copy existing cookiecutter template to /tmp/:
 
             copy_fixtures(
                 fixtures_dir_name='cookiecutter_simple_template_rev1',
-                destination=template_rev1_path,
+                destination=template_path,
             )
-            assert_is_file(template_file_rev1_path)
+            assert_is_file(template_file_path)
 
             #########################################################################
             # Make git repro and commit the current state:
 
-            git, git_hash1 = init_git(template_rev1_path)
+            template_git, git_hash1 = init_git(template_path)
             self.assertEqual(len(git_hash1), 7)
 
-            file_paths = git.ls_files(verbose=False)
+            file_paths = template_git.ls_files(verbose=False)
             expected_paths = [
-                Path(template_rev1_path / 'cookiecutter.json'),
-                template_file_rev1_path,
+                Path(template_path / 'cookiecutter.json'),
+                template_file_path,
             ]
             self.assertEqual(file_paths, expected_paths)
 
@@ -144,7 +142,7 @@ class ManageProjectsTestCase(BaseTestCase):
             config_file_path = main_temp_path / 'cookiecutter_config.yaml'
             config_file_path.write_text(config_yaml)
 
-            replay_file_path = replay_dir_path / f'{directory_rev1}.json'
+            replay_file_path = replay_dir_path / f'{cookiecutter_directory}.json'
 
             self.assertFalse(cookiecutter_destination.exists())
             self.assertFalse(cookiecutters_dir.exists())
@@ -154,10 +152,10 @@ class ManageProjectsTestCase(BaseTestCase):
             from manageprojects.cli import start_project  # import loops
 
             result: CookiecutterResult = start_project(
-                template=str(template_rev1_path),
-                destination=cookiecutter_destination,
+                template=str(template_path),
+                output_dir=cookiecutter_destination,
                 no_input=True,
-                directory=directory_rev1,
+                # directory=cookiecutter_directory,
                 config_file=config_file_path,
             )
 
@@ -166,7 +164,7 @@ class ManageProjectsTestCase(BaseTestCase):
             assert_is_file(replay_file_path)
 
             self.assertIsInstance(result, CookiecutterResult)
-            self.assertEqual(result.git_path, template_rev1_path)
+            self.assertEqual(result.git_path, template_path)
 
             # Cookiecutter creates a replay JSON?
             assert_is_file(replay_file_path)
@@ -179,46 +177,49 @@ class ManageProjectsTestCase(BaseTestCase):
                         'dir_name': 'default_directory_name',
                         'file_name': 'default_file_name',
                         'value': 'default_value',
-                        '_template': str(template_rev1_path),
+                        '_template': str(template_path),
                         '_output_dir': str(cookiecutter_destination),
                     }
                 },
             )
 
             # Check created file:
-            destination_file_path = project_path / 'default_file_name.py'
             assert_is_file(destination_file_path)
-            filecmp.cmp(destination_file_path, template_file_rev1_path)
+            filecmp.cmp(destination_file_path, template_file_path)
 
             # Check created toml file:
-            pyproject_toml_path = project_path / 'pyproject.toml'
-            meta = parse_pyproject_toml(pyproject_toml_path)
+            toml = PyProjectToml(project_path=project_path)
+            meta = toml.get_mp_meta()
             self.assertIsInstance(meta, ManageProjectsMeta)
             self.assertEqual(meta.initial_revision, git_hash1)
             self.assertEqual(meta.applied_migrations, [])
+            self.assertEqual(meta.cookiecutter_template, str(template_path))
+            self.assertEqual(meta.cookiecutter_directory, None)
             self.assert_datetime_now_range(meta.initial_date, max_diff_sec=5)
+
+            # Create a git, with this state
+            project_git, project_git_hash1 = init_git(
+                cookiecutter_destination, comment='Project start'
+            )
+            project_commit_date1 = project_git.get_commit_date(verbose=False)
 
             #########################################################################
             # Change the source template and update the existing project
 
-            shutil.copytree(template_rev1_path, template_rev2_path)
-            assert_is_file(template_file_rev2_path)
-            git = Git(cwd=template_rev2_path)
-
             # Add a new template file:
-            new_file_rev2_path.write_text('print("This is a new added file in template rev2')
-            git.add('.', verbose=False)
-            git.commit('Add a new file', verbose=False)
-            git_hash2 = git.get_current_hash(verbose=False)
+            new_file_path.write_text('print("This is a new added file in template rev2')
+            template_git.add('.', verbose=False)
+            template_git.commit('Add a new file', verbose=False)
+            git_hash2 = template_git.get_current_hash(verbose=False)
 
             # Change a existing file:
-            with template_file_rev2_path.open('a') as f:
+            with template_file_path.open('a') as f:
                 f.write('\n# This comment was added in rev2 ;)\n')
-            git.add('.', verbose=False)
-            git.commit('Update existing file', verbose=False)
-            git_hash3 = git.get_current_hash(verbose=False)
+            template_git.add('.', verbose=False)
+            template_git.commit('Update existing file', verbose=False)
+            git_hash3 = template_git.get_current_hash(verbose=False)
 
-            log_lines = git.log(format='%h - %s', verbose=False)
+            log_lines = template_git.log(format='%h - %s', verbose=False)
             self.assertEqual(
                 log_lines,
                 [
@@ -228,6 +229,54 @@ class ManageProjectsTestCase(BaseTestCase):
                 ],
             )
 
-            # TODO: Test updating the project ;)
-            with self.assertRaises(NotImplementedError):
-                update_project(project_path=project_path)
+            #########################################################################
+            # update the existing project
+
+            test_file_before = destination_file_path.read_text()
+            self.assertEqual(test_file_before, "print('Hello World: default_value')\n")
+            pyproject_before = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
+            self.assertDictEqual(
+                pyproject_before,
+                {
+                    'manageprojects': {
+                        'initial_revision': meta.initial_revision,
+                        'initial_date': meta.initial_date,
+                        'cookiecutter_template': str(template_path),
+                        'cookiecutter_context': {
+                            'dir_name': 'default_directory_name',
+                            'file_name': 'default_file_name',
+                            'value': 'default_value',
+                        },
+                    }
+                },
+            )
+
+            with OverrideEnviron(XDG_CONFIG_HOME=str(main_temp_path)):
+                update_result = update_project(
+                    project_path=project_path, config_file=config_file_path
+                )
+            self.assertIsInstance(update_result, GenerateTemplatePatchResult)
+
+            test_file_after = destination_file_path.read_text()
+            self.assertEqual(
+                test_file_after,
+                "print('Hello World: default_value')\n\n# This comment was added in rev2 ;)\n",
+            )
+
+            pyproject_after = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
+            print(pyproject_after)
+            self.assertDictEqual(
+                pyproject_after,
+                {
+                    'manageprojects': {
+                        'initial_revision': meta.initial_revision,
+                        'initial_date': meta.initial_date,
+                        'cookiecutter_template': str(template_path),
+                        'cookiecutter_context': {
+                            'dir_name': 'default_directory_name',
+                            'file_name': 'default_file_name',
+                            'value': 'default_value',
+                        },
+                    }
+                },
+            )

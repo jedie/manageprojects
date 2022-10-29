@@ -1,7 +1,9 @@
 import datetime
 import logging
+import subprocess
 from pathlib import Path
 from shutil import which
+from typing import Optional
 
 from bx_py_utils.path import assert_is_file
 
@@ -56,6 +58,19 @@ class Git:
         popenargs = [self.git_bin, *popenargs]
         return verbose_check_output(*popenargs, cwd=self.cwd, **kwargs)
 
+    def git_verbose_output(
+        self, *popenargs, exit_on_error=False, ignore_process_error=True, **kwargs
+    ):
+        popenargs = [self.git_bin, *popenargs]
+        try:
+            return verbose_check_output(
+                *popenargs, cwd=self.cwd, exit_on_error=exit_on_error, **kwargs
+            )
+        except subprocess.CalledProcessError as err:
+            if ignore_process_error:
+                return err.stdout
+            raise
+
     def get_current_hash(self, commit='HEAD', verbose=True) -> str:
         output = self.git_verbose_check_output('rev-parse', '--short', commit, verbose=verbose)
         if git_hash := output.strip():
@@ -64,7 +79,7 @@ class Git:
 
         raise AssertionError(f'No git hash from: {output!r}')
 
-    def get_commit_date(self, commit='HEAD', verbose=True) -> datetime.datetime:
+    def get_commit_date(self, commit='HEAD', verbose=True) -> Optional[datetime.datetime]:
         output = self.git_verbose_check_output(
             'show', '-s', '--format=%cI', commit, verbose=verbose
         )
@@ -72,7 +87,7 @@ class Git:
             # e.g.: "2022-10-25 20:43:10 +0200"
             return datetime.datetime.fromisoformat(raw_date)
 
-        raise AssertionError(f'No commit date from: {output!r}')
+        logger.warning(f'No commit date from: {output!r}')
 
     def diff(
         self,
@@ -91,9 +106,7 @@ class Git:
         if no_color:
             args.append('--no-color')
 
-        output = self.git_verbose_check_output(
-            'diff', *args, reference1, reference2, verbose=verbose, exit_on_error=True
-        )
+        output = self.git_verbose_output('diff', *args, reference1, reference2, verbose=verbose)
         return output
 
     def apply(self, patch_path, verbose=True):

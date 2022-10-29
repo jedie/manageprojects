@@ -16,7 +16,7 @@ from manageprojects.cli import PACKAGE_ROOT, version
 from manageprojects.git import Git
 from manageprojects.tests.utilities.fixtures import copy_fixtures
 from manageprojects.tests.utilities.git_utils import init_git
-from manageprojects.tests.utilities.temp_utils import TemporaryDirectory
+from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class GitTestCase(TestCase):

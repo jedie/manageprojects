@@ -1,109 +1,113 @@
+import dataclasses
+import datetime
 import logging
 import shutil
 from pathlib import Path
+from typing import Optional
 
-from bx_py_utils.path import assert_is_dir
-from cookiecutter.main import cookiecutter
+from cookiecutter.generate import generate_files
 from rich import print  # noqa
 
-from manageprojects.data_classes import ManageProjectsMeta
 from manageprojects.git import Git
-from manageprojects.utilities.subprocess_utils import verbose_check_call
+from manageprojects.utilities.temp_path import TemporaryDirectory
 from manageprojects.utilities.user_config import get_patch_path
 
 
 logger = logging.getLogger(__name__)
 
 
-class GitSwitcher:
-    def __init__(self, git_url: str, sub_dir: str, git_src_path: Path):
-        self.git_url = git_url
-        self.sub_dir = sub_dir
-        self.git_src_path = git_src_path
-        self.git_src_path.mkdir(exist_ok=True)
-
-        self.git = None
-        self._tmp = None
-        self.src_path = None
-
-    def __enter__(self):
-        self.git = Git(cwd=self.git_src_path)
-        self.git.git_verbose_check_call('clone', '--no-checkout', self.git_url, self.git_src_path)
-        verbose_check_call('ls', '-la', cwd=self.git_src_path)
-        self.git.git_verbose_check_call('fetch')
-        self.git.git_verbose_check_call('sparse-checkout', 'set', self.sub_dir)
-
-        verbose_check_call('ls', '-la', cwd=self.git_src_path)
-        verbose_check_call('tree', cwd=self.git_src_path)
-
-        return self
-
-    def cp_rev(self, rev: str, dst: Path):
-        assert self.git is not None
-        self.git.git_verbose_check_call('reset', '--hard', rev)
-        verbose_check_call('git', 'reflog', cwd=self.git_src_path)
-        verbose_check_call('ls', '-la', cwd=self.git_src_path)
-        verbose_check_call('tree', cwd=self.git_src_path)
-        src_path = self.git_src_path / self.sub_dir
-        assert_is_dir(src_path)
-        shutil.copytree(src=src_path, dst=dst)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type:
-            return False
+def cp_git_rev(git: Git, rev: str, dst: Path):
+    git.git_verbose_check_call('reset', '--hard', rev)
+    shutil.copytree(src=git.cwd, dst=dst)
 
 
-def generate_template_patch(meta: ManageProjectsMeta):
-    from_rev = meta.get_last_git_hash()
+@dataclasses.dataclass
+class GenerateTemplatePatchResult:
+    patch_file_path: Path
+    to_rev: str
+    commit_date: Optional[datetime.datetime]
 
-    raise NotImplementedError('TODO')
 
-    from_rev = '409f581'
-    to_rev = 'ad03e9e'
-    git_url = 'https://github.com/jedie/manageproject.git'
-    template_name = 'minimal-python'
-    template = f'manageprojects/project_templates/{template_name}'
+def generate_template_patch(
+    project_path: Path, repo_path: Path, from_rev: str, replay_context: dict
+) -> Optional[GenerateTemplatePatchResult]:
+    print(f'Generate update patch for project: {project_path} from {repo_path}')
+
+    git = Git(cwd=repo_path, detect_root=True)
+    git.git_verbose_check_call('fetch')
+    to_rev = git.get_current_hash(verbose=False)
+    commit_date = git.get_commit_date(verbose=False)
+    print(f'Update from rev. {from_rev} to rev. {to_rev} ({commit_date})')
+
+    if from_rev == to_rev:
+        commit_date = git.get_commit_date()
+        print(
+            f'Latest version {from_rev!r}'
+            f' from {commit_date} is already applied.'
+            ' Nothing to update, ok.'
+        )
+        return None
+
+    project_name = project_path.name
 
     patch_path = get_patch_path()
-    patch_file_path = patch_path / f'{template_name}_{from_rev}_{to_rev}.patch'
+    patch_file_path = patch_path / f'{project_name}_{from_rev}_{to_rev}.patch'
+    if patch_file_path.is_file():
+        print(f'Use existing patch: {patch_file_path}')
+        return GenerateTemplatePatchResult(
+            patch_file_path=patch_file_path, to_rev=to_rev, commit_date=commit_date
+        )
 
-    tmpdir = '/tmp/manageproject_test'
-    shutil.rmtree(tmpdir, ignore_errors=True)
-    Path(tmpdir).mkdir()
-    # with tempfile.TemporaryDirectory(prefix='manageprojects_') as tmpdir:
+    with TemporaryDirectory(prefix=f'manageprojects_{project_name}_') as temp_path:
+        print(f'Generate patch file: {patch_file_path}')
 
-    temp_path = Path(tmpdir)
-    git_src_path = temp_path / 'git_src'
-    from_rev_path = temp_path / from_rev / template_name
-    to_rev_path = temp_path / to_rev / template_name
+        template_name = repo_path.name
+        from_rev_path = temp_path / from_rev / template_name
+        to_rev_path = temp_path / to_rev / template_name
 
-    with GitSwitcher(git_url=git_url, sub_dir=template, git_src_path=git_src_path) as gw:
-        gw.cp_rev(rev=from_rev, dst=from_rev_path)
-        gw.cp_rev(rev=to_rev, dst=to_rev_path)
+        git.git_verbose_check_call('reset', '--hard', from_rev)
+        shutil.copytree(src=git.cwd, dst=from_rev_path)
 
-    verbose_check_call('tree', cwd=tmpdir)
+        git.git_verbose_check_call('reset', '--hard', to_rev)
+        shutil.copytree(src=git.cwd, dst=to_rev_path)
 
-    compiled_from_path = temp_path / f'{from_rev}_compiled'
+        compiled_from_path = temp_path / f'{from_rev}_compiled'
+        kwargs = dict(
+            repo_dir=from_rev_path,
+            context={'cookiecutter': replay_context},
+            overwrite_if_exists=False,
+            skip_if_file_exists=False,
+            output_dir=compiled_from_path,
+        )
+        logger.debug('Generate files with: %r', kwargs)
+        generate_files(**kwargs)
 
-    cookiecutter(
-        template=template_name,
-        replay=True,
-        directory=from_rev_path,
-        output_dir=compiled_from_path,
-    )
+        compiled_to_path = temp_path / f'{to_rev}_compiled'
+        kwargs = dict(
+            repo_dir=to_rev_path,
+            context={'cookiecutter': replay_context},
+            overwrite_if_exists=False,
+            skip_if_file_exists=False,
+            output_dir=compiled_to_path,
+        )
+        logger.debug('Generate files with: %r', kwargs)
+        generate_files(**kwargs)
 
-    compiled_to_path = temp_path / f'{to_rev}_compiled'
-    cookiecutter(
-        template=template_name,
-        replay=True,
-        directory=to_rev_path,
-        output_dir=compiled_to_path,
-    )
-    verbose_check_call('tree', cwd=tmpdir)
-    # verbose_check_call('git', 'diff', compiled_from_path, compiled_to_path, cwd=tmpdir)
+        patch = git.diff(compiled_from_path, compiled_to_path)
+        if not patch:
+            logger.warning(f'No gif diff between {from_rev} and {to_rev} !')
+            return
 
-    git = Git(cwd=temp_path)
-    patch = git.diff(compiled_from_path, compiled_to_path)
-    if patch:
+        from_path_str = f'a{compiled_from_path}/'
+        assert from_path_str in patch, f'{from_path_str!r} not found in patch: {patch}'
+        patch = patch.replace(from_path_str, 'a/')
+
+        to_path_str = f'b{compiled_to_path}/'
+        assert to_path_str in patch, f'{to_path_str!r} not found in patch: {patch}'
+        patch = patch.replace(to_path_str, 'b/')
+
         logger.info('Write patch file: %s', patch_file_path)
         patch_file_path.write_text(patch)
+        return GenerateTemplatePatchResult(
+            patch_file_path=patch_file_path, to_rev=to_rev, commit_date=commit_date
+        )

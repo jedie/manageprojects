@@ -6,8 +6,8 @@ from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
 from manageprojects.exceptions import NoManageprojectsMeta, ProjectNotFound
 from manageprojects.tests.base import BaseTestCase
-from manageprojects.tests.utilities.temp_utils import TemporaryDirectory
 from manageprojects.utilities.pyproject_toml import parse_pyproject_toml, update_pyproject_toml
+from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class CookieCutterTemplatesTestCase(BaseTestCase):

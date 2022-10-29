@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+from typing import Optional
 from unittest import TestLoader, TestResult, TestSuite, TextTestRunner
 
 import typer
@@ -137,39 +138,45 @@ def version():
 
 @cli.command()
 def start_project(
-    template: str,
-    destination: Path,
+    template: str,  # CookieCutter Template path or GitHub url
+    output_dir: Path,  # Target path where CookieCutter should store the result files
+    directory: str = None,  # Directory name of the CookieCutter Template
     checkout: str = None,
     no_input: bool = False,
     replay: bool = False,
     password: str = None,
-    directory: str = None,
-    config_file: Path = None,
+    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ):
     """
     Start a new project via a CookieCutter Template
     """
     print(f'Start project with template: {template!r}')
-    template_path = PROJECT_TEMPLATE_PATH / template
-    if template_path.is_dir():
-        directory = str(template_path)
+    if '/' not in template:
         logger.info(f'Use own template: {template}')
+        template_path = PROJECT_TEMPLATE_PATH / template
+        if not template_path.is_dir():
+            print('ERROR: Template with name "{template}" not found!')
+            print('Existing local templates are:')
+            print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
+            sys.exit(1)
+        template = str(PROJECT_TEMPLATE_PATH)
+        directory = template
     else:
         logger.info(f'Assume it is a external template: {template}')
 
-    print(f'Destination: {destination}')
-    if destination.exists():
-        print(f'Error: Destination "{destination}" already exists')
+    print(f'Destination: {output_dir}')
+    if output_dir.exists():
+        print(f'Error: Destination "{output_dir}" already exists')
         sys.exit(1)
-    if not destination.parent.is_dir():
-        print(f'Error: Destination parent "{destination.parent}" does not exists')
+    if not output_dir.parent.is_dir():
+        print(f'Error: Destination parent "{output_dir.parent}" does not exists')
         sys.exit(1)
 
     try:
         result: CookiecutterResult = run_cookiecutter(
             template=template,
             checkout=checkout,
-            output_dir=destination,
+            output_dir=output_dir,
             no_input=no_input,
             replay=replay,
             password=password,
@@ -178,13 +185,13 @@ def start_project(
         )
     except RepositoryNotFound as err:
         print(f'Error: {err}')
-        print('Existing templates are:')
+        print('Existing local templates are:')
         print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
         sys.exit(1)
     print(
         f'CookieCutter template {template!r}'
         f' with git hash {result.git_hash}'
-        f' was created here: {destination}'
+        f' was created here: {output_dir}'
     )
     return result
 

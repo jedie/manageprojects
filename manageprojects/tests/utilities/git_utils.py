@@ -3,7 +3,7 @@ from bx_py_utils.path import assert_is_dir, assert_is_file
 from manageprojects.git import Git
 
 
-def init_git(path) -> tuple[Git, str]:
+def init_git(path, comment='The initial commit ;)') -> tuple[Git, str]:
     git = Git(cwd=path, detect_root=False)
     git_path = git.init(verbose=False)
     assert git_path == path
@@ -18,13 +18,13 @@ def init_git(path) -> tuple[Git, str]:
     assert git.get_config('user.email', verbose=False) == 'foo-bar@test.tld'
 
     git.add('.', verbose=False)
-    git.commit('The initial commit ;)', verbose=False)
+    git.commit(comment, verbose=False)
     reflog = git.reflog(verbose=False)
 
-    assert ' commit (initial)' in reflog
-    assert 'The initial commit ;)' in reflog
+    assert ' commit (initial)' in reflog, reflog
+    assert comment in reflog, reflog
 
     git_hash = git.get_current_hash(verbose=False)
-    assert f'{git_hash} HEAD@' in reflog
+    assert f'{git_hash} HEAD@' in reflog, reflog
 
     return git, git_hash

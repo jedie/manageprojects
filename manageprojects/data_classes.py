@@ -14,7 +14,7 @@ class CookiecutterResult:
     git_path: Path
     git_hash: str
     commit_date: Optional[datetime.datetime]
-    pyproject_toml_path: Path
+    cookiecutter_context: dict
 
     def get_comment(self):
         if self.commit_date:
@@ -28,9 +28,12 @@ class ManageProjectsMeta:
     Information about 'manageprojects' git hashes
     """
 
-    initial_revision: str
+    initial_revision: Optional[str]
+    initial_date: Optional[datetime.datetime]
     applied_migrations: list[str]
-    initial_date: Optional[datetime.datetime] = None
+    cookiecutter_template: Optional[str]  # CookieCutter Template path or GitHub url
+    cookiecutter_directory: Optional[str]  # Directory name of the CookieCutter Template
+    cookiecutter_context: Optional[dict]
 
     def get_last_git_hash(self) -> str:
         """
