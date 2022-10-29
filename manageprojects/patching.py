@@ -52,14 +52,9 @@ def generate_template_patch(
 
     patch_path = get_patch_path()
     patch_file_path = patch_path / f'{project_name}_{from_rev}_{to_rev}.patch'
-    if patch_file_path.is_file():
-        print(f'Use existing patch: {patch_file_path}')
-        return GenerateTemplatePatchResult(
-            patch_file_path=patch_file_path, to_rev=to_rev, commit_date=commit_date
-        )
+    print(f'Generate patch file: {patch_file_path}')
 
     with TemporaryDirectory(prefix=f'manageprojects_{project_name}_') as temp_path:
-        print(f'Generate patch file: {patch_file_path}')
 
         template_name = repo_path.name
         from_rev_path = temp_path / from_rev / template_name
