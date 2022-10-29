@@ -28,8 +28,8 @@ class ManageProjectsMeta:
     Information about 'manageprojects' git hashes
     """
 
-    initial_revision: Optional[str]
-    initial_date: Optional[datetime.datetime]
+    initial_revision: str
+    initial_date: datetime.datetime
     applied_migrations: list[str]
     cookiecutter_template: Optional[str]  # CookieCutter Template path or GitHub url
     cookiecutter_directory: Optional[str]  # Directory name of the CookieCutter Template

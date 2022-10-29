@@ -3,7 +3,6 @@ import logging
 import subprocess
 from pathlib import Path
 from shutil import which
-from typing import Optional
 
 from bx_py_utils.path import assert_is_file
 
@@ -79,15 +78,13 @@ class Git:
 
         raise AssertionError(f'No git hash from: {output!r}')
 
-    def get_commit_date(self, commit='HEAD', verbose=True) -> Optional[datetime.datetime]:
+    def get_commit_date(self, commit='HEAD', verbose=True) -> datetime.datetime:
         output = self.git_verbose_check_output(
             'show', '-s', '--format=%cI', commit, verbose=verbose
         )
-        if raw_date := output.strip():
-            # e.g.: "2022-10-25 20:43:10 +0200"
-            return datetime.datetime.fromisoformat(raw_date)
-
-        logger.warning(f'No commit date from: {output!r}')
+        raw_date = output.strip()
+        # e.g.: "2022-10-25 20:43:10 +0200"
+        return datetime.datetime.fromisoformat(raw_date)
 
     def diff(
         self,

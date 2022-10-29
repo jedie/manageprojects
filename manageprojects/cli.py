@@ -48,7 +48,7 @@ def which(file_name: str) -> Path:
 @cli.command()
 def mypy(verbose: bool = True):
     """Run Mypy (configured in pyproject.toml)"""
-    verbose_check_call(which('mypy'), '.', verbose=verbose, exit_on_error=True)
+    verbose_check_call(which('mypy'), '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
 
 
 @cli.command()

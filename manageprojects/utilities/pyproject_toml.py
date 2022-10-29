@@ -5,6 +5,7 @@ from typing import Optional
 
 import tomlkit
 from bx_py_utils.path import assert_is_dir
+from tomlkit.items import Table
 
 from manageprojects.constants import (
     APPLIED_MIGRATIONS,
@@ -37,9 +38,8 @@ class PyProjectToml:
             self.doc = tomlkit.document()
             self.doc.add(tomlkit.comment('Created by manageprojects'))
 
-        if 'manageprojects' in self.doc:
-            self.mp_table = self.doc['manageprojects']
-        else:
+        self.mp_table: Table = self.doc.get('manageprojects')  # type: ignore
+        if not self.mp_table:
             # Insert: [manageprojects]
             if self.path.exists():
                 self.doc.add(tomlkit.ws('\n\n'))  # Add a new empty line
@@ -52,6 +52,7 @@ class PyProjectToml:
     ) -> None:
         assert INITIAL_REVISION not in self.mp_table
         assert INITIAL_DATE not in self.mp_table
+        assert COOKIECUTTER_TEMPLATE not in self.mp_table
         self.mp_table.add(INITIAL_REVISION, revision)
         self.mp_table.add(INITIAL_DATE, dt)
         self.mp_table.add(COOKIECUTTER_TEMPLATE, template)
@@ -59,23 +60,22 @@ class PyProjectToml:
             self.mp_table.add(COOKIECUTTER_DIRECTORY, directory)
 
     def create_or_update_cookiecutter_context(self, context: dict) -> None:
-        if COOKIECUTTER_CONTEXT in self.mp_table:
-            context_table = self.mp_table[COOKIECUTTER_CONTEXT]
-        else:
-            context_table = tomlkit.table(is_super_table=False)
+        if not (context_table := self.mp_table.get(COOKIECUTTER_CONTEXT)):
+            context_table: Table = tomlkit.table(is_super_table=False)  # type: ignore
 
         filtered_dict = {key: value for key, value in context.items() if not key.startswith('_')}
-        context_table.update(filtered_dict)
+        context_table.update(filtered_dict)  # type: ignore
         if COOKIECUTTER_CONTEXT not in self.mp_table:
             self.mp_table.append(COOKIECUTTER_CONTEXT, context_table)
 
     def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
-        if APPLIED_MIGRATIONS not in self.mp_table:
+        if not (applied_migrations := self.mp_table.get(APPLIED_MIGRATIONS)):
+            # Add: applied_migrations = []
             applied_migrations = tomlkit.array()
             applied_migrations.multiline(multiline=True)
             self.mp_table.add(APPLIED_MIGRATIONS, applied_migrations)
-        else:
-            applied_migrations = self.mp_table[APPLIED_MIGRATIONS]
+
+        # Append git_hash to applied_migrations:
         applied_migrations.add_line(git_hash, comment=dt.isoformat())
 
     ###############################################################################################

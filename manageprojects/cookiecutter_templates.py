@@ -165,7 +165,7 @@ def update_project(
     )
     if not result:
         # Nothing to apply
-        return
+        return None
     assert isinstance(result, GenerateTemplatePatchResult)
 
     patch_file_path = result.patch_file_path

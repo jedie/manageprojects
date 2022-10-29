@@ -25,7 +25,7 @@ def cp_git_rev(git: Git, rev: str, dst: Path):
 class GenerateTemplatePatchResult:
     patch_file_path: Path
     to_rev: str
-    commit_date: Optional[datetime.datetime]
+    commit_date: datetime.datetime
 
 
 def generate_template_patch(
@@ -96,7 +96,7 @@ def generate_template_patch(
         patch = git.diff(compiled_from_path, compiled_to_path)
         if not patch:
             logger.warning(f'No gif diff between {from_rev} and {to_rev} !')
-            return
+            return None
 
         from_path_str = f'a{compiled_from_path}/'
         assert from_path_str in patch, f'{from_path_str!r} not found in patch: {patch}'
