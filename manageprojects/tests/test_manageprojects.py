@@ -1,4 +1,5 @@
 import filecmp
+import inspect
 import json
 from pathlib import Path
 
@@ -75,18 +76,27 @@ class ManageProjectsTestCase(BaseTestCase):
             # Our replay config was used?
             assert_is_file(cookiecutter_output_dir / 'a_dir_name' / 'a_file_name.py')
 
+            project_path = cookiecutter_output_dir / 'a_dir_name'
+
             # pyproject.toml created?
-            pyproject_toml_path = result.pyproject_toml_path
-            assert_is_file(pyproject_toml_path)
-            self.assertEqual(pyproject_toml_path.name, 'pyproject.toml')
-            self.assert_tomli(
-                pyproject_toml_path,
-                {
-                    'manageprojects': {
-                        'initial_revision': '84d23bf',
-                        'initial_date': '2022-10-24T19:15:47+02:00',
-                    }
-                },
+            toml = PyProjectToml(project_path=project_path)
+            self.assert_file_content(
+                toml.path,
+                inspect.cleandoc(
+                    '''
+                    # Created by manageprojects
+
+                    [manageprojects] # https://github.com/jedie/manageprojects
+                    initial_revision = "84d23bf"
+                    initial_date = 2022-10-24T19:15:47+02:00
+                    cookiecutter_template = "https://github.com/jedie/mp_test_template1/"
+                    cookiecutter_directory = "test_template1"
+
+                    [manageprojects.cookiecutter_context]
+                    dir_name = "a_dir_name"
+                    file_name = "a_file_name"
+                    '''
+                ),
             )
 
     def test_start_project(self):
@@ -198,10 +208,7 @@ class ManageProjectsTestCase(BaseTestCase):
             self.assert_datetime_now_range(meta.initial_date, max_diff_sec=5)
 
             # Create a git, with this state
-            project_git, project_git_hash1 = init_git(
-                cookiecutter_destination, comment='Project start'
-            )
-            project_commit_date1 = project_git.get_commit_date(verbose=False)
+            init_git(cookiecutter_destination, comment='Project start')
 
             #########################################################################
             # Change the source template and update the existing project
@@ -232,8 +239,8 @@ class ManageProjectsTestCase(BaseTestCase):
             #########################################################################
             # update the existing project
 
-            test_file_before = destination_file_path.read_text()
-            self.assertEqual(test_file_before, "print('Hello World: default_value')\n")
+            self.assert_file_content(destination_file_path, "print('Hello World: default_value')")
+
             pyproject_before = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
             self.assertDictEqual(
                 pyproject_before,
@@ -257,10 +264,15 @@ class ManageProjectsTestCase(BaseTestCase):
                 )
             self.assertIsInstance(update_result, GenerateTemplatePatchResult)
 
-            test_file_after = destination_file_path.read_text()
-            self.assertEqual(
-                test_file_after,
-                "print('Hello World: default_value')\n\n# This comment was added in rev2 ;)\n",
+            self.assert_file_content(
+                destination_file_path,
+                inspect.cleandoc(
+                    '''
+                    print('Hello World: default_value')
+
+                    # This comment was added in rev2 ;)
+                    '''
+                ),
             )
 
             pyproject_after = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
