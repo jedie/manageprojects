@@ -69,7 +69,7 @@ def generate_template_patch(
         compiled_from_path = temp_path / f'{from_rev}_compiled'
         kwargs = dict(
             repo_dir=from_rev_path,
-            context={'cookiecutter': replay_context},
+            context=replay_context,
             overwrite_if_exists=False,
             skip_if_file_exists=False,
             output_dir=compiled_from_path,
@@ -80,7 +80,7 @@ def generate_template_patch(
         compiled_to_path = temp_path / f'{to_rev}_compiled'
         kwargs = dict(
             repo_dir=to_rev_path,
-            context={'cookiecutter': replay_context},
+            context=replay_context,
             overwrite_if_exists=False,
             skip_if_file_exists=False,
             output_dir=compiled_to_path,

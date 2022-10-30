@@ -1,18 +1,25 @@
 import datetime
 from pathlib import Path
+from pprint import pprint
 from unittest import TestCase
 
-import tomli
 from bx_py_utils.path import assert_is_file
+
+from manageprojects.utilities.pyproject_toml import toml_load
 
 
 class BaseTestCase(TestCase):
     maxDiff = None
 
-    def assert_tomli(self, path: Path, expected_toml):
-        assert_is_file(path)
-        toml_dict = tomli.loads(path.read_text(encoding='UTF-8'))
-        self.assertDictEqual(toml_dict, expected_toml)
+    def assert_toml(self, path: Path, expected: dict):
+        got = toml_load(path)
+        try:
+            self.assertDictEqual(got, expected)
+        except AssertionError:
+            print('-' * 79)
+            pprint(got)
+            print('-' * 79)
+            raise
 
     def assert_datetime_range(
         self, dt: datetime.datetime, reference: datetime.datetime, max_diff_sec: int = 5
@@ -28,14 +35,20 @@ class BaseTestCase(TestCase):
         now = datetime.datetime.now(tz=dt.tzinfo)
         self.assert_datetime_range(dt=dt, reference=now, max_diff_sec=max_diff_sec)
 
+    def assert_content(self, got: str, expected: str, strip=True):
+        if strip:
+            got = got.strip()
+            expected = expected.strip()
+
+        try:
+            self.assertEqual(got, expected)
+        except AssertionError:
+            print('-' * 79)
+            print(got)
+            print('-' * 79)
+            raise
+
     def assert_file_content(self, path: Path, content: str):
         assert_is_file(path)
         file_content = path.read_text().strip()
-        content = content.strip()
-        try:
-            self.assertEqual(file_content, content)
-        except AssertionError:
-            print('-' * 79)
-            print(file_content)
-            print('-' * 79)
-            raise
+        self.assert_content(got=file_content, expected=content)

@@ -4,8 +4,9 @@ from pathlib import Path
 from typing import Optional
 
 import tomlkit
-from bx_py_utils.path import assert_is_dir
+from bx_py_utils.path import assert_is_dir, assert_is_file
 from tomlkit import TOMLDocument
+from tomlkit.container import Container
 from tomlkit.items import Table
 
 from manageprojects.constants import (
@@ -22,12 +23,18 @@ from manageprojects.data_classes import ManageProjectsMeta
 logger = logging.getLogger(__name__)
 
 
-def add_or_update_nested_dict(doc: TOMLDocument, key: str, data: dict):
+def toml_load(path: Path) -> dict:
+    assert_is_file(path)
+    doc: TOMLDocument = tomlkit.parse(path.read_text(encoding='UTF-8'))
+    return dict(doc)
+
+
+def add_or_update_nested_dict(doc: Container, key: str, data: dict):
     """
     Add a nested python dict into tomlkit document.
     See also: https://github.com/sdispater/tomlkit/issues/250
     """
-    assert isinstance(data, dict)
+
     table = tomlkit.item(data)
     if key in doc:
         doc[key] = table
@@ -46,10 +53,10 @@ class PyProjectToml:
 
         if self.path.exists():
             logger.debug('Read existing pyproject.toml')
-            self.doc = tomlkit.parse(self.path.read_text(encoding='UTF-8'))
+            self.doc: TOMLDocument = tomlkit.parse(self.path.read_text(encoding='UTF-8'))
         else:
             logger.debug('Create new pyproject.toml')
-            self.doc = tomlkit.document()
+            self.doc: TOMLDocument = tomlkit.document()  # type: ignore
             self.doc.add(tomlkit.comment('Created by manageprojects'))
 
         self.mp_table: Table = self.doc.get('manageprojects')  # type: ignore
@@ -74,13 +81,11 @@ class PyProjectToml:
             self.mp_table.add(COOKIECUTTER_DIRECTORY, directory)
 
     def create_or_update_cookiecutter_context(self, context: dict) -> None:
-        if not (context_table := self.mp_table.get(COOKIECUTTER_CONTEXT)):
-            context_table: Table = tomlkit.table(is_super_table=False)  # type: ignore
-
-        filtered_dict = {key: value for key, value in context.items() if not key.startswith('_')}
-        context_table.update(filtered_dict)  # type: ignore
-        if COOKIECUTTER_CONTEXT not in self.mp_table:
-            self.mp_table.append(COOKIECUTTER_CONTEXT, context_table)
+        add_or_update_nested_dict(
+            doc=self.mp_table,  # type: ignore
+            key=COOKIECUTTER_CONTEXT,
+            data=context,
+        )
 
     def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
         if not (applied_migrations := self.mp_table.get(APPLIED_MIGRATIONS)):

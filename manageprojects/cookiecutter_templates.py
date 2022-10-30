@@ -100,10 +100,8 @@ def run_cookiecutter(
     run_hook = CookieCutterHookHandler(origin_run_hook=generate.run_hook)
     with patch.object(generate, 'run_hook', run_hook):
         destination = cookiecutter(**cookiecutter_kwargs)
-    complete_context = run_hook.context
-    logger.info('Complete used context: %r', complete_context)
-    cookiecutter_context = complete_context['cookiecutter']
-    logger.info('Used cookiecutter context: %r', cookiecutter_context)
+    cookiecutter_context = run_hook.context
+    logger.info('Cookiecutter context: %r', cookiecutter_context)
 
     destination_path = Path(destination)
     assert_is_dir(destination_path)

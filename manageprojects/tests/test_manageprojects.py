@@ -3,7 +3,6 @@ import inspect
 import json
 from pathlib import Path
 
-import tomli
 import yaml
 from bx_py_utils.environ import OverrideEnviron
 from bx_py_utils.path import assert_is_dir, assert_is_file
@@ -83,7 +82,7 @@ class ManageProjectsTestCase(BaseTestCase):
             self.assert_file_content(
                 toml.path,
                 inspect.cleandoc(
-                    '''
+                    f'''
                     # Created by manageprojects
 
                     [manageprojects] # https://github.com/jedie/manageprojects
@@ -92,9 +91,11 @@ class ManageProjectsTestCase(BaseTestCase):
                     cookiecutter_template = "https://github.com/jedie/mp_test_template1/"
                     cookiecutter_directory = "test_template1"
 
-                    [manageprojects.cookiecutter_context]
+                    [manageprojects.cookiecutter_context.cookiecutter]
                     dir_name = "a_dir_name"
                     file_name = "a_file_name"
+                    _template = "https://github.com/jedie/mp_test_template1/"
+                    _output_dir = "{str(cookiecutter_output_dir)}"
                     '''
                 ),
             )
@@ -240,19 +241,21 @@ class ManageProjectsTestCase(BaseTestCase):
             # update the existing project
 
             self.assert_file_content(destination_file_path, "print('Hello World: default_value')")
-
-            pyproject_before = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
-            self.assertDictEqual(
-                pyproject_before,
-                {
+            self.assert_toml(
+                pyproject_toml_path,
+                expected={
                     'manageprojects': {
                         'initial_revision': meta.initial_revision,
                         'initial_date': meta.initial_date,
                         'cookiecutter_template': str(template_path),
                         'cookiecutter_context': {
-                            'dir_name': 'default_directory_name',
-                            'file_name': 'default_file_name',
-                            'value': 'default_value',
+                            'cookiecutter': {
+                                'dir_name': 'default_directory_name',
+                                'file_name': 'default_file_name',
+                                'value': 'default_value',
+                                '_template': str(template_path),
+                                '_output_dir': str(cookiecutter_destination),
+                            }
                         },
                     }
                 },
@@ -275,19 +278,21 @@ class ManageProjectsTestCase(BaseTestCase):
                 ),
             )
 
-            pyproject_after = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
-            print(pyproject_after)
-            self.assertDictEqual(
-                pyproject_after,
-                {
+            self.assert_toml(
+                pyproject_toml_path,
+                expected={
                     'manageprojects': {
                         'initial_revision': meta.initial_revision,
                         'initial_date': meta.initial_date,
                         'cookiecutter_template': str(template_path),
                         'cookiecutter_context': {
-                            'dir_name': 'default_directory_name',
-                            'file_name': 'default_file_name',
-                            'value': 'default_value',
+                            'cookiecutter': {
+                                'dir_name': 'default_directory_name',
+                                'file_name': 'default_file_name',
+                                'value': 'default_value',
+                                '_template': str(template_path),
+                                '_output_dir': str(cookiecutter_destination),
+                            }
                         },
                     }
                 },
