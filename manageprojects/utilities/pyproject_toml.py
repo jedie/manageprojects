@@ -5,6 +5,7 @@ from typing import Optional
 
 import tomlkit
 from bx_py_utils.path import assert_is_dir
+from tomlkit import TOMLDocument
 from tomlkit.items import Table
 
 from manageprojects.constants import (
@@ -19,6 +20,19 @@ from manageprojects.data_classes import ManageProjectsMeta
 
 
 logger = logging.getLogger(__name__)
+
+
+def add_or_update_nested_dict(doc: TOMLDocument, key: str, data: dict):
+    """
+    Add a nested python dict into tomlkit document.
+    See also: https://github.com/sdispater/tomlkit/issues/250
+    """
+    assert isinstance(data, dict)
+    table = tomlkit.item(data)
+    if key in doc:
+        doc[key] = table
+    else:
+        doc.append(key, table)
 
 
 class PyProjectToml:

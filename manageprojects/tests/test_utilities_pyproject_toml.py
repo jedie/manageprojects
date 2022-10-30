@@ -1,15 +1,102 @@
 import inspect
 
+import tomlkit
 from bx_py_utils.test_utils.datetime import parse_dt
 
 from manageprojects.data_classes import ManageProjectsMeta
 from manageprojects.tests.base import BaseTestCase
-from manageprojects.utilities.pyproject_toml import PyProjectToml
+from manageprojects.utilities.pyproject_toml import (
+    PyProjectToml,
+    add_or_update_nested_dict,
+    dict2table,
+)
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class PyProjectTomlTestCase(BaseTestCase):
     maxDiff = None
+
+    def test_dict2table(self):
+        doc = tomlkit.document()
+        table = tomlkit.table(True)
+        dict2table(data={'a': 1, 'foo': {'bar': {'b': 2, 'c': 3}}}, table=table)
+        doc.append('data', table)
+        self.assert_content(
+            doc.as_string(),
+            inspect.cleandoc(
+                '''
+                [data]
+                a = 1
+
+                [data.foo]
+                [data.foo.bar]
+                b = 2
+                c = 3
+                '''
+            ),
+        )
+
+        doc = tomlkit.document()
+        add_or_update_nested_dict(
+            doc=doc,
+            key='data',
+            data={'a': 1, 'b': 2, 'foo': {'c': 3, 'd': 4, 'bar': {'e': 5, 'f': 6}}},
+        )
+        self.assert_content(
+            doc.as_string(),
+            inspect.cleandoc(
+                '''
+                [data]
+                a = 1
+                b = 2
+
+                [data.foo]
+                c = 3
+                d = 4
+
+                [data.foo.bar]
+                e = 5
+                f = 6
+                '''
+            ),
+        )
+        # Update existing data:
+        add_or_update_nested_dict(
+            doc=doc,
+            key='data',
+            data={'a': 1, 'foo': {'c': 333, 'bar': {'e': 666}}},
+        )
+        self.assert_content(
+            doc.as_string(),
+            inspect.cleandoc(
+                '''
+                [data]
+                a = 1
+
+                [data.foo]
+                c = 333
+
+                [data.foo.bar]
+                e = 666
+                '''
+            ),
+        )
+
+        doc = tomlkit.document()
+        data = {'foo': [1, 2, 3, {'bar': [4, 5, 6, {'baz': 7}]}]}
+        add_or_update_nested_dict(doc=doc, key='data', data=data)
+        result = doc.as_string()
+        self.assert_content(
+            result,
+            inspect.cleandoc(
+                '''
+                [data]
+                foo = [1, 2, 3, {bar = [4, 5, 6, {baz = 7}]}]
+                '''
+            ),
+        )
+        doc = tomlkit.parse(result)
+        self.assertEqual(dict(doc)['data'], data)
 
     def test_basic(self):
         with TemporaryDirectory(prefix='test_basic') as temp_path:
