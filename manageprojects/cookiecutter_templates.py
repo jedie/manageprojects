@@ -12,6 +12,7 @@ from cookiecutter.repository import determine_repo_dir
 from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
 from manageprojects.git import Git
 from manageprojects.patching import GenerateTemplatePatchResult, generate_template_patch
+from manageprojects.utilities.log_utils import log_func_call
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 
 
@@ -46,7 +47,9 @@ def get_repo_path(
         assert '://' not in directory
         assert template != directory
 
-    config_dict = get_user_config(
+    config_dict = log_func_call(
+        logger=logger,
+        func=get_user_config,
         config_file=config_file,
         default_config=None,
     )
@@ -95,11 +98,9 @@ def run_cookiecutter(
             config_file=config_file,
         )
     )
-    logger.debug('Call cookiecutter with: %r', cookiecutter_kwargs)
-
     run_hook = CookieCutterHookHandler(origin_run_hook=generate.run_hook)
     with patch.object(generate, 'run_hook', run_hook):
-        destination = cookiecutter(**cookiecutter_kwargs)
+        destination = log_func_call(logger=logger, func=cookiecutter, **cookiecutter_kwargs)
     cookiecutter_context = run_hook.context
     logger.info('Cookiecutter context: %r', cookiecutter_context)
 
@@ -154,13 +155,17 @@ def update_project(
     cookiecutter_template = meta.cookiecutter_template
     assert cookiecutter_template, f'Missing template in {toml.path}'
 
-    repo_path = get_repo_path(
+
+    repo_path = log_func_call(
+        logger=logger,
+        func=get_repo_path,
         template=cookiecutter_template,
         directory=meta.cookiecutter_directory,
         checkout=None,
         password=password,
         config_file=config_file,
     )
+    logger.info('repro_path: %r', repo_path)
 
     result = generate_template_patch(
         project_path=project_path,

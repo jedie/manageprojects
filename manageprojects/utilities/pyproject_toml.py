@@ -18,6 +18,7 @@ from manageprojects.constants import (
     INITIAL_REVISION,
 )
 from manageprojects.data_classes import ManageProjectsMeta
+from manageprojects.utilities.log_utils import log_func_call
 
 
 logger = logging.getLogger(__name__)
@@ -109,7 +110,9 @@ class PyProjectToml:
     ###############################################################################################
 
     def get_mp_meta(self) -> ManageProjectsMeta:
-        kwargs = dict(
+        result = log_func_call(
+            logger=logger,
+            func=ManageProjectsMeta,
             initial_revision=self.mp_table.get(INITIAL_REVISION),
             initial_date=self.mp_table.get(INITIAL_DATE),
             applied_migrations=self.mp_table.get(APPLIED_MIGRATIONS, []),
@@ -117,6 +120,4 @@ class PyProjectToml:
             cookiecutter_directory=self.mp_table.get(COOKIECUTTER_DIRECTORY),
             cookiecutter_context=self.mp_table.get(COOKIECUTTER_CONTEXT),
         )
-        logger.debug('Create ManageProjectsMeta with: %r', kwargs)
-        result = ManageProjectsMeta(**kwargs)
         return result
