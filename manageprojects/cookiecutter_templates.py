@@ -141,7 +141,6 @@ def update_project(
     cookiecutter_template = meta.cookiecutter_template
     assert cookiecutter_template, f'Missing template in {toml.path}'
 
-
     repo_path = log_func_call(
         logger=logger,
         func=get_repo_path,
@@ -169,7 +168,7 @@ def update_project(
     git.apply(patch_path=patch_file_path)
 
     # Update "pyproject.toml" with applied patch information:
-    toml.add_applied_migrations(git_hash=result.to_rev, dt=result.commit_date)
+    toml.add_applied_migrations(git_hash=result.to_rev, dt=result.to_commit_date)
     toml.save()
 
     return result
