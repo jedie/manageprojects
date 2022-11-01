@@ -12,27 +12,12 @@ from cookiecutter.repository import determine_repo_dir
 from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
 from manageprojects.git import Git
 from manageprojects.patching import GenerateTemplatePatchResult, generate_template_patch
+from manageprojects.utilities.cookiecutter_utils import CookieCutterHookHandler
 from manageprojects.utilities.log_utils import log_func_call
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 
 
 logger = logging.getLogger(__name__)
-
-
-class CookieCutterHookHandler:
-    """
-    Capture the effective Cookiecutter Template Context via injecting the Cookiecutter hooks.
-    """
-
-    def __init__(self, origin_run_hook):
-        self.origin_run_hook = origin_run_hook
-        self.context = {}
-
-    def __call__(self, hook_name, project_dir, context):
-        logger.debug('Hook %r for %r context: %r', hook_name, project_dir, context)
-        origin_hook_result = self.origin_run_hook(hook_name, project_dir, context)
-        self.context.update(context)
-        return origin_hook_result
 
 
 def get_repo_path(
