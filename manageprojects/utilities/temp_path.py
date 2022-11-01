@@ -14,10 +14,11 @@ class TemporaryDirectory:
      * returns a Path object
     """
 
-    def __init__(self, prefix=None, suffix=None, dir=None):
+    def __init__(self, prefix=None, suffix=None, dir=None, cleanup=True):
         self.prefix = prefix
         self.suffix = suffix
         self.dir = dir
+        self.cleanup = cleanup
 
     def __enter__(self) -> Path:
         temp_name = tempfile.mkdtemp(prefix=self.prefix, suffix=self.suffix, dir=self.dir)
@@ -29,4 +30,7 @@ class TemporaryDirectory:
             logger.exception(f"no cleanup of {self.temp_path}, cause: {exc_val}")
             return False
 
-        shutil.rmtree(self.temp_path)
+        if self.cleanup:
+            shutil.rmtree(self.temp_path)
+        else:
+            logger.warning('No temp files cleanup for: %s', self.temp_path)

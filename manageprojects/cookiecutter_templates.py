@@ -124,6 +124,7 @@ def update_project(
     project_path: Path,
     password: str = None,
     config_file: Optional[Path] = None,  # CookieCutter config file
+    cleanup: bool = True,  # Remove temp files if not exceptions happens
 ) -> Optional[GenerateTemplatePatchResult]:
     print(f'Update project: {project_path}', end=' ')
     git = Git(cwd=project_path, detect_root=True)
@@ -157,6 +158,7 @@ def update_project(
         repo_path=repo_path,
         from_rev=from_rev,
         replay_context=cookiecutter_context,
+        cleanup=cleanup,
     )
     if not result:
         # Nothing to apply
