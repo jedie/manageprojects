@@ -110,7 +110,7 @@ class PyProjectToml:
     ###############################################################################################
 
     def get_mp_meta(self) -> ManageProjectsMeta:
-        result = log_func_call(
+        result: ManageProjectsMeta = log_func_call(
             logger=logger,
             func=ManageProjectsMeta,
             initial_revision=self.mp_table.get(INITIAL_REVISION),

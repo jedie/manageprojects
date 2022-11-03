@@ -1,9 +1,11 @@
 import inspect
+import json
 from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
 
-from manageprojects.patching import GenerateTemplatePatchResult, generate_template_patch
+from manageprojects.data_classes import GenerateTemplatePatchResult
+from manageprojects.patching import generate_template_patch
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.tests.utilities.git_utils import init_git
 from manageprojects.utilities.temp_path import TemporaryDirectory
@@ -41,6 +43,16 @@ class PatchingTestCase(BaseTestCase):
             )
             test_file_path.parent.mkdir(parents=True)
             test_file_path.write_text(rev1_content)
+            cookiecutter_json_path = repo_path / 'cookiecutter.json'
+            cookiecutter_json_path.write_text(
+                json.dumps(
+                    {
+                        'dir_name': 'a_directory',
+                        'file_name': 'a_file_name',
+                        'value': 'FooBar',
+                    }
+                )
+            )
 
             git, from_rev = init_git(repo_path)
 
@@ -51,8 +63,7 @@ class PatchingTestCase(BaseTestCase):
             to_date = git.get_commit_date(verbose=False)
 
             patch_file_path = Path(
-                main_temp_path,
-                'repo_path',
+                project_path,
                 '.manageprojects',
                 'patches',
                 f'{from_rev}_{to_rev}.patch',
@@ -61,16 +72,11 @@ class PatchingTestCase(BaseTestCase):
 
             result = generate_template_patch(
                 project_path=project_path,
-                repo_path=repo_path,
+                template=str(repo_path),
+                directory=None,
                 from_rev=from_rev,
-                replay_context={
-                    'cookiecutter': {
-                        'dir_name': 'a_directory',
-                        'file_name': 'a_file_name',
-                        'value': 'FooBar',
-                    }
-                },
-                cleanup=False,
+                replay_context={},
+                cleanup=False,  # Keep temp files if this test fails, for better debugging
             )
             self.assertIsInstance(result, GenerateTemplatePatchResult)
 
@@ -79,23 +85,6 @@ class PatchingTestCase(BaseTestCase):
             self.assertEqual(result.to_rev, to_rev)
             self.assertEqual(result.to_commit_date, to_date)
 
-            assert_is_dir(result.from_rev_path)
-            self.assert_file_content(
-                Path(
-                    result.from_rev_path,
-                    '{{cookiecutter.dir_name}}',
-                    '{{cookiecutter.file_name}}.py',
-                ),
-                rev1_content,
-            )
-            self.assert_file_content(
-                Path(
-                    result.to_rev_path,
-                    '{{cookiecutter.dir_name}}',
-                    '{{cookiecutter.file_name}}.py',
-                ),
-                rev2_content,
-            )
             self.assert_file_content(
                 patch_file_path,
                 inspect.cleandoc(
@@ -115,4 +104,15 @@ class PatchingTestCase(BaseTestCase):
                     \ No newline at end of file
                     '''
                 ),
+            )
+
+            # The repro path contains the "from" revision:
+            assert_is_dir(result.repo_path)
+            self.assert_file_content(
+                Path(
+                    result.repo_path,
+                    '{{cookiecutter.dir_name}}',
+                    '{{cookiecutter.file_name}}.py',
+                ),
+                rev1_content,
             )

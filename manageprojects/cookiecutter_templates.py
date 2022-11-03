@@ -1,108 +1,51 @@
 import logging
 from pathlib import Path
 from typing import Optional
-from unittest.mock import patch
 
-from bx_py_utils.path import assert_is_dir
-from cookiecutter import generate
-from cookiecutter.config import get_user_config
-from cookiecutter.main import cookiecutter
-from cookiecutter.repository import determine_repo_dir
-
-from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
+from manageprojects.cookiecutter_api import execute_cookiecutter
+from manageprojects.data_classes import (
+    CookiecutterResult,
+    GenerateTemplatePatchResult,
+    ManageProjectsMeta,
+)
 from manageprojects.git import Git
-from manageprojects.patching import GenerateTemplatePatchResult, generate_template_patch
-from manageprojects.utilities.cookiecutter_utils import CookieCutterHookHandler
-from manageprojects.utilities.log_utils import log_func_call
+from manageprojects.patching import generate_template_patch
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_repo_path(
+def start_managed_project(
     *,
     template: str,  # CookieCutter Template path or GitHub url
     directory: str = None,  # Directory name of the CookieCutter Template
-    checkout: str = None,  # The branch, tag or commit ID to checkout after clone
-    password: str = None,
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
-) -> Path:
-    if directory:
-        assert '://' not in directory
-        assert template != directory
-
-    config_dict = log_func_call(
-        logger=logger,
-        func=get_user_config,
-        config_file=config_file,
-        default_config=None,
-    )
-    repo_dir, cleanup = determine_repo_dir(
-        template=template,
-        directory=directory,
-        abbreviations=config_dict['abbreviations'],
-        clone_to_dir=config_dict['cookiecutters_dir'],
-        checkout=checkout,
-        no_input=True,
-        password=password,
-    )
-    logger.debug('repo_dir: %s', repo_dir)
-
-    repo_path = Path(repo_dir)
-    assert_is_dir(repo_path)
-
-    if checkout is not None:
-        # Cookiecutter will only checkout a specific commit, if `template` is a repro url!
-
-        git = Git(cwd=repo_path, detect_root=True)
-        assert repo_path.is_relative_to(git.cwd), f'Git repro {git.cwd} is not {repo_path}'
-        # assert git.cwd == repo_path, f'Git repro {git.cwd} is not {repo_path}'
-        current_hash = git.get_current_hash(verbose=True)
-        if current_hash != checkout:
-            git.reset(commit=checkout, verbose=True)
-
-    return repo_path
-
-
-def run_cookiecutter(
-    *,
-    template: str,  # CookieCutter Template path or GitHub url
     output_dir: Path,  # Target path where CookieCutter should store the result files
-    directory: str = None,  # Directory name of the CookieCutter Template
+    no_input: bool = False,
+    extra_context: Optional[dict] = None,
+    replay: Optional[bool] = None,
     checkout: str = None,
     password: str = None,
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
-    **cookiecutter_kwargs,
 ) -> CookiecutterResult:
+    """
+    Start a new "managed" project by run cookiecutter and create/update "pyproject.toml"
+    """
 
-    repo_path = get_repo_path(
+    #############################################################################
+    # Run cookiecutter
+
+    cookiecutter_context, destination_path, repo_path = execute_cookiecutter(
         template=template,
         directory=directory,
+        output_dir=output_dir,
+        no_input=no_input,
+        extra_context=extra_context,
+        replay=replay,
         checkout=checkout,
         password=password,
         config_file=config_file,
     )
-
-    cookiecutter_kwargs.update(
-        dict(
-            template=template,
-            output_dir=output_dir,
-            directory=directory,
-            checkout=checkout,
-            password=password,
-            config_file=config_file,
-        )
-    )
-    run_hook = CookieCutterHookHandler(origin_run_hook=generate.run_hook)
-    with patch.object(generate, 'run_hook', run_hook):
-        destination = log_func_call(logger=logger, func=cookiecutter, **cookiecutter_kwargs)
-    cookiecutter_context = run_hook.context
-    logger.info('Cookiecutter context: %r', cookiecutter_context)
-
-    destination_path = Path(destination)
-    assert_is_dir(destination_path)
-    logger.info('Cookiecutter generated here: %r', destination_path)
 
     git = Git(cwd=repo_path)
     logger.debug('Cookiecutter git repro: %s', git.cwd)
@@ -110,7 +53,9 @@ def run_cookiecutter(
     commit_date = git.get_commit_date()
     logger.info('Cookiecutter git repro: %s hash: %r %s', git.cwd, current_hash, commit_date)
 
+    #############################################################################
     # Create or update "pyproject.toml" with manageprojects information:
+
     toml = PyProjectToml(project_path=destination_path)
     toml.init(
         revision=current_hash,
@@ -137,8 +82,14 @@ def update_project(
     config_file: Optional[Path] = None,  # CookieCutter config file
     cleanup: bool = True,  # Remove temp files if not exceptions happens
 ) -> Optional[GenerateTemplatePatchResult]:
+    """
+    Update a existing project by apply git patch from cookiecutter template changes.
+    """
     print(f'Update project: {project_path}', end=' ')
     git = Git(cwd=project_path, detect_root=True)
+
+    #############################################################################
+    # Get information from project's pyproject.toml
 
     toml = PyProjectToml(project_path=project_path)
     meta: ManageProjectsMeta = toml.get_mp_meta()
@@ -152,33 +103,33 @@ def update_project(
     cookiecutter_template = meta.cookiecutter_template
     assert cookiecutter_template, f'Missing template in {toml.path}'
 
-    repo_path = log_func_call(
-        logger=logger,
-        func=get_repo_path,
-        template=cookiecutter_template,
-        directory=meta.cookiecutter_directory,
-        checkout=None,
-        password=password,
-        config_file=config_file,
-    )
-    logger.info('repro_path: %r', repo_path)
+    #############################################################################
+    # Generate the git diff/patch
 
     result = generate_template_patch(
         project_path=project_path,
-        repo_path=repo_path,
+        template=cookiecutter_template,
+        directory=meta.cookiecutter_directory,
         from_rev=from_rev,
         replay_context=cookiecutter_context,
+        password=password,
+        config_file=config_file,
         cleanup=cleanup,
     )
     if not result:
-        # Nothing to apply
+        logger.info('No git patch was created, nothing to apply.')
         return None
     assert isinstance(result, GenerateTemplatePatchResult)
+
+    #############################################################################
+    # Apply the patch
 
     patch_file_path = result.patch_file_path
     git.apply(patch_path=patch_file_path)
 
-    # Update "pyproject.toml" with applied patch information:
+    #############################################################################
+    # Update "pyproject.toml" with applied patch information
+
     toml.add_applied_migrations(git_hash=result.to_rev, dt=result.to_commit_date)
     toml.save()
 

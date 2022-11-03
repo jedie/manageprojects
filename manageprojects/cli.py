@@ -14,7 +14,7 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import run_cookiecutter
+from manageprojects.cookiecutter_templates import start_managed_project
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
 from manageprojects.utilities.log_utils import log_config
@@ -160,7 +160,7 @@ def start_project(
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ):
     """
-    Start a new project via a CookieCutter Template
+    Start a new "managed" project via a CookieCutter Template
     """
     print(f'Start project with template: {template!r}')
     if '/' not in template:
@@ -185,7 +185,7 @@ def start_project(
         sys.exit(1)
 
     try:
-        result: CookiecutterResult = run_cookiecutter(
+        result: CookiecutterResult = start_managed_project(
             template=template,
             checkout=checkout,
             output_dir=output_dir,
