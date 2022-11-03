@@ -52,7 +52,7 @@ def mypy(verbose: bool = True):
 
 
 @cli.command()
-def unittest(
+def test(
     verbosity: int = 2,
     failfast: bool = False,
     locals: bool = True,
@@ -201,7 +201,7 @@ def publish():
     """
     Build and upload this project to PyPi
     """
-    unittest()  # Don't publish a broken state
+    test()  # Don't publish a broken state
 
     # TODO: Add the checks from:
     #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
@@ -254,6 +254,7 @@ def check_code_style(verbose: bool = True):
         argv = ['--verbose']
     else:
         argv = []
+
     flake8_main(argv=argv)
 
 
