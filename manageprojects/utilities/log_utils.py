@@ -1,9 +1,7 @@
 import logging
 
 
-def logger_setup(
-    logger_name, force=True, level=logging.DEBUG, format='%(asctime)s %(levelname)s | %(message)s'
-):
+def logger_setup(*, logger_name, force, level, format):
     logger = logging.getLogger(logger_name)
     is_configured = logger.handlers and logger.level
     if force or not is_configured:
@@ -16,7 +14,9 @@ def logger_setup(
         logger.addHandler(ch)
 
 
-def log_config(force=True, level=logging.DEBUG, format='%(asctime)s %(levelname)s | %(message)s'):
+def log_config(
+    force=True, level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s | %(message)s'
+):
     logger_setup(logger_name='manageprojects', force=force, level=level, format=format)
     logger_setup(logger_name='cookiecutter', force=force, level=level, format=format)
 
