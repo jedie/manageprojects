@@ -56,13 +56,25 @@ def test(
     verbosity: int = 2,
     failfast: bool = False,
     locals: bool = True,
+    test_path: Optional[Path] = None,
 ):
     """
     Run unittests
     """
     runner = TextTestRunner(verbosity=verbosity, failfast=failfast, tb_locals=locals)
     test_loader = TestLoader()
-    test_suite: TestSuite = test_loader.discover(start_dir=str(PACKAGE_ROOT))
+    pattern = 'test*.py'
+    if test_path:
+        test_path = test_path.resolve()
+        assert test_path.exists(), f'--test-path={test_path} does not exists!'
+        if test_path.is_dir():
+            start_dir = str(test_path)
+        elif test_path.is_file():
+            start_dir = str(test_path.parent)
+            pattern = test_path.name
+    else:
+        start_dir = str(PACKAGE_ROOT)
+    test_suite: TestSuite = test_loader.discover(start_dir=start_dir, pattern=pattern)
     result: TestResult = runner.run(test_suite)
     if not result.wasSuccessful:
         sys.exit(1)
