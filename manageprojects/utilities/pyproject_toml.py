@@ -6,7 +6,6 @@ from typing import Optional
 import tomlkit
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from tomlkit import TOMLDocument
-from tomlkit.container import Container
 from tomlkit.items import Table
 
 from manageprojects.constants import (
@@ -28,19 +27,6 @@ def toml_load(path: Path) -> dict:
     assert_is_file(path)
     doc: TOMLDocument = tomlkit.parse(path.read_text(encoding='UTF-8'))
     return dict(doc)
-
-
-def add_or_update_nested_dict(doc: Container, key: str, data: dict):
-    """
-    Add a nested python dict into tomlkit document.
-    See also: https://github.com/sdispater/tomlkit/issues/250
-    """
-
-    table = tomlkit.item(data)
-    if key in doc:
-        doc[key] = table
-    else:
-        doc.append(key, table)
 
 
 class PyProjectToml:
@@ -82,11 +68,7 @@ class PyProjectToml:
             self.mp_table.add(COOKIECUTTER_DIRECTORY, directory)
 
     def create_or_update_cookiecutter_context(self, context: dict) -> None:
-        add_or_update_nested_dict(
-            doc=self.mp_table,  # type: ignore
-            key=COOKIECUTTER_CONTEXT,
-            data=context,
-        )
+        self.mp_table[COOKIECUTTER_CONTEXT] = tomlkit.item(context)
 
     def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
         if not (applied_migrations := self.mp_table.get(APPLIED_MIGRATIONS)):
