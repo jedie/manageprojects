@@ -170,3 +170,14 @@ class Git:
             assert_is_file(file_path)
             file_paths.append(file_path)
         return sorted(file_paths)
+
+    def reset(self, *, commit, hard=True, verbose=True) -> None:
+        args = ['reset']
+        if hard:
+            args.append('--hard')
+        args.append(commit)
+        output = self.git_verbose_check_output(*args, verbose=verbose, exit_on_error=True)
+        test_str = f'HEAD is now at {commit} '
+        assert output.startswith(
+            test_str
+        ), f'Reset error: {output!r} does not start with {test_str!r}'

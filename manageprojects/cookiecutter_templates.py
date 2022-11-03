@@ -24,7 +24,7 @@ def get_repo_path(
     *,
     template: str,  # CookieCutter Template path or GitHub url
     directory: str = None,  # Directory name of the CookieCutter Template
-    checkout: str = None,
+    checkout: str = None,  # The branch, tag or commit ID to checkout after clone
     password: str = None,
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> Path:
@@ -40,17 +40,28 @@ def get_repo_path(
     )
     repo_dir, cleanup = determine_repo_dir(
         template=template,
+        directory=directory,
         abbreviations=config_dict['abbreviations'],
         clone_to_dir=config_dict['cookiecutters_dir'],
         checkout=checkout,
         no_input=True,
         password=password,
-        directory=directory,
     )
     logger.debug('repo_dir: %s', repo_dir)
 
     repo_path = Path(repo_dir)
     assert_is_dir(repo_path)
+
+    if checkout is not None:
+        # Cookiecutter will only checkout a specific commit, if `template` is a repro url!
+
+        git = Git(cwd=repo_path, detect_root=True)
+        assert repo_path.is_relative_to(git.cwd), f'Git repro {git.cwd} is not {repo_path}'
+        # assert git.cwd == repo_path, f'Git repro {git.cwd} is not {repo_path}'
+        current_hash = git.get_current_hash(verbose=True)
+        if current_hash != checkout:
+            git.reset(commit=checkout, verbose=True)
+
     return repo_path
 
 
