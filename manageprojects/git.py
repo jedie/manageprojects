@@ -1,5 +1,6 @@
 import datetime
 import logging
+import subprocess
 from pathlib import Path
 from shutil import which
 
@@ -56,6 +57,19 @@ class Git:
         popenargs = [self.git_bin, *popenargs]
         return verbose_check_output(*popenargs, cwd=self.cwd, **kwargs)
 
+    def git_verbose_output(
+        self, *popenargs, exit_on_error=False, ignore_process_error=True, **kwargs
+    ):
+        popenargs = [self.git_bin, *popenargs]
+        try:
+            return verbose_check_output(
+                *popenargs, cwd=self.cwd, exit_on_error=exit_on_error, **kwargs
+            )
+        except subprocess.CalledProcessError as err:
+            if ignore_process_error:
+                return err.stdout
+            raise
+
     def get_current_hash(self, commit='HEAD', verbose=True) -> str:
         output = self.git_verbose_check_output('rev-parse', '--short', commit, verbose=verbose)
         if git_hash := output.strip():
@@ -68,11 +82,9 @@ class Git:
         output = self.git_verbose_check_output(
             'show', '-s', '--format=%cI', commit, verbose=verbose
         )
-        if raw_date := output.strip():
-            # e.g.: "2022-10-25 20:43:10 +0200"
-            return datetime.datetime.fromisoformat(raw_date)
-
-        raise AssertionError(f'No commit date from: {output!r}')
+        raw_date = output.strip()
+        # e.g.: "2022-10-25 20:43:10 +0200"
+        return datetime.datetime.fromisoformat(raw_date)
 
     def diff(
         self,
@@ -91,9 +103,7 @@ class Git:
         if no_color:
             args.append('--no-color')
 
-        output = self.git_verbose_check_output(
-            'diff', *args, reference1, reference2, verbose=verbose, exit_on_error=True
-        )
+        output = self.git_verbose_output('diff', *args, reference1, reference2, verbose=verbose)
         return output
 
     def apply(self, patch_path, verbose=True):
@@ -160,3 +170,14 @@ class Git:
             assert_is_file(file_path)
             file_paths.append(file_path)
         return sorted(file_paths)
+
+    def reset(self, *, commit, hard=True, verbose=True) -> None:
+        args = ['reset']
+        if hard:
+            args.append('--hard')
+        args.append(commit)
+        output = self.git_verbose_check_output(*args, verbose=verbose, exit_on_error=True)
+        test_str = f'HEAD is now at {commit} '
+        assert output.startswith(
+            test_str
+        ), f'Reset error: {output!r} does not start with {test_str!r}'

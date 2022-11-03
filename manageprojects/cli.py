@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+from typing import Optional
 from unittest import TestLoader, TestResult, TestSuite, TextTestRunner
 
 import typer
@@ -13,7 +14,7 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import run_cookiecutter
+from manageprojects.cookiecutter_templates import start_managed_project
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
 from manageprojects.utilities.log_utils import log_config
@@ -47,21 +48,33 @@ def which(file_name: str) -> Path:
 @cli.command()
 def mypy(verbose: bool = True):
     """Run Mypy (configured in pyproject.toml)"""
-    verbose_check_call(which('mypy'), '.', verbose=verbose, exit_on_error=True)
+    verbose_check_call(which('mypy'), '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
 
 
 @cli.command()
-def unittest(
+def test(
     verbosity: int = 2,
     failfast: bool = False,
     locals: bool = True,
+    test_path: Optional[Path] = None,
 ):
     """
     Run unittests
     """
     runner = TextTestRunner(verbosity=verbosity, failfast=failfast, tb_locals=locals)
     test_loader = TestLoader()
-    test_suite: TestSuite = test_loader.discover(start_dir=str(PACKAGE_ROOT))
+    pattern = 'test*.py'
+    if test_path:
+        test_path = test_path.resolve()
+        assert test_path.exists(), f'--test-path={test_path} does not exists!'
+        if test_path.is_dir():
+            start_dir = str(test_path)
+        elif test_path.is_file():
+            start_dir = str(test_path.parent)
+            pattern = test_path.name
+    else:
+        start_dir = str(PACKAGE_ROOT)
+    test_suite: TestSuite = test_loader.discover(start_dir=start_dir, pattern=pattern)
     result: TestResult = runner.run(test_suite)
     if not result.wasSuccessful:
         sys.exit(1)
@@ -137,39 +150,45 @@ def version():
 
 @cli.command()
 def start_project(
-    template: str,
-    destination: Path,
+    template: str,  # CookieCutter Template path or GitHub url
+    output_dir: Path,  # Target path where CookieCutter should store the result files
+    directory: str = None,  # Directory name of the CookieCutter Template
     checkout: str = None,
     no_input: bool = False,
     replay: bool = False,
     password: str = None,
-    directory: str = None,
-    config_file: Path = None,
+    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ):
     """
-    Start a new project via a CookieCutter Template
+    Start a new "managed" project via a CookieCutter Template
     """
     print(f'Start project with template: {template!r}')
-    template_path = PROJECT_TEMPLATE_PATH / template
-    if template_path.is_dir():
-        directory = str(template_path)
+    if '/' not in template:
         logger.info(f'Use own template: {template}')
+        template_path = PROJECT_TEMPLATE_PATH / template
+        if not template_path.is_dir():
+            print('ERROR: Template with name "{template}" not found!')
+            print('Existing local templates are:')
+            print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
+            sys.exit(1)
+        template = str(PROJECT_TEMPLATE_PATH)
+        directory = template
     else:
         logger.info(f'Assume it is a external template: {template}')
 
-    print(f'Destination: {destination}')
-    if destination.exists():
-        print(f'Error: Destination "{destination}" already exists')
+    print(f'Destination: {output_dir}')
+    if output_dir.exists():
+        print(f'Error: Destination "{output_dir}" already exists')
         sys.exit(1)
-    if not destination.parent.is_dir():
-        print(f'Error: Destination parent "{destination.parent}" does not exists')
+    if not output_dir.parent.is_dir():
+        print(f'Error: Destination parent "{output_dir.parent}" does not exists')
         sys.exit(1)
 
     try:
-        result: CookiecutterResult = run_cookiecutter(
+        result: CookiecutterResult = start_managed_project(
             template=template,
             checkout=checkout,
-            output_dir=destination,
+            output_dir=output_dir,
             no_input=no_input,
             replay=replay,
             password=password,
@@ -178,13 +197,13 @@ def start_project(
         )
     except RepositoryNotFound as err:
         print(f'Error: {err}')
-        print('Existing templates are:')
+        print('Existing local templates are:')
         print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
         sys.exit(1)
     print(
         f'CookieCutter template {template!r}'
         f' with git hash {result.git_hash}'
-        f' was created here: {destination}'
+        f' was created here: {output_dir}'
     )
     return result
 
@@ -194,7 +213,7 @@ def publish():
     """
     Build and upload this project to PyPi
     """
-    unittest()  # Don't publish a broken state
+    test()  # Don't publish a broken state
 
     # TODO: Add the checks from:
     #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
@@ -247,6 +266,7 @@ def check_code_style(verbose: bool = True):
         argv = ['--verbose']
     else:
         argv = []
+
     flake8_main(argv=argv)
 
 

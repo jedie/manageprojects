@@ -1,76 +1,123 @@
 import datetime
 import logging
 from pathlib import Path
+from typing import Optional
 
-import tomli
 import tomlkit
-from bx_py_utils.path import assert_is_file
+from bx_py_utils.path import assert_is_dir, assert_is_file
+from tomlkit import TOMLDocument
+from tomlkit.container import Container
+from tomlkit.items import Table
 
-from manageprojects.constants import APPLIED_MIGRATIONS, INITIAL_DATE, INITIAL_REVISION
-from manageprojects.data_classes import CookiecutterResult, ManageProjectsMeta
-from manageprojects.exceptions import NoManageprojectsMeta, ProjectNotFound
+from manageprojects.constants import (
+    APPLIED_MIGRATIONS,
+    COOKIECUTTER_CONTEXT,
+    COOKIECUTTER_DIRECTORY,
+    COOKIECUTTER_TEMPLATE,
+    INITIAL_DATE,
+    INITIAL_REVISION,
+)
+from manageprojects.data_classes import ManageProjectsMeta
+from manageprojects.utilities.log_utils import log_func_call
 
 
 logger = logging.getLogger(__name__)
 
 
-def parse_pyproject_toml(path: Path) -> ManageProjectsMeta:
+def toml_load(path: Path) -> dict:
+    assert_is_file(path)
+    doc: TOMLDocument = tomlkit.parse(path.read_text(encoding='UTF-8'))
+    return dict(doc)
+
+
+def add_or_update_nested_dict(doc: Container, key: str, data: dict):
     """
-    Load 'manageprojects' information from 'pyproject.toml' file.
+    Add a nested python dict into tomlkit document.
+    See also: https://github.com/sdispater/tomlkit/issues/250
     """
-    try:
-        assert_is_file(path)
-    except (NotADirectoryError, FileNotFoundError) as err:
-        raise ProjectNotFound(f'Project not found here: {path.parent} - Error: {err}')
 
-    toml_dict = tomli.loads(path.read_text(encoding='UTF-8'))
-    data = toml_dict.get('manageprojects')
-    if not data:
-        logger.warning(f'pyproject {path} does not contain [manageprojects] information')
-        raise NoManageprojectsMeta()
-
-    initial_date = None
-    if raw_date := data.get(INITIAL_DATE):
-        try:
-            initial_date = datetime.datetime.fromisoformat(raw_date)
-        except ValueError as err:
-            logger.warning(f'Can not parse initial date: {err}')
-
-    result = ManageProjectsMeta(
-        initial_revision=data.get(INITIAL_REVISION),
-        applied_migrations=data.get(APPLIED_MIGRATIONS, []),
-        initial_date=initial_date,
-    )
-    return result
-
-
-def update_pyproject_toml(result: CookiecutterResult) -> None:
-    """
-    Store git hash/migration information into 'pyproject.toml' in destination path.
-    """
-    pyproject_toml_path = result.pyproject_toml_path
-    if pyproject_toml_path.exists():
-        doc = tomlkit.parse(pyproject_toml_path.read_text(encoding='UTF-8'))
+    table = tomlkit.item(data)
+    if key in doc:
+        doc[key] = table
     else:
-        doc = tomlkit.document()
-        doc.add(tomlkit.comment('Created by manageprojects'))
+        doc.append(key, table)
 
-    if 'manageprojects' not in doc:
-        manageprojects = tomlkit.table()
-        manageprojects.comment('https://github.com/jedie/manageprojects')
-        manageprojects.add(INITIAL_REVISION, result.git_hash)
-        if result.commit_date:
-            manageprojects.add(INITIAL_DATE, result.get_comment())
-        doc['manageprojects'] = manageprojects
-    else:
-        manageprojects = doc['manageprojects']  # type: ignore
 
-        if 'applied_migrations' not in manageprojects:
+class PyProjectToml:
+    """
+    Helper for manageprojects meta information in 'pyproject.toml'
+    """
+
+    def __init__(self, project_path: Path):
+        assert_is_dir(project_path)
+        self.path = project_path / 'pyproject.toml'
+
+        if self.path.exists():
+            logger.debug('Read existing pyproject.toml')
+            self.doc: TOMLDocument = tomlkit.parse(self.path.read_text(encoding='UTF-8'))
+        else:
+            logger.debug('Create new pyproject.toml')
+            self.doc: TOMLDocument = tomlkit.document()  # type: ignore
+            self.doc.add(tomlkit.comment('Created by manageprojects'))
+
+        self.mp_table: Table = self.doc.get('manageprojects')  # type: ignore
+        if not self.mp_table:
+            # Insert: [manageprojects]
+            if self.path.exists():
+                self.doc.add(tomlkit.ws('\n\n'))  # Add a new empty line
+            self.mp_table = tomlkit.table()
+            self.mp_table.comment('https://github.com/jedie/manageprojects')
+            self.doc.append('manageprojects', self.mp_table)
+
+    def init(
+        self, revision, dt: datetime.datetime, template: str, directory: Optional[str]
+    ) -> None:
+        assert INITIAL_REVISION not in self.mp_table
+        assert INITIAL_DATE not in self.mp_table
+        assert COOKIECUTTER_TEMPLATE not in self.mp_table
+        self.mp_table.add(INITIAL_REVISION, revision)
+        self.mp_table.add(INITIAL_DATE, dt)
+        self.mp_table.add(COOKIECUTTER_TEMPLATE, template)
+        if directory:
+            self.mp_table.add(COOKIECUTTER_DIRECTORY, directory)
+
+    def create_or_update_cookiecutter_context(self, context: dict) -> None:
+        add_or_update_nested_dict(
+            doc=self.mp_table,  # type: ignore
+            key=COOKIECUTTER_CONTEXT,
+            data=context,
+        )
+
+    def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
+        if not (applied_migrations := self.mp_table.get(APPLIED_MIGRATIONS)):
+            # Add: applied_migrations = []
             applied_migrations = tomlkit.array()
             applied_migrations.multiline(multiline=True)
-            manageprojects.add(APPLIED_MIGRATIONS, applied_migrations)
-        else:
-            applied_migrations = manageprojects[APPLIED_MIGRATIONS]  # type: ignore
-        applied_migrations.add_line(result.git_hash, comment=result.get_comment())
+            self.mp_table.add(APPLIED_MIGRATIONS, applied_migrations)
 
-    pyproject_toml_path.write_text(tomlkit.dumps(doc), encoding='UTF-8')
+        # Append git_hash to applied_migrations:
+        applied_migrations.add_line(git_hash, comment=dt.isoformat())
+
+    ###############################################################################################
+
+    def dumps(self) -> str:
+        return self.doc.as_string()
+
+    def save(self) -> None:
+        content = self.dumps()
+        self.path.write_text(content, encoding='UTF-8')
+
+    ###############################################################################################
+
+    def get_mp_meta(self) -> ManageProjectsMeta:
+        result: ManageProjectsMeta = log_func_call(
+            logger=logger,
+            func=ManageProjectsMeta,
+            initial_revision=self.mp_table.get(INITIAL_REVISION),
+            initial_date=self.mp_table.get(INITIAL_DATE),
+            applied_migrations=self.mp_table.get(APPLIED_MIGRATIONS, []),
+            cookiecutter_template=self.mp_table.get(COOKIECUTTER_TEMPLATE),
+            cookiecutter_directory=self.mp_table.get(COOKIECUTTER_DIRECTORY),
+            cookiecutter_context=self.mp_table.get(COOKIECUTTER_CONTEXT),
+        )
+        return result

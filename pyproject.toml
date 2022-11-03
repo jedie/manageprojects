@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.0.2rc1"
+version = "0.1.0"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [{name = 'Jens Diemer', email = 'python@jensdiemer.de'}]
@@ -66,7 +66,10 @@ fail_under = 45
 
 
 [tool.mypy]
+warn_unused_configs = true
 ignore_missing_imports = true
+allow_redefinition = true  # https://github.com/python/mypy/issues/7165
+show_error_codes = true
 plugins = []
 exclude = [
     '.venv',
