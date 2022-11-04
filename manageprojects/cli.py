@@ -76,7 +76,7 @@ def test(
         start_dir = str(PACKAGE_ROOT)
     test_suite: TestSuite = test_loader.discover(start_dir=start_dir, pattern=pattern)
     result: TestResult = runner.run(test_suite)
-    if not result.wasSuccessful:
+    if not result.wasSuccessful():
         sys.exit(1)
 
 
