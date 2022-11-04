@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 from unittest import TestLoader, TestResult, TestSuite, TextTestRunner
 
+import rich
 import typer
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from cookiecutter.exceptions import RepositoryNotFound
@@ -136,8 +137,11 @@ def update():
 
 
 @cli.command()
-def version():
+def version(no_color: bool = False):
     """Print version and exit"""
+    if no_color:
+        rich.reconfigure(no_color=True)
+
     print('manageprojects v', end='')
     from manageprojects import __version__
 

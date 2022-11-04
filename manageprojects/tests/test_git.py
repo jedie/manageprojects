@@ -31,7 +31,7 @@ class GitTestCase(TestCase):
         self.assertEqual(len(git_hash), 7, f'Wrong: {git_hash!r}')
 
         with contextlib.redirect_stdout(io.StringIO()) as buffer:
-            version()
+            version(no_color=True)
 
         output = buffer.getvalue()
         self.assertEqual(output, f'manageprojects v{__version__} {git_hash}\n')
