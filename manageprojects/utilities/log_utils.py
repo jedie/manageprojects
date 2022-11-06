@@ -1,10 +1,10 @@
 import logging
 
 
-def logger_setup(*, logger_name, force, level, format):
+def logger_setup(*, logger_name, level, format):
     logger = logging.getLogger(logger_name)
     is_configured = logger.handlers and logger.level
-    if force or not is_configured:
+    if not is_configured:
         logger.setLevel(level)
 
         ch = logging.StreamHandler()
@@ -14,11 +14,9 @@ def logger_setup(*, logger_name, force, level, format):
         logger.addHandler(ch)
 
 
-def log_config(
-    force=True, level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s | %(message)s'
-):
-    logger_setup(logger_name='manageprojects', force=force, level=level, format=format)
-    logger_setup(logger_name='cookiecutter', force=force, level=level, format=format)
+def log_config(level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s | %(message)s'):
+    logger_setup(logger_name='manageprojects', level=level, format=format)
+    logger_setup(logger_name='cookiecutter', level=level, format=format)
 
 
 def log_func_call(*, logger, func, **kwargs):
