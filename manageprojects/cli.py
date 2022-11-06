@@ -15,7 +15,7 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import start_managed_project
+from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
 from manageprojects.utilities.log_utils import log_config
@@ -210,6 +210,22 @@ def start_project(
         f' was created here: {output_dir}'
     )
     return result
+
+
+@cli.command()
+def update_project(
+    project_path: Path,
+    password: str = None,  # Optional password to use when extracting the repository
+    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+):
+    """
+    Update a existing project.
+    """
+    update_managed_project(
+        project_path=project_path,
+        password=password,
+        config_file=config_file,
+    )
 
 
 @cli.command()

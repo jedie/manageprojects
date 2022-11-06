@@ -76,7 +76,7 @@ def start_managed_project(
     return result
 
 
-def update_project(
+def update_managed_project(
     project_path: Path,
     password: str = None,
     config_file: Optional[Path] = None,  # CookieCutter config file

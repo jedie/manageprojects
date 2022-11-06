@@ -8,7 +8,7 @@ from bx_py_utils.environ import OverrideEnviron
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 
-from manageprojects.cookiecutter_templates import start_managed_project, update_project
+from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import (
     CookiecutterResult,
     GenerateTemplatePatchResult,
@@ -264,7 +264,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             )
 
             with OverrideEnviron(XDG_CONFIG_HOME=str(main_temp_path)):
-                update_result = update_project(
+                update_result = update_managed_project(
                     project_path=project_path,
                     config_file=config_file_path,
                     cleanup=False,  # Keep temp files if this test fails, for better debugging
@@ -406,7 +406,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             )
             self.assertFalse(patch_file_path.exists())
 
-            result = update_project(
+            result = update_managed_project(
                 project_path=project_path,
                 password=None,
                 config_file=config_file_path,
