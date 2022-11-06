@@ -69,7 +69,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                         'foo': 'bar',
                         'x': 1,
                         '_template': '/foo/bar',
-                        '_output_dir': '/tmp/test/',
                     }
                 }
             )
@@ -90,7 +89,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                     foo = "bar"
                     x = 1
                     _template = "/foo/bar"
-                    _output_dir = "/tmp/test/"
                     '''
                 ),
             )
@@ -110,7 +108,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                             'foo': 'bar',
                             'x': 1,
                             '_template': '/foo/bar',
-                            '_output_dir': '/tmp/test/',
                         }
                     },
                 ),
@@ -138,7 +135,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                     foo = "bar"
                     x = 1
                     _template = "/foo/bar"
-                    _output_dir = "/tmp/test/"
                     '''
                 ),
             )
@@ -151,7 +147,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                         'x': 2,
                         'new': 'value',
                         '_template': '/foo/bar',
-                        '_output_dir': '/tmp/test/',
                     }
                 }
             )
@@ -177,7 +172,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                     x = 2
                     new = "value"
                     _template = "/foo/bar"
-                    _output_dir = "/tmp/test/"
                     '''
                 ),
             )
@@ -195,7 +189,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                             'x': 2,
                             'new': 'value',
                             '_template': '/foo/bar',
-                            '_output_dir': '/tmp/test/',
                         }
                     },
                 ),

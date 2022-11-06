@@ -98,7 +98,6 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                             'dir_name': 'a_dir_name',
                             'file_name': 'a_file_name',
                             '_template': 'https://github.com/jedie/mp_test_template1/',
-                            '_output_dir': str(cookiecutter_output_dir),
                         }
                     },
                 ),
@@ -258,7 +257,6 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                                 'file_name': 'default_file_name',
                                 'value': 'default_value',
                                 '_template': str(template_path),
-                                '_output_dir': str(cookiecutter_destination),
                             }
                         },
                     }
@@ -298,7 +296,6 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                                 'file_name': 'default_file_name',
                                 'value': 'default_value',
                                 '_template': str(template_path),
-                                '_output_dir': str(cookiecutter_destination),
                             }
                         },
                     }
