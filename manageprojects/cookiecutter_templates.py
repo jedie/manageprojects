@@ -25,7 +25,7 @@ def start_managed_project(
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
     checkout: str = None,
-    password: str = None,
+    password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> CookiecutterResult:
     """

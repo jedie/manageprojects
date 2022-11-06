@@ -160,7 +160,7 @@ def start_project(
     checkout: str = None,
     no_input: bool = False,
     replay: bool = False,
-    password: str = None,
+    password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ):
     """

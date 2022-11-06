@@ -22,7 +22,7 @@ def get_repo_path(
     template: str,  # CookieCutter Template path or GitHub url
     directory: str = None,  # Directory name of the CookieCutter Template
     checkout: str = None,  # The branch, tag or commit ID to checkout after clone
-    password: str = None,
+    password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> Path:
     """
@@ -74,7 +74,7 @@ def execute_cookiecutter(
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
     checkout: str = None,
-    password: str = None,
+    password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> tuple[dict, Path, Path]:
     """
