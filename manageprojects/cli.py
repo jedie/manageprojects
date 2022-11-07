@@ -166,6 +166,7 @@ def start_project(
     """
     Start a new "managed" project via a CookieCutter Template
     """
+    log_config()
     print(f'Start project with template: {template!r}')
     if '/' not in template:
         logger.info(f'Use own template: {template}')
@@ -221,6 +222,7 @@ def update_project(
     """
     Update a existing project.
     """
+    log_config()
     update_managed_project(
         project_path=project_path,
         password=password,
@@ -233,6 +235,7 @@ def publish():
     """
     Build and upload this project to PyPi
     """
+    log_config()
     test()  # Don't publish a broken state
 
     # TODO: Add the checks from:
@@ -291,5 +294,4 @@ def check_code_style(verbose: bool = True):
 
 
 def main():
-    log_config()
     cli()
