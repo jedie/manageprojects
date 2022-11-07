@@ -39,17 +39,19 @@ def generate_template_patch(
 
         compiled_to_path = temp_path / 'to_rev_compiled'
         print(f'Compile cookiecutter template in the current version here: {compiled_to_path}')
-        cookiecutter_context, destination_path, to_rev_repo_path = execute_cookiecutter(
+        print('Use extra context:')
+        print(replay_context)
+        to_rev_context, destination_path, to_rev_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_to_path,
             no_input=no_input,
             extra_context=replay_context,
-            # replay=replay,
             checkout=None,  # Checkout HEAD/main revision
             password=password,
             config_file=config_file,
         )
+
         assert_is_dir(to_rev_repo_path)
         assert destination_path.parent == compiled_to_path
 
@@ -69,6 +71,9 @@ def generate_template_patch(
             )
             return None
 
+        if 'github.com' in template:
+            print(f'Github compare: {template}/compare/{from_rev}...{to_rev}')
+
         patch_file_path = Path(
             project_path, '.manageprojects', 'patches', f'{from_rev}_{to_rev}.patch'
         )
@@ -82,13 +87,14 @@ def generate_template_patch(
             'Compile cookiecutter template in the'
             f' old {from_rev} version here: {compiled_from_path}'
         )
-        cookiecutter_context, destination_path, from_repo_path = execute_cookiecutter(
+        print('Use extra context:')
+        print(replay_context)
+        from_rev_context, destination_path, from_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_from_path,
             no_input=no_input,
             extra_context=replay_context,
-            # replay=replay,
             checkout=from_rev,  # Checkout the old revision
             password=password,
             config_file=config_file,
