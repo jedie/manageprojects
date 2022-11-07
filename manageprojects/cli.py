@@ -218,6 +218,7 @@ def update_project(
     project_path: Path,
     password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    cleanup: bool = True,  # Cleanup created files in /tmp/
     no_input: bool = False,  # Prompt the user at command line for manual configuration?
 ):
     """
@@ -228,6 +229,7 @@ def update_project(
         project_path=project_path,
         password=password,
         config_file=config_file,
+        cleanup=cleanup,
         no_input=no_input,
     )
 
