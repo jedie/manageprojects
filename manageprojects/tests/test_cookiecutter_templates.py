@@ -268,6 +268,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                     project_path=project_path,
                     config_file=config_file_path,
                     cleanup=False,  # Keep temp files if this test fails, for better debugging
+                    no_input=True,  # No user input in tests ;)
                 )
             self.assertIsInstance(update_result, GenerateTemplatePatchResult)
 
@@ -411,6 +412,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                 password=None,
                 config_file=config_file_path,
                 cleanup=False,  # Keep temp files if this test fails, for better debugging
+                no_input=True,  # No user input in tests ;)
             )
 
             self.assert_file_content(

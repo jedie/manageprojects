@@ -24,6 +24,7 @@ def generate_template_patch(
     password: str = None,
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
     cleanup: bool = True,  # Remove temp files if not exceptions happens
+    no_input: bool = False,  # Prompt the user at command line for manual configuration?
 ) -> Optional[GenerateTemplatePatchResult]:
     """
     Create git diff/patch from cookiecutter template changes.
@@ -42,7 +43,7 @@ def generate_template_patch(
             template=template,
             directory=directory,
             output_dir=compiled_to_path,
-            no_input=True,
+            no_input=no_input,
             extra_context=replay_context,
             # replay=replay,
             checkout=None,  # Checkout HEAD/main revision
@@ -85,7 +86,7 @@ def generate_template_patch(
             template=template,
             directory=directory,
             output_dir=compiled_from_path,
-            no_input=True,
+            no_input=no_input,
             extra_context=replay_context,
             # replay=replay,
             checkout=from_rev,  # Checkout the old revision

@@ -70,7 +70,7 @@ def execute_cookiecutter(
     template: str,  # CookieCutter Template path or GitHub url
     directory: str = None,  # Directory name of the CookieCutter Template
     output_dir: Path,  # Target path where CookieCutter should store the result files
-    no_input: bool = False,
+    no_input: bool = False,  # Prompt the user at command line for manual configuration?
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
     checkout: str = None,

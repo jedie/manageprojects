@@ -77,6 +77,7 @@ class PatchingTestCase(BaseTestCase):
                 from_rev=from_rev,
                 replay_context={},
                 cleanup=False,  # Keep temp files if this test fails, for better debugging
+                no_input=True,  # No user input in tests ;)
             )
             self.assertIsInstance(result, GenerateTemplatePatchResult)
 
