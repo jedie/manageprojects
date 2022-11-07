@@ -175,8 +175,9 @@ class PyProjectTomlTestCase(BaseTestCase):
                     '''
                 ),
             )
+            data = toml.get_mp_meta()
             self.assertEqual(
-                toml.get_mp_meta(),
+                data,
                 ManageProjectsMeta(
                     initial_revision='abc0001',
                     initial_date=parse_dt('2000-01-01T00:00:00+0000'),
@@ -193,6 +194,8 @@ class PyProjectTomlTestCase(BaseTestCase):
                     },
                 ),
             )
+            self.assertIsInstance(data.cookiecutter_context, dict)
+            self.assertEqual(type(data.cookiecutter_context), dict)
 
     def test_expand_existing_toml(self):
         with TemporaryDirectory(prefix='test_basic') as temp_path:
