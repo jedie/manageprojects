@@ -83,6 +83,8 @@ def generate_template_patch(
     print(f'Generate update patch for project: {project_path} from {template}')
     project_name = project_path.name
 
+    extra_context=replay_context['cookiecutter']
+
     with TemporaryDirectory(prefix=f'manageprojects_{project_name}_', cleanup=cleanup) as temp_path:
 
         #############################################################################
@@ -91,13 +93,13 @@ def generate_template_patch(
         compiled_to_path = temp_path / 'to_rev_compiled'
         print(f'Compile cookiecutter template in the current version here: {compiled_to_path}')
         print('Use extra context:')
-        print(replay_context)
+        print(extra_context)
         to_rev_context, destination_path, to_rev_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_to_path,
             no_input=no_input,
-            extra_context=replay_context,
+            extra_context=extra_context,
             checkout=None,  # Checkout HEAD/main revision
             password=password,
             config_file=config_file,
@@ -139,13 +141,13 @@ def generate_template_patch(
             f' old {from_rev} version here: {compiled_from_path}'
         )
         print('Use extra context:')
-        print(replay_context)
+        print(extra_context)
         from_rev_context, destination_path, from_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_from_path,
             no_input=no_input,
-            extra_context=replay_context,
+            extra_context=extra_context,
             checkout=from_rev,  # Checkout the old revision
             password=password,
             config_file=config_file,
