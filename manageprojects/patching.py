@@ -94,7 +94,7 @@ def generate_template_patch(
         print(f'Compile cookiecutter template in the current version here: {compiled_to_path}')
         print('Use extra context:')
         print(extra_context)
-        to_rev_context, destination_path, to_rev_repo_path = execute_cookiecutter(
+        to_rev_context, to_rev_dst_path, to_rev_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_to_path,
@@ -106,7 +106,7 @@ def generate_template_patch(
         )
 
         assert_is_dir(to_rev_repo_path)
-        assert destination_path.parent == compiled_to_path
+        assert to_rev_dst_path.parent == compiled_to_path
 
         #############################################################################
         # Get the current git commit hash and date:
@@ -142,7 +142,7 @@ def generate_template_patch(
         )
         print('Use extra context:')
         print(extra_context)
-        from_rev_context, destination_path, from_repo_path = execute_cookiecutter(
+        from_rev_context, from_rev_dst_path, from_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_from_path,
@@ -154,15 +154,15 @@ def generate_template_patch(
         )
         assert_is_dir(from_repo_path)
         assert from_repo_path == to_rev_repo_path
-        assert destination_path.parent == compiled_from_path
+        assert from_rev_dst_path.parent == compiled_from_path
 
         #############################################################################
         # Generate git patch between old and current version:
 
         patch = make_git_diff(
             temp_path=temp_path,
-            from_path=compiled_from_path,
-            to_path=compiled_to_path,
+            from_path=from_rev_dst_path,
+            to_path=to_rev_dst_path,
             verbose=False,
         )
         if not patch:
