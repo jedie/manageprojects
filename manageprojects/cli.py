@@ -156,11 +156,11 @@ def version(no_color: bool = False):
 def start_project(
     template: str,  # CookieCutter Template path or GitHub url
     output_dir: Path,  # Target path where CookieCutter should store the result files
-    directory: str = None,  # Directory name of the CookieCutter Template
-    checkout: str = None,
+    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
+    checkout: Optional[str] = None,
     no_input: bool = False,
     replay: bool = False,
-    password: str = None,  # Optional password to use when extracting the repository
+    password: Optional[str] = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ):
     """
@@ -216,7 +216,7 @@ def start_project(
 @cli.command()
 def update_project(
     project_path: Path,
-    password: str = None,  # Optional password to use when extracting the repository
+    password: Optional[str] = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
     cleanup: bool = True,  # Cleanup created files in /tmp/
     no_input: bool = False,  # Prompt the user at command line for manual configuration?

@@ -18,10 +18,10 @@ def generate_template_patch(
     *,
     project_path: Path,
     template: str,  # CookieCutter Template path or GitHub url
-    directory: str = None,  # Directory name of the CookieCutter Template
     from_rev: str,
     replay_context: dict,
-    password: str = None,
+    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
+    password: Optional[str] = None,
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
     cleanup: bool = True,  # Remove temp files if not exceptions happens
     no_input: bool = False,  # Prompt the user at command line for manual configuration?

@@ -19,13 +19,13 @@ logger = logging.getLogger(__name__)
 def start_managed_project(
     *,
     template: str,  # CookieCutter Template path or GitHub url
-    directory: str = None,  # Directory name of the CookieCutter Template
     output_dir: Path,  # Target path where CookieCutter should store the result files
+    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
     no_input: bool = False,
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
-    checkout: str = None,
-    password: str = None,  # Optional password to use when extracting the repository
+    checkout: Optional[str] = None,
+    password: Optional[str] = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> CookiecutterResult:
     """
@@ -78,7 +78,7 @@ def start_managed_project(
 
 def update_managed_project(
     project_path: Path,
-    password: str = None,
+    password: Optional[str] = None,
     config_file: Optional[Path] = None,  # CookieCutter config file
     cleanup: bool = True,  # Remove temp files if not exceptions happens
     no_input: bool = False,  # Prompt the user at command line for manual configuration?
