@@ -68,6 +68,10 @@ class PyProjectToml:
             self.mp_table.add(COOKIECUTTER_DIRECTORY, directory)
 
     def create_or_update_cookiecutter_context(self, context: dict) -> None:
+        # Don't store the '_output_dir':
+        context['cookiecutter'] = {
+            k: v for k, v in context['cookiecutter'].items() if k != '_output_dir'
+        }
         self.mp_table[COOKIECUTTER_CONTEXT] = tomlkit.item(context)
 
     def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
@@ -92,14 +96,15 @@ class PyProjectToml:
     ###############################################################################################
 
     def get_mp_meta(self) -> ManageProjectsMeta:
+        data = self.mp_table.unwrap()  # change tomlkit.Container to a normal dict
         result: ManageProjectsMeta = log_func_call(
             logger=logger,
             func=ManageProjectsMeta,
-            initial_revision=self.mp_table.get(INITIAL_REVISION),
-            initial_date=self.mp_table.get(INITIAL_DATE),
-            applied_migrations=self.mp_table.get(APPLIED_MIGRATIONS, []),
-            cookiecutter_template=self.mp_table.get(COOKIECUTTER_TEMPLATE),
-            cookiecutter_directory=self.mp_table.get(COOKIECUTTER_DIRECTORY),
-            cookiecutter_context=self.mp_table.get(COOKIECUTTER_CONTEXT),
+            initial_revision=data.get(INITIAL_REVISION),
+            initial_date=data.get(INITIAL_DATE),
+            applied_migrations=data.get(APPLIED_MIGRATIONS, []),
+            cookiecutter_template=data.get(COOKIECUTTER_TEMPLATE),
+            cookiecutter_directory=data.get(COOKIECUTTER_DIRECTORY),
+            cookiecutter_context=data.get(COOKIECUTTER_CONTEXT),
         )
         return result

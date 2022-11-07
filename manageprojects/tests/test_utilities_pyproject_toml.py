@@ -69,7 +69,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                         'foo': 'bar',
                         'x': 1,
                         '_template': '/foo/bar',
-                        '_output_dir': '/tmp/test/',
                     }
                 }
             )
@@ -90,7 +89,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                     foo = "bar"
                     x = 1
                     _template = "/foo/bar"
-                    _output_dir = "/tmp/test/"
                     '''
                 ),
             )
@@ -110,7 +108,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                             'foo': 'bar',
                             'x': 1,
                             '_template': '/foo/bar',
-                            '_output_dir': '/tmp/test/',
                         }
                     },
                 ),
@@ -138,7 +135,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                     foo = "bar"
                     x = 1
                     _template = "/foo/bar"
-                    _output_dir = "/tmp/test/"
                     '''
                 ),
             )
@@ -151,7 +147,6 @@ class PyProjectTomlTestCase(BaseTestCase):
                         'x': 2,
                         'new': 'value',
                         '_template': '/foo/bar',
-                        '_output_dir': '/tmp/test/',
                     }
                 }
             )
@@ -177,12 +172,12 @@ class PyProjectTomlTestCase(BaseTestCase):
                     x = 2
                     new = "value"
                     _template = "/foo/bar"
-                    _output_dir = "/tmp/test/"
                     '''
                 ),
             )
+            data = toml.get_mp_meta()
             self.assertEqual(
-                toml.get_mp_meta(),
+                data,
                 ManageProjectsMeta(
                     initial_revision='abc0001',
                     initial_date=parse_dt('2000-01-01T00:00:00+0000'),
@@ -195,11 +190,12 @@ class PyProjectTomlTestCase(BaseTestCase):
                             'x': 2,
                             'new': 'value',
                             '_template': '/foo/bar',
-                            '_output_dir': '/tmp/test/',
                         }
                     },
                 ),
             )
+            self.assertIsInstance(data.cookiecutter_context, dict)
+            self.assertEqual(type(data.cookiecutter_context), dict)
 
     def test_expand_existing_toml(self):
         with TemporaryDirectory(prefix='test_basic') as temp_path:

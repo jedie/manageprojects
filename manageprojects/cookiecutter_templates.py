@@ -25,7 +25,7 @@ def start_managed_project(
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
     checkout: str = None,
-    password: str = None,
+    password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> CookiecutterResult:
     """
@@ -76,11 +76,12 @@ def start_managed_project(
     return result
 
 
-def update_project(
+def update_managed_project(
     project_path: Path,
     password: str = None,
     config_file: Optional[Path] = None,  # CookieCutter config file
     cleanup: bool = True,  # Remove temp files if not exceptions happens
+    no_input: bool = False,  # Prompt the user at command line for manual configuration?
 ) -> Optional[GenerateTemplatePatchResult]:
     """
     Update a existing project by apply git patch from cookiecutter template changes.
@@ -115,6 +116,7 @@ def update_project(
         password=password,
         config_file=config_file,
         cleanup=cleanup,
+        no_input=no_input,
     )
     if not result:
         logger.info('No git patch was created, nothing to apply.')

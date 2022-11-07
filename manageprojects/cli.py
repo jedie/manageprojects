@@ -15,7 +15,7 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import start_managed_project
+from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
 from manageprojects.utilities.log_utils import log_config
@@ -160,12 +160,13 @@ def start_project(
     checkout: str = None,
     no_input: bool = False,
     replay: bool = False,
-    password: str = None,
+    password: str = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ):
     """
     Start a new "managed" project via a CookieCutter Template
     """
+    log_config()
     print(f'Start project with template: {template!r}')
     if '/' not in template:
         logger.info(f'Use own template: {template}')
@@ -213,10 +214,32 @@ def start_project(
 
 
 @cli.command()
+def update_project(
+    project_path: Path,
+    password: str = None,  # Optional password to use when extracting the repository
+    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    cleanup: bool = True,  # Cleanup created files in /tmp/
+    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+):
+    """
+    Update a existing project.
+    """
+    log_config()
+    update_managed_project(
+        project_path=project_path,
+        password=password,
+        config_file=config_file,
+        cleanup=cleanup,
+        no_input=no_input,
+    )
+
+
+@cli.command()
 def publish():
     """
     Build and upload this project to PyPi
     """
+    log_config()
     test()  # Don't publish a broken state
 
     # TODO: Add the checks from:
@@ -275,5 +298,4 @@ def check_code_style(verbose: bool = True):
 
 
 def main():
-    log_config()
     cli()

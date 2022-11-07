@@ -1,24 +1,56 @@
+import atexit
 import logging
+import tempfile
 
 
-def logger_setup(*, logger_name, force, level, format):
+def logger_setup(*, logger_name, level, format, log_filename):
     logger = logging.getLogger(logger_name)
     is_configured = logger.handlers and logger.level
-    if force or not is_configured:
+    if not is_configured:
         logger.setLevel(level)
 
-        ch = logging.StreamHandler()
+        if log_filename:
+            ch = logging.FileHandler(filename=log_filename)
+        else:
+            ch = logging.StreamHandler()
         ch.setLevel(level)
         ch.setFormatter(logging.Formatter(format))
 
         logger.addHandler(ch)
 
 
+def print_log_info(filename):
+    print(f'\nLog file created here: {filename}\n')
+
+
 def log_config(
-    force=True, level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s | %(message)s'
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(name)s.%(funcName)s %(lineno)d | %(message)s',
+    log_in_file=True,
 ):
-    logger_setup(logger_name='manageprojects', force=force, level=level, format=format)
-    logger_setup(logger_name='cookiecutter', force=force, level=level, format=format)
+    if log_in_file:
+        log_file = tempfile.NamedTemporaryFile(
+            prefix='manageprojects_', suffix='.log', delete=False
+        )
+        log_filename = log_file.name
+    else:
+        log_filename = None
+
+    logger_setup(
+        logger_name='manageprojects',
+        level=level,
+        format=format,
+        log_filename=log_filename,
+    )
+    logger_setup(
+        logger_name='cookiecutter',
+        level=level,
+        format=format,
+        log_filename=log_filename,
+    )
+
+    if log_filename:
+        atexit.register(print_log_info, log_filename)
 
 
 def log_func_call(*, logger, func, **kwargs):
