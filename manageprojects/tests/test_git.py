@@ -42,7 +42,7 @@ class GitTestCase(TestCase):
         self.assertLess(commit_date, parse_dt('2023-01-01T00:00:00+0000'))  # ;)
 
     def test_init_git(self):
-        with TemporaryDirectory(prefix='ttest_init_git_') as temp_path:
+        with TemporaryDirectory(prefix='test_init_git_') as temp_path:
             Path(temp_path, 'foo.txt').touch()
             Path(temp_path, 'bar.txt').touch()
 
