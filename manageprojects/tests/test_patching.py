@@ -3,15 +3,49 @@ import json
 from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
+from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
 from manageprojects.data_classes import GenerateTemplatePatchResult
-from manageprojects.patching import generate_template_patch
+from manageprojects.patching import generate_template_patch, make_git_diff
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.tests.utilities.git_utils import init_git
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class PatchingTestCase(BaseTestCase):
+    def test_make_git_diff(self):
+        with TemporaryDirectory(prefix='test_make_git_diff_') as main_temp_path:
+            from_path = main_temp_path / 'from'
+            to_path = main_temp_path / 'to'
+
+            from_path.mkdir()
+            to_path.mkdir()
+
+            Path(from_path, 'file1.txt').write_text('Rev 1')
+            Path(to_path, 'file1.txt').write_text('Rev 2')
+
+            renamed_file_content = inspect.cleandoc(
+                '''
+                # This file is just renamed,
+                # so the content is the same ;)
+                '''
+            )
+            Path(from_path, 'old_name.txt').write_text(renamed_file_content)
+            Path(to_path, 'new_name.txt').write_text(renamed_file_content)
+
+            patch = make_git_diff(
+                temp_path=main_temp_path,
+                from_path=from_path,
+                to_path=to_path,
+                verbose=True,
+            )
+            self.assertIn('diff --git a/file1.txt b/file1.txt', patch)
+            self.assertIn('-Rev 1', patch)
+            self.assertIn('+Rev 2', patch)
+            self.assertIn('rename from old_name.txt', patch)
+            self.assertIn('rename to new_name.txt', patch)
+            assert_text_snapshot(got=patch, extension='.patch')
+
     def test_generate_template_patch(self):
         rev1_content = inspect.cleandoc(
             '''

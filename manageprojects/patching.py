@@ -1,4 +1,5 @@
 import logging
+import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -12,6 +13,56 @@ from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 logger = logging.getLogger(__name__)
+
+
+def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True) -> Optional[str]:
+    """
+    Create git diff between from_path and to_path
+    """
+    assert_is_dir(from_path)
+    assert_is_dir(to_path)
+
+    temp_repo_path = temp_path / 'git-repo'
+
+    # Create git repo with "from" content:
+    shutil.copytree(
+        src=from_path,
+        dst=temp_repo_path,
+        ignore=shutil.ignore_patterns('.git'),
+        dirs_exist_ok=False,
+    )
+    assert not Path(temp_repo_path, '.git').exists()
+    git = Git(cwd=temp_repo_path, detect_root=False)
+    git.init(verbose=verbose)
+    git.add('.', verbose=False)
+    git.commit('init with "from" revision', verbose=False)
+
+    # Remove all files, except .git:
+    for item in temp_repo_path.iterdir():
+        if item.is_dir():
+            if item.name == '.git':
+                continue
+            shutil.rmtree(item)
+        else:
+            item.unlink()
+
+    # Commit "to" version:
+    shutil.copytree(
+        src=to_path,
+        dst=temp_repo_path,
+        ignore=shutil.ignore_patterns('.git'),
+        dirs_exist_ok=True,
+    )
+    git.add('.', verbose=verbose)
+    git.commit('Commit "to" revision', verbose=verbose)
+
+    # Diff between previous commit (from) and current commit (to):
+    patch = git.diff('HEAD^', 'HEAD')
+    if not patch:
+        logger.warning(f'No gif diff between {from_path} and {to_path} !')
+        return None
+
+    return patch
 
 
 def generate_template_patch(
@@ -106,23 +157,20 @@ def generate_template_patch(
         #############################################################################
         # Generate git patch between old and current version:
 
-        patch = git.diff(compiled_from_path, compiled_to_path)
+        patch = make_git_diff(
+            temp_path=temp_path,
+            from_path=compiled_from_path,
+            to_path=compiled_to_path,
+            verbose=False,
+        )
         if not patch:
-            logger.warning(f'No gif diff between {from_rev} and {to_rev} !')
             print(f'No gif diff between {compiled_from_path} and {compiled_to_path} !')
             return None
-
-        from_path_str = f'a{compiled_from_path}/'
-        assert from_path_str in patch, f'{from_path_str!r} not found in patch: {patch}'
-        patch = patch.replace(from_path_str, 'a/')
-
-        to_path_str = f'b{compiled_to_path}/'
-        assert to_path_str in patch, f'{to_path_str!r} not found in patch: {patch}'
-        patch = patch.replace(to_path_str, 'b/')
 
         logger.info('Write patch file: %s', patch_file_path)
         patch_file_path.parent.mkdir(parents=True, exist_ok=True)
         patch_file_path.write_text(patch)
+
         return GenerateTemplatePatchResult(
             repo_path=to_rev_repo_path,  # == from_repo_path
             patch_file_path=patch_file_path,
