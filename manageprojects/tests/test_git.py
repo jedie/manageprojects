@@ -7,14 +7,12 @@ import shutil
 from pathlib import Path
 from unittest import TestCase
 
-from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
 from manageprojects import __version__
 from manageprojects.cli import PACKAGE_ROOT, version
 from manageprojects.git import Git
-from manageprojects.tests.utilities.fixtures import copy_fixtures
 from manageprojects.tests.utilities.git_utils import init_git
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
@@ -52,29 +50,6 @@ class GitTestCase(TestCase):
                 git.ls_files(verbose=False),
                 [Path(temp_path, 'bar.txt'), Path(temp_path, 'foo.txt')],
             )
-
-    def test_create_cookiecutter_template(self):
-        with TemporaryDirectory(prefix='test_create_cookiecutter_template_') as temp_path:
-            destination = temp_path / 'test-template'
-            copy_fixtures(
-                fixtures_dir_name='cookiecutter_simple_template_rev1', destination=destination
-            )
-
-            self.assertEqual(destination, temp_path / 'test-template')
-            assert_is_dir(destination)
-            assert_is_file(
-                destination / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'
-            )
-
-            git, git_hash = init_git(temp_path)
-            self.assertEqual(len(git_hash), 7)
-
-            file_paths = git.ls_files(verbose=False)
-            expected_paths = [
-                Path(destination / 'cookiecutter.json'),
-                Path(destination / '{{cookiecutter.dir_name}}' / '{{cookiecutter.file_name}}.py'),
-            ]
-            self.assertEqual(file_paths, expected_paths)
 
     def test_git_diff(self):
         with TemporaryDirectory(prefix='test_git_diff_') as temp_path:

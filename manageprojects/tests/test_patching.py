@@ -124,10 +124,10 @@ class PatchingTestCase(BaseTestCase):
                 patch_file_path,
                 inspect.cleandoc(
                     r'''
-                    diff --git a/a_directory/a_file_name.py b/a_directory/a_file_name.py
+                    diff --git a/a_file_name.py b/a_file_name.py
                     index 4d0e75c..c71c9fe 100644
-                    --- a/a_directory/a_file_name.py
-                    +++ b/a_directory/a_file_name.py
+                    --- a/a_file_name.py
+                    +++ b/a_file_name.py
                     @@ -1,6 +1,6 @@
                      # This is a test line, not changed
                      #

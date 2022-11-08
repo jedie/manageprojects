@@ -91,15 +91,12 @@ class Git:
         reference1,
         reference2,
         patch=True,
-        minimal=True,
         no_color=True,
         verbose=True,
     ) -> str:
         args = []
         if patch:
             args.append('--patch')
-        if minimal:
-            args.append('--minimal')
         if no_color:
             args.append('--no-color')
 
@@ -170,6 +167,10 @@ class Git:
             assert_is_file(file_path)
             file_paths.append(file_path)
         return sorted(file_paths)
+
+    def print_file_list(self, out_func=print, verbose=True) -> None:
+        for item in self.ls_files(verbose=verbose):
+            out_func(f'* "{item.relative_to(self.cwd)}"')
 
     def reset(self, *, commit, hard=True, verbose=True) -> None:
         args = ['reset']

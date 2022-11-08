@@ -15,10 +15,16 @@ from manageprojects.utilities.temp_path import TemporaryDirectory
 logger = logging.getLogger(__name__)
 
 
+def verbose_copy(src, dst):
+    logger.info(f'copy: "{src}" to "{dst}"')
+    shutil.copy2(src, dst)
+
+
 def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True) -> Optional[str]:
     """
     Create git diff between from_path and to_path
     """
+    print(f'Make git diff between {from_path} and {to_path} (temp: {temp_path})')
     assert_is_dir(from_path)
     assert_is_dir(to_path)
 
@@ -29,6 +35,7 @@ def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True)
         src=from_path,
         dst=temp_repo_path,
         ignore=shutil.ignore_patterns('.git'),
+        copy_function=verbose_copy,
         dirs_exist_ok=False,
     )
     assert not Path(temp_repo_path, '.git').exists()
@@ -36,6 +43,7 @@ def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True)
     git.init(verbose=verbose)
     git.add('.', verbose=False)
     git.commit('init with "from" revision', verbose=False)
+    git.print_file_list(out_func=logger.info)
 
     # Remove all files, except .git:
     for item in temp_repo_path.iterdir():
@@ -51,10 +59,12 @@ def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True)
         src=to_path,
         dst=temp_repo_path,
         ignore=shutil.ignore_patterns('.git'),
+        copy_function=verbose_copy,
         dirs_exist_ok=True,
     )
     git.add('.', verbose=verbose)
     git.commit('Commit "to" revision', verbose=verbose)
+    git.print_file_list(out_func=logger.info)
 
     # Diff between previous commit (from) and current commit (to):
     patch = git.diff('HEAD^', 'HEAD')
@@ -83,7 +93,9 @@ def generate_template_patch(
     print(f'Generate update patch for project: {project_path} from {template}')
     project_name = project_path.name
 
-    extra_context=replay_context['cookiecutter']
+    extra_context = replay_context.get('cookiecutter')
+    if not extra_context:
+        print('WARNING: No "cookiecutter" in replay context!')
 
     with TemporaryDirectory(prefix=f'manageprojects_{project_name}_', cleanup=cleanup) as temp_path:
 
