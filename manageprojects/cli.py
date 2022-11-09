@@ -5,7 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
-from unittest import TestLoader, TestResult, TestSuite, TextTestRunner
 
 import rich
 import typer
@@ -51,35 +50,6 @@ def which(file_name: str) -> Path:
 def mypy(verbose: bool = True):
     """Run Mypy (configured in pyproject.toml)"""
     verbose_check_call(which('mypy'), '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
-
-
-@cli.command()
-def test(
-    verbosity: int = 2,
-    failfast: bool = False,
-    locals: bool = True,
-    test_path: Optional[Path] = None,
-):
-    """
-    Run unittests
-    """
-    runner = TextTestRunner(verbosity=verbosity, failfast=failfast, tb_locals=locals)
-    test_loader = TestLoader()
-    pattern = 'test*.py'
-    if test_path:
-        test_path = test_path.resolve()
-        assert test_path.exists(), f'--test-path={test_path} does not exists!'
-        if test_path.is_dir():
-            start_dir = str(test_path)
-        elif test_path.is_file():
-            start_dir = str(test_path.parent)
-            pattern = test_path.name
-    else:
-        start_dir = str(PACKAGE_ROOT)
-    test_suite: TestSuite = test_loader.discover(start_dir=start_dir, pattern=pattern)
-    result: TestResult = runner.run(test_suite)
-    if not result.wasSuccessful():
-        sys.exit(1)
 
 
 @cli.command()
@@ -236,7 +206,7 @@ def update_project(
 
 
 @cli.command()
-def wiggle(project_path: Path, words: bool=False):
+def wiggle(project_path: Path, words: bool = False):
     """
     Run wiggle to merge *.rej in given directory.
     https://github.com/neilbrown/wiggle
@@ -334,5 +304,18 @@ def check_code_style(verbose: bool = True):
     flake8_main(argv=argv)
 
 
+@cli.command()  # Just add this command to help page
+def test():
+    """
+    Run unittests
+    """
+    # Use the CLI from unittest module and pass all args to it:
+    verbose_check_call(sys.executable, '-m', 'unittest', *sys.argv[2:])
+
+
 def main():
-    cli()
+    if len(sys.argv) >= 2 and sys.argv[1] == 'test':
+        # Just use the CLI from unittest with all available options and origin --help output ;)
+        return test()
+    else:
+        cli()
