@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
@@ -232,6 +233,42 @@ def update_project(
         cleanup=cleanup,
         no_input=no_input,
     )
+
+
+@cli.command()
+def wiggle(project_path: Path, words: bool=False):
+    """
+    Run wiggle to merge *.rej in given directory.
+    https://github.com/neilbrown/wiggle
+    """
+    wiggle_bin = shutil.which('wiggle')
+    if not wiggle_bin:
+        print('Error: "wiggle" can not be found!')
+        print('Hint: sudo apt get install wiggle')
+        sys.exit(1)
+
+    assert_is_dir(project_path)
+
+    args = [wiggle_bin, '--merge']
+    if words:
+        args.append('--words')
+    args.append('--replace')
+
+    for rej_file_path in project_path.rglob('*.rej'):
+        real_file_path = rej_file_path.with_suffix('')
+        if not real_file_path.is_file():
+            print(f'Error real file "{real_file_path}" from "{rej_file_path}" not found. Skip.')
+            continue
+        try:
+            verbose_check_call(
+                *args,
+                real_file_path,
+                rej_file_path,
+                verbose=True,
+                exit_on_error=False,
+            )
+        except subprocess.CalledProcessError:
+            continue
 
 
 @cli.command()

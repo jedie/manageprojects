@@ -21,27 +21,29 @@ Mix the idea of Ansible with CookieCutter Templates and Django Migrations to man
 
  Usage: manageprojects [OPTIONS] COMMAND [ARGS]...
 
-╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────╮
-│ --install-completion          Install completion for the current shell.                           │
-│ --show-completion             Show completion for the current shell, to copy it or customize the  │
-│                               installation.                                                       │
-│ --help                        Show this message and exit.                                         │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Commands ────────────────────────────────────────────────────────────────────────────────────────╮
-│ check-code-style                                                                                  │
-│ coverage          Run and show coverage.                                                          │
-│ fix-code-style    Fix code style via darker                                                       │
-│ install           Run pip-sync and install 'manageprojects' via pip as editable.                  │
-│ mypy              Run Mypy (configured in pyproject.toml)                                         │
-│ publish           Build and upload this project to PyPi                                           │
-│ start-project     Start a new "managed" project via a CookieCutter Template                       │
-│ test              Run unittests                                                                   │
-│ update            Update the development environment by calling: - pip-compile production.in      │
-│                   develop.in -> develop.txt - pip-compile production.in -> production.txt -       │
-│                   pip-sync develop.txt                                                            │
-│ update-project    Update a existing project.                                                      │
-│ version           Print version and exit                                                          │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ───────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                         │
+│ --show-completion             Show completion for the current shell, to copy it or customize    │
+│                               the installation.                                                 │
+│ --help                        Show this message and exit.                                       │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ──────────────────────────────────────────────────────────────────────────────────────╮
+│ check-code-style                                                                                │
+│ coverage          Run and show coverage.                                                        │
+│ fix-code-style    Fix code style via darker                                                     │
+│ install           Run pip-sync and install 'manageprojects' via pip as editable.                │
+│ mypy              Run Mypy (configured in pyproject.toml)                                       │
+│ publish           Build and upload this project to PyPi                                         │
+│ start-project     Start a new "managed" project via a CookieCutter Template                     │
+│ test              Run unittests                                                                 │
+│ update            Update the development environment by calling: - pip-compile production.in    │
+│                   develop.in -> develop.txt - pip-compile production.in -> production.txt -     │
+│                   pip-sync develop.txt                                                          │
+│ update-project    Update a existing project.                                                    │
+│ version           Print version and exit                                                        │
+│ wiggle            Run wiggle to merge *.rej in given directory.                                 │
+│                   https://github.com/neilbrown/wiggle                                           │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 

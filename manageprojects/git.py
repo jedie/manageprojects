@@ -90,31 +90,40 @@ class Git:
         self,
         reference1,
         reference2,
-        patch=True,
         no_color=True,
+        indent_heuristic=False,
+        irreversible_delete=True,
         verbose=True,
     ) -> str:
+        # https://git-scm.com/docs/git-diff
         args = []
-        if patch:
-            args.append('--patch')
         if no_color:
             args.append('--no-color')
+
+        if not indent_heuristic:
+            args.append('--no-indent-heuristic')
+
+        if irreversible_delete:
+            args.append('--irreversible-delete')
 
         output = self.git_verbose_output('diff', *args, reference1, reference2, verbose=verbose)
         return output
 
     def apply(self, patch_path, verbose=True):
+        # https://git-scm.com/docs/git-apply
         output = self.git_verbose_check_output(
             'apply',
+            '--reject',
+            '--ignore-whitespace',
+            '--whitespace=fix',
+            '-C1',
             '--recount',
-            '--3way',
             '--stat',
             '--summary',
             '--verbose',
             '--apply',
             patch_path,
-            verbose=verbose,
-            exit_on_error=True,
+            verbose=verbose
         )
         return output
 
