@@ -18,6 +18,33 @@ from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class GitTestCase(TestCase):
+    def test_config(self):
+        with TemporaryDirectory(prefix='test_init_git_') as temp_path:
+            git = Git(cwd=temp_path, detect_root=False)
+            git.init()
+
+            self.assertEqual(git.get_config(key='user.name'), 'manageprojects')
+            self.assertEqual(git.get_config(key='user.email'), 'manageprojects@test.tld')
+
+            keys = git.list_config_keys()
+            self.assertIsInstance(keys, set)
+            self.assertGreaterEqual(len(keys), 1)
+
+            section = 'manageprojects'
+            test_key = f'{section}.test-config-entry'
+
+            value = git.get_config(key=test_key)
+            self.assertIsNone(value)
+
+            git.config(key=test_key, value='test', scope='local')
+            value = git.get_config(key=test_key)
+            self.assertEqual(value, 'test')
+
+            git.git_verbose_check_output('config', '--local', '--remove-section', section)
+
+            value = git.get_config(key=test_key)
+            self.assertIsNone(value)
+
     def test_own_git_repo(self):
         deep_path = Path(__file__).parent
         git = Git(cwd=deep_path)

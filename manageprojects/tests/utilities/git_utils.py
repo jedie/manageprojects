@@ -5,17 +5,19 @@ from manageprojects.git import Git
 
 def init_git(path, comment='The initial commit ;)') -> tuple[Git, str]:
     git = Git(cwd=path, detect_root=False)
-    git_path = git.init(verbose=False)
+    git_path = git.init(
+        branch_name='main',
+        user_name='Mr. Test',
+        user_email='foo-bar@test.tld',
+        verbose=False,
+    )
     assert git_path == path
 
     assert_is_dir(path / '.git')
     assert_is_file(path / '.git' / 'config')
 
-    git.config('user.name', 'Mr. Test', verbose=False)
-    assert git.get_config('user.name', verbose=False) == 'Mr. Test'
-
-    git.config('user.email', 'foo-bar@test.tld', verbose=False)
-    assert git.get_config('user.email', verbose=False) == 'foo-bar@test.tld'
+    assert git.get_config('user.name', verbose=False)
+    assert git.get_config('user.email', verbose=False)
 
     git.add('.', verbose=False)
     git.commit(comment, verbose=False)
