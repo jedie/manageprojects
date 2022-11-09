@@ -1,4 +1,5 @@
 import logging
+import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -127,7 +128,17 @@ def update_managed_project(
     # Apply the patch
 
     patch_file_path = result.patch_file_path
-    git.apply(patch_path=patch_file_path)
+    try:
+        git.apply(patch_path=patch_file_path)
+    except subprocess.CalledProcessError as err:
+        print(err.stdout)
+        if err.returncode == 1:
+            print()
+            print('Seems that the patch was not applied correctly!')
+            print('Hint: run wiggle on the project:')
+            print()
+            print(f'./mp wiggle {project_path}')
+            print()
 
     #############################################################################
     # Update "pyproject.toml" with applied patch information

@@ -248,3 +248,9 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                     compiled_to_path=patch_temp_path / 'to_rev_compiled',
                 ),
             )
+
+            # Check updated toml file:
+            toml = PyProjectToml(project_path=project_path)
+            mp_meta: ManageProjectsMeta = toml.get_mp_meta()
+            self.assertEqual(mp_meta.initial_revision, from_rev)
+            self.assertEqual(mp_meta.applied_migrations, [to_rev])
