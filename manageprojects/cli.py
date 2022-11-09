@@ -236,7 +236,7 @@ def update_project(
 
 
 @cli.command()
-def wiggle(project_path: Path, words: bool=False):
+def wiggle(project_path: Path, words: bool = False):
     """
     Run wiggle to merge *.rej in given directory.
     https://github.com/neilbrown/wiggle

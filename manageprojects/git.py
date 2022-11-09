@@ -123,7 +123,7 @@ class Git:
             '--verbose',
             '--apply',
             patch_path,
-            verbose=verbose
+            verbose=verbose,
         )
         return output
 
