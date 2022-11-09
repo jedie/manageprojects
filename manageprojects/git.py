@@ -91,15 +91,12 @@ class Git:
         reference1,
         reference2,
         patch=True,
-        minimal=True,
         no_color=True,
         verbose=True,
     ) -> str:
         args = []
         if patch:
             args.append('--patch')
-        if minimal:
-            args.append('--minimal')
         if no_color:
             args.append('--no-color')
 
@@ -121,25 +118,44 @@ class Git:
         )
         return output
 
-    def init(self, branch_name='main', verbose=True) -> Path:
+    def init(
+        self,
+        branch_name='main',
+        user_name='manageprojects',
+        user_email='manageprojects@test.tld',
+        verbose=True,
+    ) -> Path:
         output = self.git_verbose_check_output(
             'init', '-b', branch_name, verbose=verbose, exit_on_error=True
         )
         assert 'initialized' in output.lower(), f'Seems there is an error: {output}'
         self.cwd = get_git_root(self.cwd)
+
+        self.config('user.name', user_name, scope='local', verbose=verbose)
+        self.config('user.email', user_email, scope='local', verbose=verbose)
+
         return self.cwd
 
-    def config(self, key, value, verbose=True):
+    def config(self, key, value, scope='local', verbose=True):
+        assert scope in ('global', 'system', 'local')
         output = self.git_verbose_check_output(
-            'config', key, value, verbose=verbose, exit_on_error=True
-        )
-        assert not output, f'Seems there is an error: {output}'
-
-    def get_config(self, key, verbose=True):
-        output = self.git_verbose_check_output(
-            'config', '--get', key, verbose=verbose, exit_on_error=True
+            'config', f'--{scope}', key, value, verbose=verbose, exit_on_error=True
         )
         return output.strip()
+
+    def get_config(self, key, verbose=True):
+        if key in self.list_config_keys(verbose=verbose):
+            output = self.git_verbose_check_output(
+                'config', '--get', key, verbose=verbose, exit_on_error=False
+            )
+            return output.strip()
+
+    def list_config_keys(self, verbose=False) -> set:
+        output = self.git_verbose_check_output(
+            'config', '--list', '--name-only', verbose=verbose, exit_on_error=False
+        )
+        keys = {item.strip() for item in output.splitlines() if item.strip()}
+        return keys
 
     def add(self, spec, verbose=True) -> None:
         output = self.git_verbose_check_output('add', spec, verbose=verbose, exit_on_error=True)
@@ -170,6 +186,10 @@ class Git:
             assert_is_file(file_path)
             file_paths.append(file_path)
         return sorted(file_paths)
+
+    def print_file_list(self, out_func=print, verbose=True) -> None:
+        for item in self.ls_files(verbose=verbose):
+            out_func(f'* "{item.relative_to(self.cwd)}"')
 
     def reset(self, *, commit, hard=True, verbose=True) -> None:
         args = ['reset']

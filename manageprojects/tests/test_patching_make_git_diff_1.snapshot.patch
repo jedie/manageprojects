@@ -1,0 +1,13 @@
+diff --git a/file1.txt b/file1.txt
+index 4ec526a..a0423cd 100644
+--- a/file1.txt
++++ b/file1.txt
+@@ -1 +1 @@
+-Rev 1
+\ No newline at end of file
++Rev 2
+\ No newline at end of file
+diff --git a/old_name.txt b/new_name.txt
+similarity index 100%
+rename from old_name.txt
+rename to new_name.txt
