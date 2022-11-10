@@ -15,7 +15,11 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
-from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
+from manageprojects.cookiecutter_templates import (
+    clone_managed_project,
+    start_managed_project,
+    update_managed_project,
+)
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
 from manageprojects.utilities.log_utils import log_config
@@ -201,6 +205,29 @@ def update_project(
         password=password,
         config_file=config_file,
         cleanup=cleanup,
+        no_input=no_input,
+    )
+
+
+@cli.command()
+def clone_project(
+    project_path: Path,
+    destination: Path,
+    checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
+    password: Optional[str] = None,  # Optional password to use when extracting the repository
+    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+):
+    """
+    Clone a existing project by replay the cookiecutter template in a new directory.
+    """
+    log_config()
+    return clone_managed_project(
+        project_path=project_path,
+        destination=destination,
+        checkout=checkout,
+        password=password,
+        config_file=config_file,
         no_input=no_input,
     )
 

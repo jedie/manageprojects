@@ -73,7 +73,7 @@ def execute_cookiecutter(
     no_input: bool = False,  # Prompt the user at command line for manual configuration?
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
-    checkout: Optional[str] = None,
+    checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
     password: Optional[str] = None,  # Optional password to use when extracting the repository
     config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> tuple[dict, Path, Path]:

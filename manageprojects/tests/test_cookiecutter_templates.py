@@ -6,6 +6,7 @@ import yaml
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 
+from manageprojects.cli import clone_project
 from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import (
     CookiecutterResult,
@@ -80,6 +81,49 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
 
             # pyproject.toml created?
             toml = PyProjectToml(project_path=project_path)
+            result: ManageProjectsMeta = toml.get_mp_meta()
+            self.assertIsInstance(result, ManageProjectsMeta)
+            self.assertEqual(
+                result,
+                ManageProjectsMeta(
+                    initial_revision='42f18f3',
+                    initial_date=parse_dt('2022-11-02T19:40:09+01:00'),
+                    applied_migrations=[],
+                    cookiecutter_template='https://github.com/jedie/mp_test_template1/',
+                    cookiecutter_directory='test_template1',
+                    cookiecutter_context={
+                        'cookiecutter': {
+                            'dir_name': 'a_dir_name',
+                            'file_name': 'a_file_name',
+                            '_template': 'https://github.com/jedie/mp_test_template1/',
+                        }
+                    },
+                ),
+            )
+
+            ###################################################################################
+            # Test clone a existing project
+
+            cloned_path = main_temp_path / 'cloned_project'
+            clone_result: CookiecutterResult = clone_project(
+                project_path=project_path, destination=cloned_path, no_input=True
+            )
+            self.assertEqual(
+                clone_result.cookiecutter_context,
+                {
+                    'cookiecutter': {
+                        '_template': 'https://github.com/jedie/mp_test_template1/',
+                        'dir_name': 'a_dir_name',
+                        'file_name': 'a_file_name',
+                    }
+                },
+            )
+            end_path = cloned_path / 'a_dir_name'
+            assert_is_dir(end_path)
+            self.assertEqual(clone_result.destination_path, end_path)
+
+            # pyproject.toml created?
+            toml = PyProjectToml(project_path=end_path)
             result: ManageProjectsMeta = toml.get_mp_meta()
             self.assertIsInstance(result, ManageProjectsMeta)
             self.assertEqual(
