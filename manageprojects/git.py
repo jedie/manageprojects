@@ -111,7 +111,7 @@ class Git:
 
     def apply(self, patch_path, verbose=True):
         # https://git-scm.com/docs/git-apply
-        output = self.git_verbose_check_output(
+        self.git_verbose_check_call(
             'apply',
             '--reject',
             '--ignore-whitespace',
@@ -125,7 +125,6 @@ class Git:
             patch_path,
             verbose=verbose,
         )
-        return output
 
     def init(
         self,
