@@ -151,8 +151,8 @@ def start_project(
             print('Existing local templates are:')
             print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
             sys.exit(1)
-        template = str(PROJECT_TEMPLATE_PATH)
         directory = template
+        template = str(PROJECT_TEMPLATE_PATH)
     else:
         logger.info(f'Assume it is a external template: {template}')
 
