@@ -1,13 +1,10 @@
 [project]
 name = "manageprojects"
-version = "0.3.0"
+version = "0.3.1"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [{name = 'Jens Diemer', email = 'python@jensdiemer.de'}]
 license = {text = "GNU General Public License v3.0"}
-#packages = [
-#    { include = "manageprojects" },
-#]
 requires-python = ">=3.9,<4.0.0"
 
 [project.urls]
@@ -15,8 +12,10 @@ requires-python = ">=3.9,<4.0.0"
 "Bug Tracker" = "https://github.com/jedie/manageproject/issues"
 
 
-[tool.setuptools]
-packages = ["manageprojects"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["manageprojects*"]
+namespaces = false
 
 
 [project.scripts]
