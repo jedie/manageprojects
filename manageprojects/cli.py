@@ -9,7 +9,6 @@ from typing import Optional
 import rich
 import typer
 from bx_py_utils.path import assert_is_dir, assert_is_file
-from cookiecutter.exceptions import RepositoryNotFound
 from darker.__main__ import main as darker_main
 from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
