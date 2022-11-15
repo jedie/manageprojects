@@ -13,8 +13,8 @@ from manageprojects.data_classes import (
     GenerateTemplatePatchResult,
     ManageProjectsMeta,
 )
+from manageprojects.test_utils.git_utils import init_git
 from manageprojects.tests.base import BaseTestCase
-from manageprojects.tests.utilities.git_utils import init_git
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 from manageprojects.utilities.temp_path import TemporaryDirectory
 

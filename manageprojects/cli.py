@@ -9,7 +9,6 @@ from typing import Optional
 import rich
 import typer
 from bx_py_utils.path import assert_is_dir, assert_is_file
-from cookiecutter.exceptions import RepositoryNotFound
 from darker.__main__ import main as darker_main
 from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
@@ -32,10 +31,6 @@ logger = logging.getLogger(__name__)
 PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
 assert_is_dir(PACKAGE_ROOT)
 assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
-
-
-PROJECT_TEMPLATE_PATH = PACKAGE_ROOT / 'manageprojects' / 'project_templates'
-assert_is_dir(PROJECT_TEMPLATE_PATH)
 
 
 cli = typer.Typer()
@@ -143,19 +138,6 @@ def start_project(
     """
     log_config()
     print(f'Start project with template: {template!r}')
-    if '/' not in template:
-        logger.info(f'Use own template: {template}')
-        template_path = PROJECT_TEMPLATE_PATH / template
-        if not template_path.is_dir():
-            print('ERROR: Template with name "{template}" not found!')
-            print('Existing local templates are:')
-            print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
-            sys.exit(1)
-        template = str(PROJECT_TEMPLATE_PATH)
-        directory = template
-    else:
-        logger.info(f'Assume it is a external template: {template}')
-
     print(f'Destination: {output_dir}')
     if output_dir.exists():
         print(f'Error: Destination "{output_dir}" already exists')
@@ -164,22 +146,17 @@ def start_project(
         print(f'Error: Destination parent "{output_dir.parent}" does not exists')
         sys.exit(1)
 
-    try:
-        result: CookiecutterResult = start_managed_project(
-            template=template,
-            checkout=checkout,
-            output_dir=output_dir,
-            no_input=no_input,
-            replay=replay,
-            password=password,
-            directory=directory,
-            config_file=config_file,
-        )
-    except RepositoryNotFound as err:
-        print(f'Error: {err}')
-        print('Existing local templates are:')
-        print([item.name for item in PROJECT_TEMPLATE_PATH.iterdir() if item.is_dir()])
-        sys.exit(1)
+    result: CookiecutterResult = start_managed_project(
+        template=template,
+        checkout=checkout,
+        output_dir=output_dir,
+        no_input=no_input,
+        replay=replay,
+        password=password,
+        directory=directory,
+        config_file=config_file,
+    )
+
     print(
         f'CookieCutter template {template!r}'
         f' with git hash {result.git_hash}'

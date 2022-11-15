@@ -13,7 +13,7 @@ from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 from manageprojects import __version__
 from manageprojects.cli import PACKAGE_ROOT, version
 from manageprojects.git import Git
-from manageprojects.tests.utilities.git_utils import init_git
+from manageprojects.test_utils.git_utils import init_git
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
