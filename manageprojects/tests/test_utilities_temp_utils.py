@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from bx_py_utils.path import assert_is_file
 
-from manageprojects.tests.utilities.temp_utils import TempContentFile
+from manageprojects.test_utils.temp_utils import TempContentFile
 
 
 class TempUtilsTestCase(TestCase):

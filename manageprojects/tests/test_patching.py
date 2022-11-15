@@ -7,8 +7,8 @@ from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
 from manageprojects.data_classes import GenerateTemplatePatchResult
 from manageprojects.patching import generate_template_patch, make_git_diff
+from manageprojects.test_utils.git_utils import init_git
 from manageprojects.tests.base import BaseTestCase
-from manageprojects.tests.utilities.git_utils import init_git
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
