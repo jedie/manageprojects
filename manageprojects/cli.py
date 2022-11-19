@@ -253,6 +253,8 @@ def publish():
     log_config()
     test()  # Don't publish a broken state
 
+    git = Git(cwd=PACKAGE_ROOT, detect_root=True)
+
     # TODO: Add the checks from:
     #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
 
@@ -264,7 +266,22 @@ def publish():
 
     verbose_check_call(sys.executable, '-m', 'build')
     verbose_check_call(twine_bin, 'check', 'dist/*')
+
+    git_tag = f'v{manageprojects.__version__}'
+    print('\ncheck git tag')
+    git_tags = git.tag_list()
+    if git_tag in git_tags:
+        print(f'\n *** ERROR: git tag {git_tag!r} already exists!')
+        print(git_tags)
+        sys.exit(3)
+    else:
+        print('OK')
+
     verbose_check_call(twine_bin, 'upload', 'dist/*')
+
+    git.tag(git_tag, message=f'publish version {git_tag}')
+    print('\ngit push tag to server')
+    git.push(tags=True)
 
 
 def _call_darker(*, argv):

@@ -17,7 +17,9 @@ class ProjectSetupTestCase(TestCase):
         pyproject_version = pyproject_toml['project']['version']
 
         current_version = manageprojects.__version__
-        assert current_version == pyproject_version
+        assert (
+            current_version == pyproject_version
+        ), f'{current_version!r} is not {pyproject_version!r}'
 
         mp_bin = PACKAGE_ROOT / 'mp.py'
         assert_is_file(mp_bin)

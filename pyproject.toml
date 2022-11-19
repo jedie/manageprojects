@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.3.1"
+version = "0.3.2"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [{name = 'Jens Diemer', email = 'python@jensdiemer.de'}]
