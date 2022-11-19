@@ -3,10 +3,10 @@ from bx_py_utils.path import assert_is_dir, assert_is_file
 from manageprojects.git import Git
 
 
-def init_git(path, comment='The initial commit ;)') -> tuple[Git, str]:
+def init_git(path, comment='The initial commit ;)', branch_name='main') -> tuple[Git, str]:
     git = Git(cwd=path, detect_root=False)
     git_path = git.init(
-        branch_name='main',
+        branch_name=branch_name,
         user_name='Mr. Test',
         user_email='foo-bar@test.tld',
         verbose=False,
@@ -28,5 +28,10 @@ def init_git(path, comment='The initial commit ;)') -> tuple[Git, str]:
 
     git_hash = git.get_current_hash(verbose=False)
     assert f'{git_hash} HEAD@' in reflog, reflog
+
+    # Add a "fake" origin and push the current branch to it.
+    # Needed if "darker" is used ;)
+    git.git_verbose_check_call('remote', 'add', 'origin', '.')
+    git.git_verbose_check_call('push', 'origin', branch_name)
 
     return git, git_hash
