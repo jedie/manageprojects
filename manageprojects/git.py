@@ -1,6 +1,6 @@
 import datetime
 import logging
-import subprocess
+import subprocess  # nosec B404
 from pathlib import Path
 from shutil import which
 
@@ -183,6 +183,22 @@ class Git:
         output = self.git_verbose_check_output(
             'log', f'--pretty=format:{format}', verbose=verbose, exit_on_error=True
         )
+        lines = output.splitlines()
+        return lines
+
+    def tag(self, git_tag: str, message: str):
+        self.git_verbose_check_call('tag', '-a', git_tag, '-m', message)
+
+    def push(self, tags=False):
+        if tags:
+            args = ['--tags']
+        else:
+            args = []
+
+        self.git_verbose_check_call('push', *args)
+
+    def tag_list(self, verbose=True, exit_on_error=True) -> list[str]:
+        output = self.git_verbose_check_output('tag', verbose=verbose, exit_on_error=exit_on_error)
         lines = output.splitlines()
         return lines
 
