@@ -46,7 +46,7 @@ build==0.9.0 \
 bx-py-utils==71 \
     --hash=sha256:02150263d58fa280caf5e0afbe99c10470f9b25f0cd69e4a2cc525c875e5ad70 \
     --hash=sha256:ceff6b29b41b6a797b87b3006f94d5394b067a551b004567d4ada7e1a6544806
-    # via -r requirements/develop.in
+    # via -r requirements/production.in
 certifi==2022.9.24 \
     --hash=sha256:0d9c601124e5a6ba9712dbc60d9c53c21e34f5f641fe83002317394311bdce14 \
     --hash=sha256:90c1a32f1d68f940488354e36370f6cca89f0f106db09518524c88d6ed83f382
@@ -132,6 +132,7 @@ click==8.1.3 \
     #   black
     #   cookiecutter
     #   pip-tools
+    #   safety
     #   typer
 colorama==0.4.6 \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
@@ -196,6 +197,10 @@ coverage==6.5.0 \
     --hash=sha256:f4f05d88d9a80ad3cac6244d36dd89a3c00abc16371769f1340101d3cb899fc3 \
     --hash=sha256:f642e90754ee3e06b0e7e51bce3379590e76b7f76b708e1a71ff043f87025c84 \
     --hash=sha256:fc2af30ed0d5ae0b1abdb4ebdce598eafd5b35397d4d75deb341a614d333d987
+    # via coveralls
+coveralls==3.3.1 \
+    --hash=sha256:b32a8bb5d2df585207c119d6c01567b81fba690c9c10a753bfe27a335bfc43ea \
+    --hash=sha256:f42015f31d386b351d4226389b387ae173207058832fbf5c8ec4b40e27b16026
     # via -r requirements/develop.in
 cryptography==38.0.3 \
     --hash=sha256:068147f32fa662c81aebab95c74679b401b12b57494872886eb5c1139250ec5d \
@@ -225,20 +230,41 @@ cryptography==38.0.3 \
     --hash=sha256:dfb4f4dd568de1b6af9f4cda334adf7d72cf5bc052516e1b2608b683375dd95c \
     --hash=sha256:ed7b00096790213e09eb11c97cc6e2b757f15f3d2f85833cd2d3ec3fe37c1722
     # via secretstorage
-darker[isort]==1.5.1 \
+darker==1.5.1 \
     --hash=sha256:bb4e7494511799e7989cefab290713f81ee3b36b36989427f70d9c786d5b13b0 \
     --hash=sha256:ea2e7ea20c74fc1faaea5bf49c60bc797a2a488b49ccafb90612a8c3643dbe9d
     # via -r requirements/develop.in
+distlib==0.3.6 \
+    --hash=sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46 \
+    --hash=sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e
+    # via virtualenv
+docopt==0.6.2 \
+    --hash=sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491
+    # via coveralls
 docutils==0.19 \
     --hash=sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6 \
     --hash=sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc
-    # via readme-renderer
+    # via
+    #   python-creole
+    #   readme-renderer
+dparse==0.6.2 \
+    --hash=sha256:8097076f1dd26c377f30d4745e6ec18fef42f3bf493933b842ac5bafad8c345f \
+    --hash=sha256:d45255bda21f998bc7ddf2afd5e62505ba6134756ba2d42a84c56b0826614dfe
+    # via safety
+editorconfig==0.12.3 \
+    --hash=sha256:57f8ce78afcba15c8b18d46b5170848c88d56fd38f05c2ec60dbbfcb8996e89e \
+    --hash=sha256:6b0851425aa875b08b16789ee0eeadbd4ab59666e9ebe728e526314c4a2e52c1
+    # via -r requirements/develop.in
+filelock==3.8.0 \
+    --hash=sha256:55447caa666f2198c5b6b13a26d2084d26fa5b115c00d065664b2124680c4edc \
+    --hash=sha256:617eb4e5eedc82fc5f47b6d61e4d11cb837c56cb4544e39081099fa17ad109d4
+    # via
+    #   tox
+    #   virtualenv
 flake8==5.0.4 \
     --hash=sha256:6fbe320aad8d6b95cec8b8e47bc933004678dc63095be98528b7bdd2a9f510db \
     --hash=sha256:7a1cf6b73744f5806ab95e526f6f0d8c01c66d7bbe349562d22dfca20610b248
-    # via
-    #   -r requirements/develop.in
-    #   pyproject-flake8
+    # via -r requirements/develop.in
 idna==3.4 \
     --hash=sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4 \
     --hash=sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2
@@ -252,7 +278,7 @@ importlib-metadata==5.0.0 \
 isort==5.10.1 \
     --hash=sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7 \
     --hash=sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951
-    # via darker
+    # via -r requirements/develop.in
 jaraco-classes==3.2.3 \
     --hash=sha256:2353de3288bc6b82120752201c6b1c1a14b058267fa424ed5ce5984e3b922158 \
     --hash=sha256:89559fa5c1d3c34eff6f631ad80bb21f378dbcbb35dd161fd2c6b93f5be2f98a
@@ -368,7 +394,11 @@ mypy-extensions==0.4.3 \
 packaging==21.3 \
     --hash=sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb \
     --hash=sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522
-    # via build
+    # via
+    #   build
+    #   dparse
+    #   safety
+    #   tox
 pathspec==0.10.2 \
     --hash=sha256:88c2606f2c1e818b978540f73ecc908e13999c6c3a383daf3705652ae79807a5 \
     --hash=sha256:8f6bf73e5758fd365ef5d58ce09ac7c27d2833a8d7da51712eac6e27e35141b0
@@ -388,7 +418,21 @@ pkginfo==1.8.3 \
 platformdirs==2.5.4 \
     --hash=sha256:1006647646d80f16130f052404c6b901e80ee4ed6bef6792e1f238a8969106f7 \
     --hash=sha256:af0276409f9a02373d540bf8480021a048711d572745aef4b7842dad245eba10
-    # via black
+    # via
+    #   black
+    #   virtualenv
+pluggy==1.0.0 \
+    --hash=sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159 \
+    --hash=sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3
+    # via tox
+poetry-publish==0.5.0 \
+    --hash=sha256:41db2e004595051b4bc0ccd09017f5f81e0fa9b5673bb718ab3d26c2da5dd8f3 \
+    --hash=sha256:7ebc7782ee318c099715518177446122e3a752347cebf8883828e110b7da0e9d
+    # via -r requirements/develop.in
+py==1.11.0 \
+    --hash=sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719 \
+    --hash=sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378
+    # via tox
 pycodestyle==2.9.1 \
     --hash=sha256:2c9607871d58c76354b697b42f5d57e1ada7d261c261efac224b664affdc5785 \
     --hash=sha256:d1735fc58b418fd7c5f658d28d943854f8a849b01a5d0a1e6f3f3fdd0166804b
@@ -411,10 +455,10 @@ pyparsing==3.0.9 \
     --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
     --hash=sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc
     # via packaging
-pyproject-flake8==5.0.4.post1 \
-    --hash=sha256:457e52dde1b7a1f84b5230c70d61afa58ced64a44b81a609f19e972319fa68ed \
-    --hash=sha256:c2dfdf1064f47efbb2e4faf1a32b0b6a6ea67dc4d1debb98d862b0cdee377941
-    # via -r requirements/develop.in
+python-creole==1.4.10 \
+    --hash=sha256:6429aedc7cef578fe681d7781ad12dbea6ee54e03937b0e1b697e4cae5ff80bb \
+    --hash=sha256:dc24325f4ba2af3e8d73ca2905e4665df932af0cfe0ec95d5790d55a7c5c10e2
+    # via poetry-publish
 python-dateutil==2.8.2 \
     --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
     --hash=sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9
@@ -474,7 +518,9 @@ requests==2.28.1 \
     --hash=sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349
     # via
     #   cookiecutter
+    #   coveralls
     #   requests-toolbelt
+    #   safety
     #   twine
 requests-toolbelt==0.10.1 \
     --hash=sha256:18565aa58116d9951ac39baa288d3adb5b3ff975c4f25eee78555d89e8f247f7 \
@@ -491,6 +537,49 @@ rich==12.6.0 \
     #   -r requirements/production.in
     #   twine
     #   typer
+ruamel-yaml==0.17.21 \
+    --hash=sha256:742b35d3d665023981bd6d16b3d24248ce5df75fdb4e2924e93a05c1f8b61ca7 \
+    --hash=sha256:8b7ce697a2f212752a35c1ac414471dc16c424c9573be4926b56ff3f5d23b7af
+    # via safety
+ruamel-yaml-clib==0.2.7 \
+    --hash=sha256:045e0626baf1c52e5527bd5db361bc83180faaba2ff586e763d3d5982a876a9e \
+    --hash=sha256:15910ef4f3e537eea7fe45f8a5d19997479940d9196f357152a09031c5be59f3 \
+    --hash=sha256:184faeaec61dbaa3cace407cffc5819f7b977e75360e8d5ca19461cd851a5fc5 \
+    --hash=sha256:1f08fd5a2bea9c4180db71678e850b995d2a5f4537be0e94557668cf0f5f9497 \
+    --hash=sha256:2aa261c29a5545adfef9296b7e33941f46aa5bbd21164228e833412af4c9c75f \
+    --hash=sha256:3110a99e0f94a4a3470ff67fc20d3f96c25b13d24c6980ff841e82bafe827cac \
+    --hash=sha256:3243f48ecd450eddadc2d11b5feb08aca941b5cd98c9b1db14b2fd128be8c697 \
+    --hash=sha256:370445fd795706fd291ab00c9df38a0caed0f17a6fb46b0f607668ecb16ce763 \
+    --hash=sha256:40d030e2329ce5286d6b231b8726959ebbe0404c92f0a578c0e2482182e38282 \
+    --hash=sha256:4a4d8d417868d68b979076a9be6a38c676eca060785abaa6709c7b31593c35d1 \
+    --hash=sha256:4b3a93bb9bc662fc1f99c5c3ea8e623d8b23ad22f861eb6fce9377ac07ad6072 \
+    --hash=sha256:5bc0667c1eb8f83a3752b71b9c4ba55ef7c7058ae57022dd9b29065186a113d9 \
+    --hash=sha256:721bc4ba4525f53f6a611ec0967bdcee61b31df5a56801281027a3a6d1c2daf5 \
+    --hash=sha256:763d65baa3b952479c4e972669f679fe490eee058d5aa85da483ebae2009d231 \
+    --hash=sha256:7bdb4c06b063f6fd55e472e201317a3bb6cdeeee5d5a38512ea5c01e1acbdd93 \
+    --hash=sha256:8831a2cedcd0f0927f788c5bdf6567d9dc9cc235646a434986a852af1cb54b4b \
+    --hash=sha256:91a789b4aa0097b78c93e3dc4b40040ba55bef518f84a40d4442f713b4094acb \
+    --hash=sha256:92460ce908546ab69770b2e576e4f99fbb4ce6ab4b245345a3869a0a0410488f \
+    --hash=sha256:99e77daab5d13a48a4054803d052ff40780278240a902b880dd37a51ba01a307 \
+    --hash=sha256:a234a20ae07e8469da311e182e70ef6b199d0fbeb6c6cc2901204dd87fb867e8 \
+    --hash=sha256:a7b301ff08055d73223058b5c46c55638917f04d21577c95e00e0c4d79201a6b \
+    --hash=sha256:be2a7ad8fd8f7442b24323d24ba0b56c51219513cfa45b9ada3b87b76c374d4b \
+    --hash=sha256:bf9a6bc4a0221538b1a7de3ed7bca4c93c02346853f44e1cd764be0023cd3640 \
+    --hash=sha256:c3ca1fbba4ae962521e5eb66d72998b51f0f4d0f608d3c0347a48e1af262efa7 \
+    --hash=sha256:d000f258cf42fec2b1bbf2863c61d7b8918d31ffee905da62dede869254d3b8a \
+    --hash=sha256:d5859983f26d8cd7bb5c287ef452e8aacc86501487634573d260968f753e1d71 \
+    --hash=sha256:d5e51e2901ec2366b79f16c2299a03e74ba4531ddcfacc1416639c557aef0ad8 \
+    --hash=sha256:debc87a9516b237d0466a711b18b6ebeb17ba9f391eb7f91c649c5c4ec5006c7 \
+    --hash=sha256:df5828871e6648db72d1c19b4bd24819b80a755c4541d3409f0f7acd0f335c80 \
+    --hash=sha256:ecdf1a604009bd35c674b9225a8fa609e0282d9b896c03dd441a91e5f53b534e \
+    --hash=sha256:efa08d63ef03d079dcae1dfe334f6c8847ba8b645d08df286358b1f5293d24ab \
+    --hash=sha256:f01da5790e95815eb5a8a138508c01c758e5f5bc0ce4286c4f7028b8dd7ac3d0 \
+    --hash=sha256:f34019dced51047d6f70cb9383b2ae2853b7fc4dce65129a5acd49f4f9256646
+    # via ruamel-yaml
+safety==2.3.1 \
+    --hash=sha256:6e6fcb7d4e8321098cf289f59b65051cafd3467f089c6e57c9f894ae32c23b71 \
+    --hash=sha256:8f098d12b607db2756886280e85c28ece8db1bba4f45fc5f981f4663217bd619
+    # via -r requirements/develop.in
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
@@ -505,6 +594,7 @@ six==1.16.0 \
     # via
     #   bleach
     #   python-dateutil
+    #   tox
 text-unidecode==1.3 \
     --hash=sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8 \
     --hash=sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93
@@ -512,24 +602,33 @@ text-unidecode==1.3 \
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
     --hash=sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f
-    # via darker
+    # via
+    #   darker
+    #   dparse
 tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
     # via
+    #   -r requirements/develop.in
     #   black
     #   build
     #   mypy
     #   pep517
-    #   pyproject-flake8
+    #   tox
 tomlkit==0.11.6 \
     --hash=sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b \
     --hash=sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73
     # via -r requirements/production.in
+tox==3.27.1 \
+    --hash=sha256:b2a920e35a668cc06942ffd1cf3a4fb221a4d909ca72191fb6d84b0b18a7be04 \
+    --hash=sha256:f52ca66eae115fcfef0e77ef81fd107133d295c97c52df337adedb8dfac6ab84
+    # via -r requirements/develop.in
 twine==4.0.1 \
     --hash=sha256:42026c18e394eac3e06693ee52010baa5313e4811d5a11050e7d48436cf41b9e \
     --hash=sha256:96b1cf12f7ae611a4a40b6ae8e9570215daff0611828f5fe1f37a16255ab24a0
-    # via -r requirements/develop.in
+    # via
+    #   -r requirements/develop.in
+    #   poetry-publish
 typer[all]==0.7.0 \
     --hash=sha256:b5e704f4e48ec263de1c0b3a2387cd405a13767d2f907f44c1a08cbad96f606d \
     --hash=sha256:ff797846578a9f2a201b53442aedeb543319466870fbe1c701eab66dd7681165
@@ -544,6 +643,10 @@ urllib3==1.26.12 \
     # via
     #   requests
     #   twine
+virtualenv==20.16.7 \
+    --hash=sha256:8691e3ff9387f743e00f6bb20f70121f5e4f596cae754531f2b3b3a1b1ac696e \
+    --hash=sha256:efd66b00386fdb7dbe4822d172303f40cd05e50e01740b19ea42425cbe653e29
+    # via tox
 webencodings==0.5.1 \
     --hash=sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78 \
     --hash=sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923
@@ -565,4 +668,6 @@ pip==22.3.1 \
 setuptools==65.6.0 \
     --hash=sha256:6211d2f5eddad8757bd0484923ca7c0a6302ebc4ab32ea5e94357176e0ca0840 \
     --hash=sha256:d1eebf881c6114e51df1664bc2c9133d022f78d12d5f4f665b9191f084e2862d
-    # via pip-tools
+    # via
+    #   pip-tools
+    #   safety

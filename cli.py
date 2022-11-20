@@ -69,8 +69,7 @@ def venv_up2date():
 
 
 def verbose_check_call(*popen_args):
-    popen_args = [str(arg) for arg in popen_args]  # e.g.: Path() -> str
-    print(f'\n+ {" ".join(popen_args)}\n')
+    print(f'\n+ {" ".join(str(arg) for arg in popen_args)}\n')
     return subprocess.check_call(popen_args)
 
 
@@ -82,6 +81,8 @@ def main(argv):
         print('Create virtual env here:', VENV_PATH.absolute())
         builder = venv.EnvBuilder(symlinks=True, upgrade=True, with_pip=True)
         builder.create(env_dir=VENV_PATH)
+        # Update pip
+        verbose_check_call(PYTHON_PATH, '-m', 'pip', 'install', '-U', 'pip')
 
     if not PIP_SYNC_PATH.is_file():
         # Install pip-tools

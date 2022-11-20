@@ -1,4 +1,5 @@
 cookiecutter
 tomlkit
+bx_py_utils  # https://github.com/boxine/bx_py_utils
 rich
-typer[all]
+typer[all]  # https://github.com/tiangolo/typer

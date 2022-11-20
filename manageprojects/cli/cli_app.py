@@ -1,5 +1,6 @@
 import logging
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,7 @@ from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
 
 import manageprojects
+from manageprojects import __version__
 from manageprojects.cookiecutter_templates import (
     clone_managed_project,
     start_managed_project,
@@ -33,49 +35,35 @@ assert_is_dir(PACKAGE_ROOT)
 assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
 
 
-cli = typer.Typer()
+app = typer.Typer()
 
 
-def which(file_name: str) -> Path:
-    venv_bin_path = Path(sys.executable).parent
-    assert venv_bin_path.is_dir()
-    bin_path = venv_bin_path / file_name
-    if not bin_path.is_file():
-        raise FileNotFoundError(f'File {file_name}!r not found in {venv_bin_path}')
-    return bin_path
-
-
-@cli.command()
+@app.command()
 def mypy(verbose: bool = True):
     """Run Mypy (configured in pyproject.toml)"""
-    verbose_check_call(which('mypy'), '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
+    verbose_check_call('mypy', '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
 
 
-@cli.command()
+@app.command()
 def coverage(verbose: bool = True):
     """
     Run and show coverage.
     """
-    coverage_bin = which('coverage')
-    verbose_check_call(coverage_bin, 'run', verbose=verbose, exit_on_error=True)
-    verbose_check_call(
-        coverage_bin, 'report', '--fail-under=50', verbose=verbose, exit_on_error=True
-    )
-    verbose_check_call(coverage_bin, 'json', verbose=verbose, exit_on_error=True)
+    verbose_check_call('coverage', 'run', verbose=verbose, exit_on_error=True)
+    verbose_check_call('coverage', 'report', '--fail-under=50', verbose=verbose, exit_on_error=True)
+    verbose_check_call('coverage', 'json', verbose=verbose, exit_on_error=True)
 
 
-@cli.command()
+@app.command()
 def install():
     """
     Run pip-sync and install 'manageprojects' via pip as editable.
     """
-    pip_sync_bin = which('pip-sync')
-    pip_bin = which('pip')
-    verbose_check_call(pip_sync_bin, PACKAGE_ROOT / 'requirements' / 'develop.txt')
-    verbose_check_call(pip_bin, 'install', '-e', '.')
+    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements' / 'develop.txt')
+    verbose_check_call('pip', 'install', '-e', '.')
 
 
-@cli.command()
+@app.command()
 def update():
     """
     Update the development environment by calling:
@@ -84,7 +72,7 @@ def update():
     - pip-sync develop.txt
     """
     base_command = [
-        which('pip-compile'),
+        'pip-compile',
         '--verbose',
         '--upgrade',
         '--allow-unsafe',
@@ -102,11 +90,10 @@ def update():
         '--output-file',
         'requirements/production.txt',
     )
-    verbose_check_call(which('pip-sync'), 'requirements/develop.txt')
-    install()
+    verbose_check_call('pip-sync', 'requirements/develop.txt')
 
 
-@cli.command()
+@app.command()
 def version(no_color: bool = False):
     """Print version and exit"""
     if no_color:
@@ -122,7 +109,7 @@ def version(no_color: bool = False):
     print(current_hash)
 
 
-@cli.command()
+@app.command()
 def start_project(
     template: str,  # CookieCutter Template path or GitHub url
     output_dir: Path,  # Target path where CookieCutter should store the result files
@@ -165,7 +152,7 @@ def start_project(
     return result
 
 
-@cli.command()
+@app.command()
 def update_project(
     project_path: Path,
     password: Optional[str] = None,  # Optional password to use when extracting the repository
@@ -186,7 +173,7 @@ def update_project(
     )
 
 
-@cli.command()
+@app.command()
 def clone_project(
     project_path: Path,
     destination: Path,
@@ -209,7 +196,7 @@ def clone_project(
     )
 
 
-@cli.command()
+@app.command()
 def wiggle(project_path: Path, words: bool = False):
     """
     Run wiggle to merge *.rej in given directory.
@@ -245,12 +232,11 @@ def wiggle(project_path: Path, words: bool = False):
             continue
 
 
-@cli.command()
+@app.command()
 def publish():
     """
     Build and upload this project to PyPi
     """
-    log_config()
     test()  # Don't publish a broken state
 
     git = Git(cwd=PACKAGE_ROOT, detect_root=True)
@@ -258,16 +244,14 @@ def publish():
     # TODO: Add the checks from:
     #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
 
-    twine_bin = which('twine')
-
     dist_path = PACKAGE_ROOT / 'dist'
     if dist_path.exists():
         shutil.rmtree(dist_path)
 
     verbose_check_call(sys.executable, '-m', 'build')
-    verbose_check_call(twine_bin, 'check', 'dist/*')
+    verbose_check_call('twine', 'check', 'dist/*')
 
-    git_tag = f'v{manageprojects.__version__}'
+    git_tag = f'v{__version__}'
     print('\ncheck git tag')
     git_tags = git.tag_list()
     if git_tag in git_tags:
@@ -277,7 +261,7 @@ def publish():
     else:
         print('OK')
 
-    verbose_check_call(twine_bin, 'upload', 'dist/*')
+    verbose_check_call('twine', 'upload', 'dist/*')
 
     git.tag(git_tag, message=f'publish version {git_tag}')
     print('\ngit push tag to server')
@@ -295,37 +279,43 @@ def _call_darker(*, argv):
     # FileNotFoundError: [Errno 2] No such file or directory: 'flake8'
     #
     # Just add .venv/bin/ to PATH:
-    venv_path = PACKAGE_ROOT / '.venv' / 'bin'
-
-    assert_is_dir(venv_path)
+    venv_path = Path(sys.executable).parent
     assert_is_file(venv_path / 'flake8')
+    assert_is_file(venv_path / 'darker')
     venv_path = str(venv_path)
     if venv_path not in os.environ['PATH']:
         os.environ['PATH'] = venv_path + os.pathsep + os.environ['PATH']
 
-    darker_main(argv=argv)
+    print(f'Run "darker {shlex.join(str(part) for part in argv)}"...')
+    exit_code = darker_main(argv=argv)
+    print(f'darker exit code: {exit_code!r}')
+    return exit_code
 
 
-@cli.command()
+@app.command()
 def fix_code_style():
     """
     Fix code style via darker
     """
-    _call_darker(argv=['--color'])
+    exit_code = _call_darker(argv=['--color'])
+    sys.exit(exit_code)
 
 
-@cli.command()
+@app.command()
 def check_code_style(verbose: bool = True):
-    _call_darker(argv=['--color', '--check'])
+    darker_exit_code = _call_darker(argv=['--color', '--check'])
     if verbose:
         argv = ['--verbose']
     else:
         argv = []
 
-    flake8_main(argv=argv)
+    print(f'Run flake8 {shlex.join(str(part) for part in argv)}')
+    flake8_exit_code = flake8_main(argv=argv)
+    print(f'flake8 exit code: {flake8_exit_code!r}')
+    sys.exit(max(darker_exit_code, flake8_exit_code))
 
 
-@cli.command()  # Just add this command to help page
+@app.command()  # Just add this command to help page
 def test():
     """
     Run unittests
@@ -339,4 +329,5 @@ def main():
         # Just use the CLI from unittest with all available options and origin --help output ;)
         return test()
     else:
-        cli()
+        # Execute Typer App:
+        app()
