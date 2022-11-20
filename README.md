@@ -14,7 +14,7 @@ Mix the idea of Ansible with CookieCutter Templates and Django Migrations to man
 ```bash
 ~$ git clone https://github.com/jedie/manageprojects.git
 ~$ cd manageprojects
-~/manageprojects$ ./mp.py --help
+~/manageprojects$ ./cli.py --help
 
 + /home/jens/repos/manageprojects/.venv/bin/manageprojects --help
 

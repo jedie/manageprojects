@@ -33,13 +33,13 @@ jobs:
         path: ~/.cache/
         key: dot-cache-files
 
-    - name: 'Install'
+    - name: 'Bootstrap'
       run: |
-        python3 mp.py version
+        ./cli.py version
 
     - name: 'Run tests with Python v${{ matrix.python-version }}'
       run: |
-        python3 mp.py coverage
+        ./cli.py coverage
 
     - name: 'Upload coverage report'
       uses: codecov/codecov-action@v2
