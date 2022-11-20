@@ -21,10 +21,10 @@ class ProjectSetupTestCase(TestCase):
             current_version == pyproject_version
         ), f'{current_version!r} is not {pyproject_version!r}'
 
-        mp_bin = PACKAGE_ROOT / 'mp.py'
-        assert_is_file(mp_bin)
+        cli_bin = PACKAGE_ROOT / 'cli.py'
+        assert_is_file(cli_bin)
 
-        output = subprocess.check_output([mp_bin, 'version'], text=True)
+        output = subprocess.check_output([cli_bin, 'version'], text=True)
         assert f'manageprojects v{current_version}' in output
 
     def test_code_style(self):
