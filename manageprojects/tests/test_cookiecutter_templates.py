@@ -6,7 +6,7 @@ import yaml
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 
-from manageprojects.cli import clone_project
+from manageprojects.cli.cli_app import clone_project
 from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import (
     CookiecutterResult,

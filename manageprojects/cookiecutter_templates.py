@@ -100,7 +100,7 @@ def update_managed_project(
     meta: ManageProjectsMeta = toml.get_mp_meta()
 
     from_rev = meta.get_last_git_hash()
-    assert from_rev, f'Fail to get last gut hash from {toml.path}'
+    assert from_rev, f'Fail to get last git hash from {toml.path}'
 
     cookiecutter_context = meta.cookiecutter_context
     assert cookiecutter_context, f'Missing cookiecutter context in {toml.path}'

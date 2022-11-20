@@ -3,24 +3,20 @@ name = "manageprojects"
 version = "0.3.2"
 description = "Manage Python / Django projects"
 readme = "README.md"
-authors = [{name = 'Jens Diemer', email = 'python@jensdiemer.de'}]
-license = {text = "GNU General Public License v3.0"}
-requires-python = ">=3.9,<4.0.0"
+authors = [
+    {name = 'Jens Diemer', email = 'mamageprojects@jensdiemer.de'}
+]
+requires-python = ">=3.9,<4"
 
 [project.urls]
-"Homepage" = "https://github.com/jedie/manageproject"
-"Bug Tracker" = "https://github.com/jedie/manageproject/issues"
-
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["manageprojects*"]
-namespaces = false
-
+Documentation = "https://github.com/jedie/manageprojects"
+Source = "https://github.com/jedie/manageprojects"
 
 [project.scripts]
-manageprojects = "manageprojects.cli:main"
+manageprojects = "manageprojects.__main__:main"
 
+[tool.setuptools]
+packages = ["manageprojects"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
@@ -53,11 +49,20 @@ line_length=100
 lines_after_imports=2
 
 
+[tool.flake8]
+statistics = "True"
+ignore = ["D203" , "W503"]
+max-line-length = 119
+exclude = '''
+    .git,
+'''
+
+
 [tool.coverage.run]
 branch = true
 source = ['.']
 omit = ['.*', '*/tests/*']
-command_line = "-m unittest"
+command_line = '-m unittest --locals --verbose'
 
 [tool.coverage.report]
 skip_empty = true
@@ -75,3 +80,22 @@ exclude = [
     'tests',
     'manageprojects/project_templates',
 ]
+
+
+[manageprojects] # https://github.com/jedie/manageprojects
+initial_revision = "8438598"
+initial_date = 2022-11-20T20:01:37+01:00
+cookiecutter_template = "https://github.com/jedie/cookiecutter_templates"
+cookiecutter_directory = "piptools-python"
+
+[manageprojects.cookiecutter_context.cookiecutter]
+full_name = "Jens Diemer"
+github_username = "jedie"
+author_email = "mamageprojects@jensdiemer.de"
+package_name = "manageprojects"
+package_version = "0.3.2"
+package_description = "Manage Python / Django projects"
+package_url = "https://github.com/jedie/manageprojects"
+issues_url = "https://github.com/jedie/manageprojects/issues"
+license = "GPL-3.0-or-later"
+_template = "https://github.com/jedie/cookiecutter_templates"

@@ -2,34 +2,46 @@ import subprocess
 from pathlib import Path
 from unittest import TestCase
 
+import tomli
 from bx_py_utils.path import assert_is_file
 
 import manageprojects
-from manageprojects.cli import PACKAGE_ROOT, check_code_style, fix_code_style, mypy
-from manageprojects.utilities.pyproject_toml import toml_load
+from manageprojects import __version__
+from manageprojects.cli.cli_app import check_code_style, fix_code_style
+
+
+PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
 
 
 class ProjectSetupTestCase(TestCase):
-
     def test_version(self):
         pyproject_toml_path = Path(PACKAGE_ROOT, 'pyproject.toml')
-        pyproject_toml = toml_load(pyproject_toml_path)
+        assert_is_file(pyproject_toml_path)
+
+        self.assertIsNotNone(__version__)
+
+        pyproject_toml = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
         pyproject_version = pyproject_toml['project']['version']
 
-        current_version = manageprojects.__version__
-        assert (
-            current_version == pyproject_version
-        ), f'{current_version!r} is not {pyproject_version!r}'
+        self.assertEqual(__version__, pyproject_version)
 
         cli_bin = PACKAGE_ROOT / 'cli.py'
         assert_is_file(cli_bin)
 
         output = subprocess.check_output([cli_bin, 'version'], text=True)
-        assert f'manageprojects v{current_version}' in output
+        self.assertIn(f'manageprojects v{__version__}', output)
 
     def test_code_style(self):
-        fix_code_style()
-        check_code_style(verbose=False)
+        try:
+            fix_code_style()
+        except SystemExit as err:
+            self.assertEqual(err.code, 0)
+        else:
+            raise AssertionError('No sys.exit() !')
 
-    def test_mypy(self):
-        mypy(verbose=False)
+        try:
+            check_code_style(verbose=False)
+        except SystemExit as err:
+            self.assertEqual(err.code, 0)
+        else:
+            raise AssertionError('No sys.exit() !')
