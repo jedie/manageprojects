@@ -1,0 +1,35 @@
+                                                                                                    
+ Usage: ./cli.py start-project [OPTIONS] [TEMPLATE] [OUTPUT_DIR]                                    
+                                                                                                    
+ Start a new "managed" project via a CookieCutter Template                                          
+                                                                                                    
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
+│   template        [TEMPLATE]    CookieCutter Template path or GitHub url. *Must* be a git based  │
+│                                 template!                                                        │
+│                                 [default: None]                                                  │
+│   output_dir      [OUTPUT_DIR]  Target path where CookieCutter should store the result files     │
+│                                 [default: None]                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --directory                     TEXT  Cookiecutter Option: Directory within repo that holds      │
+│                                       cookiecutter.json file for advanced repositories with      │
+│                                       multi templates in it                                      │
+│                                       [default: None]                                            │
+│ --checkout                      TEXT  Cookiecutter Option: branch, tag or commit to checkout     │
+│                                       after git clone                                            │
+│                                       [default: None]                                            │
+│ --no-input       --input              Cookiecutter Option: Do not prompt for parameters and only │
+│                                       use cookiecutter.json file content                         │
+│                                       [default: input]                                           │
+│ --replay         --no-replay          Cookiecutter Option: Do not prompt for parameters and only │
+│                                       use information entered previously                         │
+│                                       [default: no-replay]                                       │
+│ --password                      TEXT  Cookiecutter Option: Password to use when extracting the   │
+│                                       repository                                                 │
+│                                       [default: None]                                            │
+│ --config-file                   FILE  Cookiecutter Option: Optional path to                      │
+│                                       "cookiecutter_config.yaml"                                 │
+│                                       [default: None]                                            │
+│ --help                                Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
