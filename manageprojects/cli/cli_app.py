@@ -111,14 +111,54 @@ def version(no_color: bool = False):
 
 @app.command()
 def start_project(
-    template: str,  # CookieCutter Template path or GitHub url
-    output_dir: Path,  # Target path where CookieCutter should store the result files
-    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
-    checkout: Optional[str] = None,
-    no_input: bool = False,
-    replay: bool = False,
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    template: str = typer.Argument(
+        default=None,
+        help='CookieCutter Template path or GitHub url. *Must* be a git based template!',
+    ),
+    output_dir: Path = typer.Argument(
+        default=None,
+        exists=False,
+        file_okay=False,
+        dir_okay=True,
+        help='Target path where CookieCutter should store the result files',
+    ),
+    directory: Optional[str] = typer.Option(
+        default=None,
+        help=(
+            'Cookiecutter Option: Directory within repo that holds cookiecutter.json file'
+            ' for advanced repositories with multi templates in it'
+        ),
+    ),
+    checkout: Optional[str] = typer.Option(
+        default=None,
+        help='Cookiecutter Option: branch, tag or commit to checkout after git clone',
+    ),
+    no_input: bool = typer.Option(
+        False,
+        '--no-input/--input',
+        help=(
+            'Cookiecutter Option: Do not prompt for parameters'
+            ' and only use cookiecutter.json file content'
+        ),
+    ),
+    replay: bool = typer.Option(
+        default=False,
+        help=(
+            'Cookiecutter Option: Do not prompt for parameters'
+            ' and only use information entered previously'
+        ),
+    ),
+    password: Optional[str] = typer.Option(
+        default=None,
+        help='Cookiecutter Option: Password to use when extracting the repository',
+    ),
+    config_file: Optional[Path] = typer.Option(
+        default=None,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
+    ),
 ):
     """
     Start a new "managed" project via a CookieCutter Template
@@ -154,11 +194,36 @@ def start_project(
 
 @app.command()
 def update_project(
-    project_path: Path,
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
-    cleanup: bool = True,  # Cleanup created files in /tmp/
-    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+    project_path: Path = typer.Argument(
+        default=None,
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        help=(
+            'Path to the project source code that should be update'
+            ' with Cookiecutter template changes'
+        ),
+    ),
+    password: Optional[str] = typer.Option(
+        default=None,
+        help='Cookiecutter Option: Password to use when extracting the repository',
+    ),
+    config_file: Optional[Path] = typer.Option(
+        default=None,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
+    ),
+    no_input: bool = typer.Option(
+        False,
+        '--no-input/--input',
+        help=(
+            'Cookiecutter Option: Do not prompt for parameters'
+            ' and only use cookiecutter.json file content'
+        ),
+    ),
+    cleanup: bool = typer.Option(default=True, help='Cleanup created temporary files'),
 ):
     """
     Update a existing project.
