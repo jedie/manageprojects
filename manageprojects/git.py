@@ -51,11 +51,21 @@ class Git:
 
     def git_verbose_check_call(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
-        return verbose_check_call(*popenargs, cwd=self.cwd, **kwargs)
+        return verbose_check_call(
+            *popenargs,
+            cwd=self.cwd,
+            env=dict(),  # Empty env -> no translated git command output ;)
+            **kwargs,
+        )
 
     def git_verbose_check_output(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
-        return verbose_check_output(*popenargs, cwd=self.cwd, **kwargs)
+        return verbose_check_output(
+            *popenargs,
+            cwd=self.cwd,
+            env=dict(),  # Empty env -> no translated git command output ;)
+            **kwargs,
+        )
 
     def git_verbose_output(
         self, *popenargs, exit_on_error=False, ignore_process_error=True, **kwargs
