@@ -143,6 +143,7 @@ def verbose_check_call(
     extra_env=None,
     exit_on_error=False,
     timeout=DEFAULT_TIMEOUT,
+    env=None,
     **kwargs,
 ):
     """'verbose' version of subprocess.check_call()"""
@@ -152,7 +153,9 @@ def verbose_check_call(
     if verbose:
         _print_info(popenargs, cwd=cwd, kwargs=kwargs)
 
-    env = os.environ.copy()
+    if env is None:
+        env = os.environ.copy()
+
     if extra_env:
         env.update(extra_env)
 
@@ -180,6 +183,7 @@ def verbose_check_output(
     extra_env=None,
     exit_on_error=False,
     timeout=DEFAULT_TIMEOUT,
+    env=None,
     **kwargs,
 ):
     """'verbose' version of subprocess.check_output()"""
@@ -189,7 +193,9 @@ def verbose_check_output(
     if verbose:
         _print_info(popenargs, cwd=cwd, kwargs=kwargs)
 
-    env = os.environ.copy()
+    if env is None:
+        env = os.environ.copy()
+
     if extra_env:
         env.update(extra_env)
 

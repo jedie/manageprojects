@@ -80,6 +80,7 @@ def update():
         '--upgrade',
         '--allow-unsafe',
         '--generate-hashes',
+        '--resolver=backtracking',
         'requirements/production.in',
     ]
     verbose_check_call(  # develop + production
