@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 import subprocess  # nosec B404
 from pathlib import Path
 from shutil import which
@@ -49,12 +50,17 @@ class Git:
         if not self.git_bin:
             raise GitBinNotFoundError()
 
+        self.env = dict(os.environ)
+        # no translated git command output ;)
+        self.env['LANG'] = 'en_US.UTF-8'
+        self.env['LANGUAGE'] = 'en_US'
+
     def git_verbose_check_call(self, *popenargs, **kwargs):
         popenargs = [self.git_bin, *popenargs]
         return verbose_check_call(
             *popenargs,
             cwd=self.cwd,
-            env=dict(),  # Empty env -> no translated git command output ;)
+            env=self.env,
             **kwargs,
         )
 
@@ -63,7 +69,7 @@ class Git:
         return verbose_check_output(
             *popenargs,
             cwd=self.cwd,
-            env=dict(),  # Empty env -> no translated git command output ;)
+            env=self.env,
             **kwargs,
         )
 

@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.3.3"
+version = "0.4.0rc1"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
@@ -15,8 +15,9 @@ Source = "https://github.com/jedie/manageprojects"
 [project.scripts]
 manageprojects = "manageprojects.__main__:main"
 
-[tool.setuptools]
-packages = ["manageprojects"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["manageprojects*"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
