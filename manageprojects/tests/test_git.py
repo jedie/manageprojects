@@ -63,8 +63,8 @@ class GitTestCase(TestCase):
 
         commit_date = git.get_commit_date(verbose=False)
         self.assertIsInstance(commit_date, datetime.datetime)
-        self.assertGreater(commit_date, parse_dt('2022-10-25T00:00:00+0000'))
-        self.assertLess(commit_date, parse_dt('2023-01-01T00:00:00+0000'))  # ;)
+        self.assertGreater(commit_date, parse_dt('2023-01-01T00:00:00+0000'))
+        self.assertLess(commit_date, parse_dt('2024-01-01T00:00:00+0000'))  # ;)
 
     def test_init_git(self):
         with TemporaryDirectory(prefix='test_init_git_') as temp_path:
