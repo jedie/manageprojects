@@ -15,8 +15,9 @@ Source = "https://github.com/jedie/manageprojects"
 [project.scripts]
 manageprojects = "manageprojects.__main__:main"
 
-[tool.setuptools]
-packages = ["manageprojects"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["manageprojects*"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
