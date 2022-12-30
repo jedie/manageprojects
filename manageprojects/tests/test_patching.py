@@ -8,6 +8,7 @@ from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 from manageprojects.data_classes import GenerateTemplatePatchResult
 from manageprojects.patching import generate_template_patch, make_git_diff
 from manageprojects.test_utils.git_utils import init_git
+from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
@@ -33,12 +34,14 @@ class PatchingTestCase(BaseTestCase):
             Path(from_path, 'old_name.txt').write_text(renamed_file_content)
             Path(to_path, 'new_name.txt').write_text(renamed_file_content)
 
-            patch = make_git_diff(
-                temp_path=main_temp_path,
-                from_path=from_path,
-                to_path=to_path,
-                verbose=True,
-            )
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                patch = make_git_diff(
+                    temp_path=main_temp_path,
+                    from_path=from_path,
+                    to_path=to_path,
+                    verbose=True,
+                )
+            logs.assert_in('old_name.txt', 'new_name.txt')
             self.assertIn('diff --git a/file1.txt b/file1.txt', patch)
             self.assertIn('-Rev 1', patch)
             self.assertIn('+Rev 2', patch)
@@ -104,15 +107,17 @@ class PatchingTestCase(BaseTestCase):
             )
             self.assertFalse(patch_file_path.exists())
 
-            result = generate_template_patch(
-                project_path=project_path,
-                template=str(repo_path),
-                directory=None,
-                from_rev=from_rev,
-                replay_context={},
-                cleanup=False,  # Keep temp files if this test fails, for better debugging
-                no_input=True,  # No user input in tests ;)
-            )
+            with AssertLogs(self) as logs:
+                result = generate_template_patch(
+                    project_path=project_path,
+                    template=str(repo_path),
+                    directory=None,
+                    from_rev=from_rev,
+                    replay_context={},
+                    cleanup=False,  # Keep temp files if this test fails, for better debugging
+                    no_input=True,  # No user input in tests ;)
+                )
+            logs.assert_in("Call 'cookiecutter'", 'Write patch file')
             self.assertIsInstance(result, GenerateTemplatePatchResult)
 
             self.assertEqual(result.patch_file_path, patch_file_path)

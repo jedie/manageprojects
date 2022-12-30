@@ -2,21 +2,25 @@ import atexit
 import logging
 import tempfile
 
+from bx_py_utils.test_utils.log_utils import RaiseLogUsage
 
-def logger_setup(*, logger_name, level, format, log_filename):
+
+def logger_setup(*, logger_name, level, format, log_filename, raise_log_output):
     logger = logging.getLogger(logger_name)
     is_configured = logger.handlers and logger.level
     if not is_configured:
         logger.setLevel(level)
 
-        if log_filename:
-            ch = logging.FileHandler(filename=log_filename)
+        if raise_log_output:
+            handler = RaiseLogUsage()
+        elif log_filename:
+            handler = logging.FileHandler(filename=log_filename)
         else:
-            ch = logging.StreamHandler()
-        ch.setLevel(level)
-        ch.setFormatter(logging.Formatter(format))
+            handler = logging.StreamHandler()
+        handler.setLevel(level)
+        handler.setFormatter(logging.Formatter(format))
 
-        logger.addHandler(ch)
+        logger.addHandler(handler)
 
 
 def print_log_info(filename):
@@ -27,6 +31,7 @@ def log_config(
     level=logging.DEBUG,
     format='%(asctime)s %(levelname)s %(name)s.%(funcName)s %(lineno)d | %(message)s',
     log_in_file=True,
+    raise_log_output=False,
 ):
     if log_in_file:
         log_file = tempfile.NamedTemporaryFile(
@@ -41,12 +46,14 @@ def log_config(
         level=level,
         format=format,
         log_filename=log_filename,
+        raise_log_output=raise_log_output,
     )
     logger_setup(
         logger_name='cookiecutter',
         level=level,
         format=format,
         log_filename=log_filename,
+        raise_log_output=raise_log_output,
     )
 
     if log_filename:
