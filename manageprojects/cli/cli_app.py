@@ -389,8 +389,21 @@ def test():
     """
     Run unittests
     """
+    args = sys.argv[2:]
+    if not args:
+        args = ('--verbose', '--locals', '--buffer')
     # Use the CLI from unittest module and pass all args to it:
-    verbose_check_call(sys.executable, '-m', 'unittest', *sys.argv[2:])
+    verbose_check_call(
+        sys.executable,
+        '-m',
+        'unittest',
+        *args,
+        timeout=15 * 60,
+        extra_env=dict(
+            PYTHONUNBUFFERED='1',
+            PYTHONWARNINGS='always',
+        ),
+    )
 
 
 def main():

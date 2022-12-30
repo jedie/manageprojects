@@ -14,6 +14,7 @@ from manageprojects.data_classes import (
     ManageProjectsMeta,
 )
 from manageprojects.test_utils.git_utils import init_git
+from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 from manageprojects.utilities.temp_path import TemporaryDirectory
@@ -44,17 +45,20 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             assert cookiecutter_output_dir.exists() is False
             assert cookiecutters_dir.exists() is False
 
-            result: CookiecutterResult = start_managed_project(
-                template=cookiecutter_template,
-                output_dir=cookiecutter_output_dir,
-                no_input=True,
-                directory=directory,
-                config_file=config_file_path,
-                extra_context={
-                    'dir_name': 'a_dir_name',
-                    'file_name': 'a_file_name',
-                },
-            )
+            with AssertLogs(self) as logs:
+                result: CookiecutterResult = start_managed_project(
+                    template=cookiecutter_template,
+                    output_dir=cookiecutter_output_dir,
+                    no_input=True,
+                    directory=directory,
+                    config_file=config_file_path,
+                    extra_context={
+                        'dir_name': 'a_dir_name',
+                        'file_name': 'a_file_name',
+                    },
+                )
+            logs.assert_in('Cookiecutter generated here', cookiecutter_output_dir)
+
             self.assertIsInstance(result, CookiecutterResult)
             git_path = cookiecutters_dir / repro_name
             self.assertEqual(result.git_path, git_path)
@@ -80,8 +84,10 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             project_path = cookiecutter_output_dir / 'a_dir_name'
 
             # pyproject.toml created?
-            toml = PyProjectToml(project_path=project_path)
-            result: ManageProjectsMeta = toml.get_mp_meta()
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                toml = PyProjectToml(project_path=project_path)
+                result: ManageProjectsMeta = toml.get_mp_meta()
+            logs.assert_in('Read existing pyproject.toml')
             self.assertIsInstance(result, ManageProjectsMeta)
             self.assertEqual(
                 result,
@@ -105,8 +111,14 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             # Test clone a existing project
 
             cloned_path = main_temp_path / 'cloned_project'
-            clone_result: CookiecutterResult = clone_project(
-                project_path=project_path, destination=cloned_path, no_input=True
+            with AssertLogs(self) as logs:
+                clone_result: CookiecutterResult = clone_project(
+                    project_path=project_path, destination=cloned_path, no_input=True
+                )
+            logs.assert_in(
+                'Read existing pyproject.toml',
+                "Call 'cookiecutter'",
+                'Create new pyproject.toml',
             )
             self.assertEqual(
                 clone_result.cookiecutter_context,
@@ -123,8 +135,10 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             self.assertEqual(clone_result.destination_path, end_path)
 
             # pyproject.toml created?
-            toml = PyProjectToml(project_path=end_path)
-            result: ManageProjectsMeta = toml.get_mp_meta()
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                toml = PyProjectToml(project_path=end_path)
+                result: ManageProjectsMeta = toml.get_mp_meta()
+            logs.assert_in('Read existing pyproject.toml')
             self.assertIsInstance(result, ManageProjectsMeta)
             self.assertEqual(
                 result,
@@ -204,13 +218,15 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             git, from_rev = init_git(template_path, comment='Git init template.')
             from_date = git.get_commit_date(verbose=False)
 
-            toml = PyProjectToml(project_path=project_path)
-            toml.init(
-                revision=from_rev,
-                dt=from_date,
-                template=str(template_path),
-                directory=template_dir_name,
-            )
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                toml = PyProjectToml(project_path=project_path)
+                toml.init(
+                    revision=from_rev,
+                    dt=from_date,
+                    template=str(template_path),
+                    directory=template_dir_name,
+                )
+            logs.assert_in('Create new pyproject.toml')
             toml.create_or_update_cookiecutter_context(context=context)
             toml.save()
             toml_content = toml.path.read_text()
@@ -249,12 +265,18 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             )
             self.assertFalse(patch_file_path.exists())
 
-            result = update_managed_project(
-                project_path=project_path,
-                password=None,
-                config_file=config_file_path,
-                cleanup=False,  # Keep temp files if this test fails, for better debugging
-                no_input=True,  # No user input in tests ;)
+            with AssertLogs(self) as logs:
+                result = update_managed_project(
+                    project_path=project_path,
+                    password=None,
+                    config_file=config_file_path,
+                    cleanup=False,  # Keep temp files if this test fails, for better debugging
+                    no_input=True,  # No user input in tests ;)
+                )
+            logs.assert_in(
+                'No temp files cleanup',
+                'Cookiecutter generated',
+                'Read existing pyproject.toml',
             )
 
             self.assert_file_content(
@@ -294,7 +316,9 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             )
 
             # Check updated toml file:
-            toml = PyProjectToml(project_path=project_path)
-            mp_meta: ManageProjectsMeta = toml.get_mp_meta()
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                toml = PyProjectToml(project_path=project_path)
+                mp_meta: ManageProjectsMeta = toml.get_mp_meta()
+            logs.assert_in('Read existing pyproject.toml')
             self.assertEqual(mp_meta.initial_revision, from_rev)
             self.assertEqual(mp_meta.applied_migrations, [to_rev])

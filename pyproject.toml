@@ -62,7 +62,7 @@ exclude = '''
 branch = true
 source = ['.']
 omit = ['.*', '*/tests/*']
-command_line = '-m unittest --locals --verbose'
+command_line = '-m unittest --verbose --locals --buffer'
 
 [tool.coverage.report]
 skip_empty = true

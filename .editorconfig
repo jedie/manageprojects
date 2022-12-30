@@ -9,12 +9,6 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{bat,cmd,ps1}]
-end_of_line = crlf
-
-[*.{html,css,js}]
-insert_final_newline = false
-
 [*.py]
 max_line_length = 100
 
@@ -23,4 +17,4 @@ indent_style = tab
 insert_final_newline = false
 
 [*.yml]
-indent_style = tab
+indent_size = 2

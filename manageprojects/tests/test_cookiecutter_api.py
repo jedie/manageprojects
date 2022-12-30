@@ -4,6 +4,7 @@ from pathlib import Path
 from bx_py_utils.path import assert_is_dir
 
 from manageprojects.cookiecutter_api import get_repo_path
+from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 
 
@@ -13,11 +14,14 @@ class CookiecutterApiTestCase(BaseTestCase):
         cookiecutter_template = f'https://github.com/jedie/{repro_name}/'
         directory = 'test_template1'
 
-        repo_path = get_repo_path(
-            template=cookiecutter_template,
-            directory=directory,
-            checkout='84d23bf',  # Old version
-        )
+        with AssertLogs(self) as logs:
+            repo_path = get_repo_path(
+                template=cookiecutter_template,
+                directory=directory,
+                checkout='84d23bf',  # Old version
+            )
+        logs.assert_in('repo_dir', repo_path)
+
         self.assertIsInstance(repo_path, Path)
         self.assertEqual(repo_path.name, directory)
         assert_is_dir(repo_path.parent / '.git')
@@ -34,11 +38,14 @@ class CookiecutterApiTestCase(BaseTestCase):
             ),
         )
 
-        repo_path = get_repo_path(
-            template=cookiecutter_template,
-            directory=directory,
-            checkout=None,  # Current main branch
-        )
+        with AssertLogs(self) as logs:
+            repo_path = get_repo_path(
+                template=cookiecutter_template,
+                directory=directory,
+                checkout=None,  # Current main branch
+            )
+        logs.assert_in('repo_dir', repo_path)
+
         self.assertIsInstance(repo_path, Path)
         self.assertEqual(repo_path.name, directory)
         assert_is_dir(repo_path.parent / '.git')
