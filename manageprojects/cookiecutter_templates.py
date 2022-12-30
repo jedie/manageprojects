@@ -140,7 +140,7 @@ def update_managed_project(
             print('Seems that the patch was not applied correctly!')
             print('Hint: run wiggle on the project:')
             print()
-            print(f'./mp wiggle {project_path}')
+            print(f'./cli.py wiggle {project_path}')
             print()
 
     #############################################################################
