@@ -16,6 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.10", "3.9"]
+    env:
+      PYTHONUNBUFFERED: 1
+      PYTHONWARNINGS: always
     steps:
     - uses: actions/checkout@v2
       with:
