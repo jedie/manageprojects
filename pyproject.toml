@@ -1,12 +1,34 @@
 [project]
 name = "manageprojects"
-version = "0.4.0rc1"
+version = "0.4.0rc2"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
     {name = 'Jens Diemer', email = 'mamageprojects@jensdiemer.de'}
 ]
 requires-python = ">=3.9,<4"
+dependencies = [
+    "cookiecutter",
+    "tomlkit",
+    "bx_py_utils",  # https://github.com/boxine/bx_py_utils
+    "rich",
+    "typer[all]",  # https://github.com/tiangolo/typer
+]
+[project.optional-dependencies]
+dev = [
+    "pip-tools",  # https://github.com/jazzband/pip-tools/
+    "tox",  # https://github.com/tox-dev/tox
+    "coveralls",  # https://github.com/TheKevJames/coveralls-python
+    "darker",  # https://github.com/akaihola/pytest-darker
+    "isort",  # https://github.com/pycqa/isort
+    "flake8",  # https://github.com/pycqa/flake8
+    "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
+    "safety",  # https://github.com/pyupio/safety
+    "mypy",  # https://github.com/python/mypy
+    "tomli",  # https://github.com/hukkin/tomli
+    "twine",  # https://github.com/pypa/twine
+    "poetry-publish",  # https://github.com/jedie/poetry-publish
+]
 
 [project.urls]
 Documentation = "https://github.com/jedie/manageprojects"

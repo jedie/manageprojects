@@ -81,20 +81,21 @@ def update():
         '--allow-unsafe',
         '--generate-hashes',
         '--resolver=backtracking',
-        'requirements/production.in',
+        'pyproject.toml',
     ]
     verbose_check_call(  # develop + production
         *base_command,
-        'requirements/develop.in',
+        '--extra',
+        'dev',
         '--output-file',
-        'requirements/develop.txt',
+        'requirements.develop.txt',
     )
     verbose_check_call(  # production only
         *base_command,
         '--output-file',
-        'requirements/production.txt',
+        'requirements.txt',
     )
-    verbose_check_call('pip-sync', 'requirements/develop.txt')
+    verbose_check_call('pip-sync', 'requirements.develop.txt')
 
 
 @app.command()
