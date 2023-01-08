@@ -16,6 +16,7 @@
 │ install           Run pip-sync and install 'manageprojects' via pip as editable.                 │
 │ mypy              Run Mypy (configured in pyproject.toml)                                        │
 │ publish           Build and upload this project to PyPi                                          │
+│ reverse           Create a cookiecutter template from a managed project.                         │
 │ start-project     Start a new "managed" project via a CookieCutter Template                      │
 │ test              Run unittests                                                                  │
 │ update            Update the development environment by calling: - pip-compile production.in     │

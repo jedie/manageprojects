@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.4.0"
+version = "0.5.0"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
@@ -13,6 +13,7 @@ dependencies = [
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "rich",
     "typer[all]",  # https://github.com/tiangolo/typer
+    "pathspec",  # https://github.com/cpburnz/python-pathspec
 ]
 [project.optional-dependencies]
 dev = [
