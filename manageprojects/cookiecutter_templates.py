@@ -7,6 +7,7 @@ from typing import Optional
 from rich import print as rprint
 
 from manageprojects.cookiecutter_api import execute_cookiecutter
+from manageprojects.cookiecutter_generator import create_cookiecutter_template
 from manageprojects.data_classes import (
     CookiecutterResult,
     GenerateTemplatePatchResult,
@@ -227,3 +228,29 @@ def clone_managed_project(
     )
     print(f'{project_path} successfully cloned to {destination_path}')
     return result
+
+
+def reverse_managed_project(
+    *,
+    project_path: Path,
+    destination: Path,
+):
+    """
+    Create a cookiecutter template from a managed project.
+    """
+    rprint(f'Create cookiecutter template from {project_path} in {destination}')
+    if destination.exists():
+        print(f'ERROR: Destination {destination} already exists!')
+        sys.exit(1)
+
+    toml = PyProjectToml(project_path=project_path)
+    meta: ManageProjectsMeta = toml.get_mp_meta()
+
+    cookiecutter_context = meta.cookiecutter_context
+    assert cookiecutter_context, f'Missing cookiecutter context in {toml.path}'
+
+    create_cookiecutter_template(
+        source_path=project_path,
+        destination=destination,
+        cookiecutter_context=cookiecutter_context,
+    )

@@ -18,6 +18,7 @@ import manageprojects
 from manageprojects import __version__
 from manageprojects.cookiecutter_templates import (
     clone_managed_project,
+    reverse_managed_project,
     start_managed_project,
     update_managed_project,
 )
@@ -263,6 +264,21 @@ def clone_project(
         password=password,
         config_file=config_file,
         no_input=no_input,
+    )
+
+
+@app.command()
+def reverse(
+    project_path: Path,
+    destination: Path,
+):
+    """
+    Create a cookiecutter template from a managed project.
+    """
+    log_config()
+    return reverse_managed_project(
+        project_path=project_path,
+        destination=destination,
     )
 
 

@@ -109,6 +109,14 @@ Just run `wiggle` via manageproject CLI, e.g.:
 ```
 
 
+## Helper: Reverse a project into a Cookiecutter template
+
+A existing managed project can be converted back to a Cookiecutter template, e.g.:
+```bash
+~/manageprojects$ ./cli.py reverse ~/my_new_project/ ~/cookiecutter_template/
+```
+
+
 ## Links
 
 * Own Cookiecutter Templates: https://github.com/jedie/cookiecutter_templates
