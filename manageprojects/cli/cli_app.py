@@ -63,7 +63,7 @@ def install():
     """
     Run pip-sync and install 'manageprojects' via pip as editable.
     """
-    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements' / 'develop.txt')
+    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements.develop.txt')
     verbose_check_call('pip', 'install', '-e', '.')
 
 
