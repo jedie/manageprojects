@@ -1,4 +1,5 @@
 import datetime
+from collections.abc import Iterable
 from pathlib import Path
 from pprint import pprint
 from unittest import TestCase
@@ -47,6 +48,16 @@ class BaseTestCase(TestCase):
             print(got)
             print('-' * 79)
             raise
+
+    def assert_in_content(self, *, got: str, parts: Iterable[str]):
+        assert parts
+        missing_parts = [part for part in parts if part not in got]
+        if missing_parts:
+            print('-' * 79)
+            print(got)
+            print('-' * 79)
+            info = ', '.join(repr(part) for part in missing_parts)
+            raise AssertionError(f'Text parts: {info} not found in: {got!r}')
 
     def assert_file_content(self, path: Path, content: str):
         assert_is_file(path)
