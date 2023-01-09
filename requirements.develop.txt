@@ -34,9 +34,9 @@ build==0.9.0 \
     --hash=sha256:1a07724e891cbd898923145eb7752ee7653674c511378eb9c7691aab1612bc3c \
     --hash=sha256:38a7a2b7a0bdc61a42a0a67509d88c71ecfc37b393baba770fae34e20929ff69
     # via pip-tools
-bx-py-utils==72 \
-    --hash=sha256:b933f9f12fab0f4d663dc5be04b3d6eecad40415412aef747ad45bd443a78737 \
-    --hash=sha256:f7d60285243c25645c79a4a67e36be217c90590e90ec8d2274b1a0b62f31f534
+bx-py-utils==73 \
+    --hash=sha256:22a87c395564c32314a0760d1b4387ded835b9e1cf1e15a3e693eb60afb7a33b \
+    --hash=sha256:a9d6f25c7a80098439e4ebe21a798f60ffe33b6022542542ad4510355edf189b
     # via manageprojects (pyproject.toml)
 cachetools==5.2.1 \
     --hash=sha256:5991bc0e08a1319bb618d3195ca5b6bc76646a49c21d55962977197b301cc1fe \

@@ -1,13 +1,12 @@
-import contextlib
 import datetime
 import filecmp
 import inspect
-import io
 import shutil
 from pathlib import Path
 from unittest import TestCase
 
 from bx_py_utils.test_utils.datetime import parse_dt
+from bx_py_utils.test_utils.redirect import RedirectOut
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
 from manageprojects import __version__
@@ -55,11 +54,11 @@ class GitTestCase(TestCase):
         git_hash = git.get_current_hash(verbose=False)
         self.assertEqual(len(git_hash), 7, f'Wrong: {git_hash!r}')
 
-        with contextlib.redirect_stdout(io.StringIO()) as buffer:
+        with RedirectOut() as buffer:
             version(no_color=True)
 
-        output = buffer.getvalue()
-        self.assertEqual(output, f'manageprojects v{__version__} {git_hash}\n')
+        self.assertEqual(buffer.stderr, '')
+        self.assertEqual(buffer.stdout, f'manageprojects v{__version__} {git_hash}\n')
 
         commit_date = git.get_commit_date(verbose=False)
         self.assertIsInstance(commit_date, datetime.datetime)
