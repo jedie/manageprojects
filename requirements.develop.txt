@@ -34,9 +34,9 @@ build==0.9.0 \
     --hash=sha256:1a07724e891cbd898923145eb7752ee7653674c511378eb9c7691aab1612bc3c \
     --hash=sha256:38a7a2b7a0bdc61a42a0a67509d88c71ecfc37b393baba770fae34e20929ff69
     # via pip-tools
-bx-py-utils==73 \
-    --hash=sha256:22a87c395564c32314a0760d1b4387ded835b9e1cf1e15a3e693eb60afb7a33b \
-    --hash=sha256:a9d6f25c7a80098439e4ebe21a798f60ffe33b6022542542ad4510355edf189b
+bx-py-utils==74 \
+    --hash=sha256:39a354727facc1a970102cbd2f786f7be6977dcf299c7d27aa5a46f580341043 \
+    --hash=sha256:9656a8e4c9aef4c876e39ac3decc0796709412dff5a549385acf1bd834e40e88
     # via manageprojects (pyproject.toml)
 cachetools==5.2.1 \
     --hash=sha256:5991bc0e08a1319bb618d3195ca5b6bc76646a49c21d55962977197b301cc1fe \
@@ -399,7 +399,9 @@ packaging==23.0 \
 pathspec==0.10.3 \
     --hash=sha256:3c95343af8b756205e2aba76e843ba9520a24dd84f68c22b9f93251507509dd6 \
     --hash=sha256:56200de4077d9d0791465aa9095a01d421861e405b5096955051deefd697d6f6
-    # via black
+    # via
+    #   black
+    #   manageprojects (pyproject.toml)
 pep517==0.13.0 \
     --hash=sha256:4ba4446d80aed5b5eac6509ade100bff3e7943a8489de249654a5ae9b33ee35b \
     --hash=sha256:ae69927c5c172be1add9203726d4b84cf3ebad1edcd5f71fcdc746e66e829f59
@@ -624,9 +626,9 @@ tomlkit==0.11.6 \
     --hash=sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b \
     --hash=sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73
     # via manageprojects (pyproject.toml)
-tox==4.2.6 \
-    --hash=sha256:ecf224a4f3a318adcdd71aa8fe15ffd31f14afd6a9845a43ffd63950a7325538 \
-    --hash=sha256:fb79b3e4b788491949576a9c80c2d56419eac994567c3591e24bb2788b5901d0
+tox==4.2.7 \
+    --hash=sha256:853221127f0f9e7f612058fcb8b939081dbf4b2ef506df6c4fbeaaac4132a6db \
+    --hash=sha256:bce8f367720dbb29eb6dd1f1b411ffb188384e258e3e4db0820d0f0a0ba4ff10
     # via manageprojects (pyproject.toml)
 twine==4.0.2 \
     --hash=sha256:929bc3c280033347a00f847236564d1c52a3e61b1ac2516c97c48f3ceab756d8 \
@@ -642,9 +644,9 @@ typing-extensions==4.4.0 \
     --hash=sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa \
     --hash=sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e
     # via mypy
-urllib3==1.26.13 \
-    --hash=sha256:47cc05d99aaa09c9e72ed5809b60e7ba354e64b59c9c173ac3018642d8bb41fc \
-    --hash=sha256:c083dd0dce68dbfbe1129d5271cb90f9447dea7d52097c6e0126120c521ddea8
+urllib3==1.26.14 \
+    --hash=sha256:076907bf8fd355cde77728471316625a4d2f7e713c125f51953bb5b3eecf4f72 \
+    --hash=sha256:75edcdc2f7d85b137124a6c3c9fc3933cdeaa12ecb9a6a959f22797a0feca7e1
     # via
     #   requests
     #   twine
