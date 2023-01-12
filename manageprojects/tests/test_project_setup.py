@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-from unittest import TestCase
 
 import tomli
 from bx_py_utils.path import assert_is_file

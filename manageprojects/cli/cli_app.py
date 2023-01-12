@@ -29,7 +29,6 @@ logger = logging.getLogger(__name__)
 
 
 PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
-assert_is_dir(PACKAGE_ROOT)
 assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
 
 
@@ -60,40 +59,50 @@ def install():
     """
     Run pip-sync and install 'manageprojects' via pip as editable.
     """
-    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements.develop.txt')
+    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements.dev.txt')
     verbose_check_call('pip', 'install', '-e', '.')
 
 
 @app.command()
 def update():
     """
-    Update the development environment by calling:
-    - pip-compile production.in develop.in -> develop.txt
-    - pip-compile production.in -> production.txt
-    - pip-sync develop.txt
+    Update "requirements*.txt" dependencies files
     """
-    base_command = [
-        'pip-compile',
-        '--verbose',
-        '--upgrade',
-        '--allow-unsafe',
-        '--generate-hashes',
-        '--resolver=backtracking',
-        'pyproject.toml',
-    ]
-    verbose_check_call(  # develop + production
-        *base_command,
-        '--extra',
-        'dev',
-        '--output-file',
-        'requirements.develop.txt',
+    extra_env = dict(
+        CUSTOM_COMPILE_COMMAND='./cli.py update',
     )
-    verbose_check_call(  # production only
-        *base_command,
+    bin_path = Path(sys.executable).parent
+
+    pip_compile_base = [
+        bin_path / 'pip-compile',
+        '--verbose',
+        '--allow-unsafe',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
+        '--resolver=backtracking',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
+        '--upgrade',
+        '--generate-hashes',
+    ]
+
+    # Only "prod" dependencies:
+    verbose_check_call(
+        *pip_compile_base,
+        'pyproject.toml',
         '--output-file',
         'requirements.txt',
+        extra_env=extra_env,
     )
-    verbose_check_call('pip-sync', 'requirements.develop.txt')
+
+    # dependencies + "tests"-optional-dependencies:
+    verbose_check_call(
+        *pip_compile_base,
+        'pyproject.toml',
+        '--extra=dev',
+        '--output-file',
+        'requirements.dev.txt',
+        extra_env=extra_env,
+    )
+
+    # Install new dependencies in current .venv:
+    verbose_check_call('pip-sync', 'requirements.dev.txt')
 
 
 @app.command()
@@ -221,10 +230,7 @@ def update_project(
     no_input: bool = typer.Option(
         True,
         '--no-input/--input',
-        help=(
-            'Cookiecutter Option: Do not prompt for parameters'
-            ' and only use cookiecutter.json file content'
-        ),
+        help='Cookiecutter Option: Do not prompt for parameters and only use cookiecutter.json file content',
     ),
     cleanup: bool = typer.Option(default=True, help='Cleanup created temporary files'),
 ):
@@ -263,15 +269,13 @@ def clone_project(
     no_input: bool = typer.Option(
         True,
         '--no-input/--input',
-        help=(
-            'Cookiecutter Option: Do not prompt for parameters'
-            ' and only use cookiecutter.json file content'
-        ),
+        help='Cookiecutter Option: Do not prompt for parameters and only use cookiecutter.json file content',
     ),
 ):
     """
     Clone a existing project by replay the cookiecutter template in a new directory.
     """
+    print(locals())
     log_config()
     return clone_managed_project(
         project_path=project_path,

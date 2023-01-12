@@ -19,9 +19,7 @@
 │ reverse           Create a cookiecutter template from a managed project.                         │
 │ start-project     Start a new "managed" project via a CookieCutter Template                      │
 │ test              Run unittests                                                                  │
-│ update            Update the development environment by calling: - pip-compile production.in     │
-│                   develop.in -> develop.txt - pip-compile production.in -> production.txt -      │
-│                   pip-sync develop.txt                                                           │
+│ update            Update "requirements*.txt" dependencies files                                  │
 │ update-project    Update a existing project.                                                     │
 │ version           Print version and exit                                                         │
 │ wiggle            Run wiggle to merge *.rej in given directory.                                  │
