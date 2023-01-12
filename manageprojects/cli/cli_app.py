@@ -219,7 +219,7 @@ def update_project(
         help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
     ),
     no_input: bool = typer.Option(
-        False,
+        True,
         '--no-input/--input',
         help=(
             'Cookiecutter Option: Do not prompt for parameters'
@@ -245,10 +245,29 @@ def update_project(
 def clone_project(
     project_path: Path,
     destination: Path,
-    checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
-    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+    checkout: Optional[str] = typer.Option(
+        default=None,
+        help='Cookiecutter Option: branch, tag or commit to checkout after git clone',
+    ),
+    password: Optional[str] = typer.Option(
+        default=None,
+        help='Cookiecutter Option: Password to use when extracting the repository',
+    ),
+    config_file: Optional[Path] = typer.Option(
+        default=None,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
+    ),
+    no_input: bool = typer.Option(
+        True,
+        '--no-input/--input',
+        help=(
+            'Cookiecutter Option: Do not prompt for parameters'
+            ' and only use cookiecutter.json file content'
+        ),
+    ),
 ):
     """
     Clone a existing project by replay the cookiecutter template in a new directory.

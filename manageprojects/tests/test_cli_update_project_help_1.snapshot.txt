@@ -17,7 +17,7 @@
 │                                        [default: None]                                           │
 │ --no-input       --input               Cookiecutter Option: Do not prompt for parameters and     │
 │                                        only use cookiecutter.json file content                   │
-│                                        [default: input]                                          │
+│                                        [default: no-input]                                       │
 │ --cleanup        --no-cleanup          Cleanup created temporary files [default: cleanup]        │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
