@@ -119,11 +119,8 @@ click==8.1.3 \
     --hash=sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48
     # via
     #   cookiecutter
-    #   typer
-colorama==0.4.6 \
-    --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
-    --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
-    # via typer
+    #   manageprojects (pyproject.toml)
+    #   rich-click
 commonmark==0.9.1 \
     --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
     --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9
@@ -246,16 +243,16 @@ requests==2.28.2 \
     --hash=sha256:64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa \
     --hash=sha256:98b1b2782e3c6c4904938b84c0eb932721069dfdb9134313beff7c83c2df24bf
     # via cookiecutter
-rich==12.6.0 \
-    --hash=sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e \
-    --hash=sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0
+rich==13.0.1 \
+    --hash=sha256:25f83363f636995627a99f6e4abc52ed0970ebbd544960cc63cbb43aaac3d6f0 \
+    --hash=sha256:41fe1d05f433b0f4724cda8345219213d2bfa472ef56b2f64f415b5b94d51b04
     # via
     #   manageprojects (pyproject.toml)
-    #   typer
-shellingham==1.5.0.post1 \
-    --hash=sha256:368bf8c00754fd4f55afb7bbb86e272df77e4dc76ac29dbcbb81a59e9fc15744 \
-    --hash=sha256:823bc5fb5c34d60f285b624e7264f4dda254bc803a3774a147bf99c0e3004a28
-    # via typer
+    #   rich-click
+rich-click==1.6.0 \
+    --hash=sha256:33799c31f8817101f2eb8fe90e95d2c2acd428a567ee64358ca487f963f75e9c \
+    --hash=sha256:aefb0450c22462cf3bf9fa854457e6b3cdf692073174823a00d3b0541a81b19d
+    # via manageprojects (pyproject.toml)
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -267,10 +264,6 @@ text-unidecode==1.3 \
 tomlkit==0.11.6 \
     --hash=sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b \
     --hash=sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73
-    # via manageprojects (pyproject.toml)
-typer[all]==0.7.0 \
-    --hash=sha256:b5e704f4e48ec263de1c0b3a2387cd405a13767d2f907f44c1a08cbad96f606d \
-    --hash=sha256:ff797846578a9f2a201b53442aedeb543319466870fbe1c701eab66dd7681165
     # via manageprojects (pyproject.toml)
 urllib3==1.26.14 \
     --hash=sha256:076907bf8fd355cde77728471316625a4d2f7e713c125f51953bb5b3eecf4f72 \

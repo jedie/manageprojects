@@ -3,12 +3,12 @@ from pathlib import Path
 
 import tomli
 from bx_py_utils.path import assert_is_file
-from bx_py_utils.test_utils.redirect import RedirectOut
 
 import manageprojects
 from manageprojects import __version__
-from manageprojects.cli.cli_app import check_code_style, fix_code_style
+from manageprojects.test_utils.click_cli_utils import subprocess_cli
 from manageprojects.tests.base import BaseTestCase
+from manageprojects.utilities import code_style
 
 
 PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
@@ -33,39 +33,47 @@ class ProjectSetupTestCase(BaseTestCase):
         self.assertIn(f'manageprojects v{__version__}', output)
 
     def test_code_style(self):
-        with RedirectOut() as buffer:
-            try:
-                check_code_style(verbose=False)
-            except SystemExit as err:
-                if err.code == 0:
-                    self.assertEqual(buffer.stderr, '')
-                    self.assert_in_content(
-                        got=buffer.stdout,
-                        parts=(
-                            '.venv/bin/darker',
-                            '.venv/bin/flake8',
-                            'Code style: OK',
-                        ),
-                    )
-                    return  # Code style is ok -> Nothing to fix ;)
-            else:
-                raise AssertionError('No sys.exit() !')
+        cli_bin = PACKAGE_ROOT / 'cli.py'
+        assert_is_file(cli_bin)
+
+        try:
+            output = subprocess_cli(
+                cli_bin=cli_bin,
+                args=('check-code-style',),
+                exit_on_error=False,
+            )
+        except subprocess.CalledProcessError as err:
+            self.assert_in_content(  # darker was called?
+                got=err.stdout,
+                parts=('.venv/bin/darker',),
+            )
+        else:
+            if 'Code style: OK' in output:
+                self.assert_in_content(  # darker was called?
+                    got=output,
+                    parts=('.venv/bin/darker',),
+                )
+                return  # Nothing to fix -> OK
 
         # Try to "auto" fix code style:
 
-        with RedirectOut() as buffer:
-            try:
-                fix_code_style(verbose=False)
-            except SystemExit as err:
-                self.assertEqual(err.code, 0, 'Code style can not be fixed, see output above!')
-            else:
-                raise AssertionError('No sys.exit() !')
+        try:
+            output = subprocess_cli(
+                cli_bin=cli_bin,
+                args=('fix-code-style',),
+                exit_on_error=False,
+            )
+        except subprocess.CalledProcessError as err:
+            output = err.stdout
 
-        self.assertEqual(buffer.stderr, '')
-        self.assert_in_content(
-            got=buffer.stdout,
-            parts=(
-                '.venv/bin/darker',
-                'Code style fixed, OK.',
-            ),
+        self.assert_in_content(  # darker was called?
+            got=output,
+            parts=('.venv/bin/darker',),
         )
+
+        # Check again and display the output:
+
+        try:
+            code_style.check(package_root=PACKAGE_ROOT)
+        except SystemExit as err:
+            self.assertEqual(err.code, 0, 'Code style error, see output above!')

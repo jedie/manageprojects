@@ -11,8 +11,9 @@ dependencies = [
     "cookiecutter",
     "tomlkit",
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
+    "click",  # https://github.com/pallets/click/
+    "rich-click",  # https://github.com/ewels/rich-click
     "rich",  # https://github.com/Textualize/rich
-    "typer[all]",  # https://github.com/tiangolo/typer
 ]
 [project.optional-dependencies]
 dev = [

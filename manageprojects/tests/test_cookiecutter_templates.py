@@ -13,6 +13,7 @@ from manageprojects.data_classes import (
     GenerateTemplatePatchResult,
     ManageProjectsMeta,
 )
+from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
@@ -49,7 +50,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                 result: CookiecutterResult = start_managed_project(
                     template=cookiecutter_template,
                     output_dir=cookiecutter_output_dir,
-                    no_input=True,
+                    input=False,
                     directory=directory,
                     config_file=config_file_path,
                     extra_context={
@@ -112,27 +113,14 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
 
             cloned_path = main_temp_path / 'cloned_project'
             with AssertLogs(self) as logs:
-                clone_result: CookiecutterResult = clone_project(
-                    project_path=project_path, destination=cloned_path, no_input=True
+                output = invoke_click(clone_project, project_path, cloned_path)
+                logs.assert_in(
+                    'Read existing pyproject.toml',
+                    "Call 'cookiecutter'",
+                    'Create new pyproject.toml',
                 )
-            logs.assert_in(
-                'Read existing pyproject.toml',
-                "Call 'cookiecutter'",
-                'Create new pyproject.toml',
-            )
-            self.assertEqual(
-                clone_result.cookiecutter_context,
-                {
-                    'cookiecutter': {
-                        '_template': 'https://github.com/jedie/mp_test_template1/',
-                        'dir_name': 'a_dir_name',
-                        'file_name': 'a_file_name',
-                    }
-                },
-            )
             end_path = cloned_path / 'a_dir_name'
-            assert_is_dir(end_path)
-            self.assertEqual(clone_result.destination_path, end_path)
+            self.assert_in_content(got=output, parts=(f'{project_path} successfully cloned to {end_path}',))
 
             # pyproject.toml created?
             with AssertLogs(self, loggers=('manageprojects',)) as logs:
@@ -271,7 +259,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                     password=None,
                     config_file=config_file_path,
                     cleanup=False,  # Keep temp files if this test fails, for better debugging
-                    no_input=True,  # No user input in tests ;)
+                    input=False,  # No user input in tests ;)
                 )
             logs.assert_in(
                 'No temp files cleanup',

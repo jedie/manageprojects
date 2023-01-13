@@ -214,15 +214,14 @@ click==8.1.3 \
     # via
     #   black
     #   cookiecutter
+    #   manageprojects (pyproject.toml)
     #   pip-tools
+    #   rich-click
     #   safety
-    #   typer
 colorama==0.4.6 \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
-    # via
-    #   tox
-    #   typer
+    # via tox
 commonmark==0.9.1 \
     --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
     --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9
@@ -614,13 +613,17 @@ rfc3986==2.0.0 \
     --hash=sha256:50b1502b60e289cb37883f3dfd34532b8873c7de9f49bb546641ce9cbd256ebd \
     --hash=sha256:97aacf9dbd4bfd829baad6e6309fa6573aaf1be3f6fa735c8ab05e46cecb261c
     # via twine
-rich==12.6.0 \
-    --hash=sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e \
-    --hash=sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0
+rich==13.0.1 \
+    --hash=sha256:25f83363f636995627a99f6e4abc52ed0970ebbd544960cc63cbb43aaac3d6f0 \
+    --hash=sha256:41fe1d05f433b0f4724cda8345219213d2bfa472ef56b2f64f415b5b94d51b04
     # via
     #   manageprojects (pyproject.toml)
+    #   rich-click
     #   twine
-    #   typer
+rich-click==1.6.0 \
+    --hash=sha256:33799c31f8817101f2eb8fe90e95d2c2acd428a567ee64358ca487f963f75e9c \
+    --hash=sha256:aefb0450c22462cf3bf9fa854457e6b3cdf692073174823a00d3b0541a81b19d
+    # via manageprojects (pyproject.toml)
 ruamel-yaml==0.17.21 \
     --hash=sha256:742b35d3d665023981bd6d16b3d24248ce5df75fdb4e2924e93a05c1f8b61ca7 \
     --hash=sha256:8b7ce697a2f212752a35c1ac414471dc16c424c9573be4926b56ff3f5d23b7af
@@ -675,10 +678,6 @@ setuptools==65.7.0 \
     # via
     #   pip-tools
     #   safety
-shellingham==1.5.0.post1 \
-    --hash=sha256:368bf8c00754fd4f55afb7bbb86e272df77e4dc76ac29dbcbb81a59e9fc15744 \
-    --hash=sha256:823bc5fb5c34d60f285b624e7264f4dda254bc803a3774a147bf99c0e3004a28
-    # via typer
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -720,10 +719,6 @@ twine==4.0.2 \
     # via
     #   manageprojects (pyproject.toml)
     #   poetry-publish
-typer[all]==0.7.0 \
-    --hash=sha256:b5e704f4e48ec263de1c0b3a2387cd405a13767d2f907f44c1a08cbad96f606d \
-    --hash=sha256:ff797846578a9f2a201b53442aedeb543319466870fbe1c701eab66dd7681165
-    # via manageprojects (pyproject.toml)
 typing-extensions==4.4.0 \
     --hash=sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa \
     --hash=sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e
