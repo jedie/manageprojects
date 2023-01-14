@@ -1,11 +1,10 @@
 from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
-from pathspec import PathSpec
 from rich import print  # noqa
 from rich.pretty import pprint
 
-from manageprojects.utilities.gitignore import get_gitignore
+from manageprojects.git import Git
 
 
 def iter_context(*, context: dict, prefix='') -> tuple:
@@ -70,12 +69,10 @@ def create_cookiecutter_template(
     print('Use this reverse context:')
     pprint(reverse_info)
 
-    path_spec: PathSpec = get_gitignore(source_path)
+    git = Git(cwd=source_path, detect_root=True)
+    file_paths = git.ls_files(verbose=True)
 
-    for item in source_path.rglob('*'):
-        if path_spec.match_file(item):
-            continue
-
+    for item in file_paths:
         dst_path = build_dst_path(
             source_path=source_path,
             item=item,

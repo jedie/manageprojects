@@ -1,24 +1,17 @@
                                                                                                     
- Usage: ./cli.py update-project [OPTIONS] [PROJECT_PATH]                                            
+ Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH                                              
                                                                                                     
- Update a existing project.                                                                         
+ Update a existing project. e.g.:                                                                   
+ ./cli.py update-project ~/foo/bar/                                                                 
                                                                                                     
-╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│   project_path      [PROJECT_PATH]  Path to the project source code that should be update with   │
-│                                     Cookiecutter template changes                                │
-│                                     [default: None]                                              │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --password                       TEXT  Cookiecutter Option: Password to use when extracting the  │
-│                                        repository                                                │
-│                                        [default: None]                                           │
-│ --config-file                    FILE  Cookiecutter Option: Optional path to                     │
-│                                        "cookiecutter_config.yaml"                                │
-│                                        [default: None]                                           │
-│ --no-input       --input               Cookiecutter Option: Do not prompt for parameters and     │
-│                                        only use cookiecutter.json file content                   │
-│                                        [default: input]                                          │
-│ --cleanup        --no-cleanup          Cleanup created temporary files [default: cleanup]        │
-│ --help                                 Show this message and exit.                               │
+│ --password                TEXT  Cookiecutter Option: Password to use when extracting the         │
+│                                 repository                                                       │
+│ --config-file             FILE  Cookiecutter Option: Optional path to "cookiecutter_config.yaml" │
+│ --input/--no-input              Cookiecutter Option: Do not prompt for parameters and only use   │
+│                                 cookiecutter.json file content                                   │
+│                                 [default: no-input]                                              │
+│ --cleanup/--no-cleanup          Cleanup created temporary files [default: cleanup]               │
+│ --help                          Show this message and exit.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 

@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.5.0"
+version = "0.5.1"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
@@ -11,16 +11,16 @@ dependencies = [
     "cookiecutter",
     "tomlkit",
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
-    "rich",
-    "typer[all]",  # https://github.com/tiangolo/typer
-    "pathspec",  # https://github.com/cpburnz/python-pathspec
+    "click",  # https://github.com/pallets/click/
+    "rich-click",  # https://github.com/ewels/rich-click
+    "rich",  # https://github.com/Textualize/rich
 ]
 [project.optional-dependencies]
 dev = [
     "pip-tools",  # https://github.com/jazzband/pip-tools/
     "tox",  # https://github.com/tox-dev/tox
     "coveralls",  # https://github.com/TheKevJames/coveralls-python
-    "darker",  # https://github.com/akaihola/pytest-darker
+    "darker",  # https://github.com/akaihola/darker
     "isort",  # https://github.com/pycqa/isort
     "flake8",  # https://github.com/pycqa/flake8
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
@@ -50,7 +50,7 @@ build-backend = "setuptools.build_meta"
 [tool.darker]
 src = ['.']
 revision = "origin/main..."
-line_length = 100
+line_length = 119
 verbose = true
 skip_string_normalization = true
 diff = false
@@ -69,17 +69,8 @@ atomic=true
 profile='black'
 skip_glob=['.*', '*/htmlcov/*']
 known_first_party=['manageprojects']
-line_length=100
+line_length=119
 lines_after_imports=2
-
-
-[tool.flake8]
-statistics = "True"
-ignore = ["D203" , "W503"]
-max-line-length = 119
-exclude = '''
-    .git,
-'''
 
 
 [tool.coverage.run]
@@ -111,6 +102,9 @@ initial_revision = "8438598"
 initial_date = 2022-11-20T20:01:37+01:00
 cookiecutter_template = "https://github.com/jedie/cookiecutter_templates"
 cookiecutter_directory = "piptools-python"
+applied_migrations = [
+    "cf44769", # 2023-01-11T08:15:06+01:00
+]
 
 [manageprojects.cookiecutter_context.cookiecutter]
 full_name = "Jens Diemer"

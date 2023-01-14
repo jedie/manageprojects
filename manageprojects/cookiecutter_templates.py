@@ -26,7 +26,7 @@ def start_managed_project(
     template: str,  # CookieCutter Template path or GitHub url
     output_dir: Path,  # Target path where CookieCutter should store the result files
     directory: Optional[str] = None,  # Directory name of the CookieCutter Template
-    no_input: bool = False,
+    input: bool = True,  # Prompt the user at command line for manual configuration?
     extra_context: Optional[dict] = None,
     replay: Optional[bool] = None,
     checkout: Optional[str] = None,
@@ -44,7 +44,7 @@ def start_managed_project(
         template=template,
         directory=directory,
         output_dir=output_dir,
-        no_input=no_input,
+        no_input=not input,
         extra_context=extra_context,
         replay=replay,
         checkout=checkout,
@@ -86,12 +86,11 @@ def update_managed_project(
     password: Optional[str] = None,
     config_file: Optional[Path] = None,  # CookieCutter config file
     cleanup: bool = True,  # Remove temp files if not exceptions happens
-    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+    input: bool = False,  # Prompt the user at command line for manual configuration?
 ) -> Optional[GenerateTemplatePatchResult]:
     """
     Update a existing project by apply git patch from cookiecutter template changes.
     """
-    print(f'Update project: {project_path}', end=' ')
     git = Git(cwd=project_path, detect_root=True)
 
     #############################################################################
@@ -121,7 +120,7 @@ def update_managed_project(
         password=password,
         config_file=config_file,
         cleanup=cleanup,
-        no_input=no_input,
+        no_input=not input,
     )
     if not result:
         logger.info('No git patch was created, nothing to apply.')
@@ -162,7 +161,7 @@ def clone_managed_project(
     checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
     password: Optional[str] = None,
     config_file: Optional[Path] = None,  # CookieCutter config file
-    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+    input: bool = False,  # Prompt the user at command line for manual configuration?
 ) -> CookiecutterResult:
     """
     Clone a existing project by replay the cookiecutter template in a new directory.
@@ -193,7 +192,7 @@ def clone_managed_project(
         template=cookiecutter_template,
         directory=cookiecutter_directory,
         output_dir=destination,
-        no_input=no_input,
+        no_input=not input,
         extra_context=extra_context,
         checkout=checkout,
         password=password,

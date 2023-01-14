@@ -1,0 +1,4 @@
+Start project with template: 'https://github.com/jedie/cookiecutter_templates/'
+Destination: foobar
+CookieCutter template 'https://github.com/jedie/cookiecutter_templates/' with 
+git hash 1234 was created here: foobar

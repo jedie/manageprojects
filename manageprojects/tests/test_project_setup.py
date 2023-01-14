@@ -1,19 +1,20 @@
 import subprocess
 from pathlib import Path
-from unittest import TestCase
 
 import tomli
 from bx_py_utils.path import assert_is_file
 
 import manageprojects
 from manageprojects import __version__
-from manageprojects.cli.cli_app import check_code_style, fix_code_style
+from manageprojects.test_utils.click_cli_utils import subprocess_cli
+from manageprojects.tests.base import BaseTestCase
+from manageprojects.utilities import code_style
 
 
 PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
 
 
-class ProjectSetupTestCase(TestCase):
+class ProjectSetupTestCase(BaseTestCase):
     def test_version(self):
         pyproject_toml_path = Path(PACKAGE_ROOT, 'pyproject.toml')
         assert_is_file(pyproject_toml_path)
@@ -32,16 +33,47 @@ class ProjectSetupTestCase(TestCase):
         self.assertIn(f'manageprojects v{__version__}', output)
 
     def test_code_style(self):
-        try:
-            fix_code_style()
-        except SystemExit as err:
-            self.assertEqual(err.code, 0)
-        else:
-            raise AssertionError('No sys.exit() !')
+        cli_bin = PACKAGE_ROOT / 'cli.py'
+        assert_is_file(cli_bin)
 
         try:
-            check_code_style(verbose=False)
-        except SystemExit as err:
-            self.assertEqual(err.code, 0)
+            output = subprocess_cli(
+                cli_bin=cli_bin,
+                args=('check-code-style',),
+                exit_on_error=False,
+            )
+        except subprocess.CalledProcessError as err:
+            self.assert_in_content(  # darker was called?
+                got=err.stdout,
+                parts=('.venv/bin/darker',),
+            )
         else:
-            raise AssertionError('No sys.exit() !')
+            if 'Code style: OK' in output:
+                self.assert_in_content(  # darker was called?
+                    got=output,
+                    parts=('.venv/bin/darker',),
+                )
+                return  # Nothing to fix -> OK
+
+        # Try to "auto" fix code style:
+
+        try:
+            output = subprocess_cli(
+                cli_bin=cli_bin,
+                args=('fix-code-style',),
+                exit_on_error=False,
+            )
+        except subprocess.CalledProcessError as err:
+            output = err.stdout
+
+        self.assert_in_content(  # darker was called?
+            got=output,
+            parts=('.venv/bin/darker',),
+        )
+
+        # Check again and display the output:
+
+        try:
+            code_style.check(package_root=PACKAGE_ROOT)
+        except SystemExit as err:
+            self.assertEqual(err.code, 0, 'Code style error, see output above!')

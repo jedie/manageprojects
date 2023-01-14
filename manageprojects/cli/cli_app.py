@@ -1,6 +1,4 @@
 import logging
-import os
-import shlex
 import shutil
 import subprocess
 import sys
@@ -8,11 +6,10 @@ from pathlib import Path
 from typing import Optional
 
 import rich
-import typer
+import rich_click as click
 from bx_py_utils.path import assert_is_dir, assert_is_file
-from darker.__main__ import main as darker_main
-from flake8.main.cli import main as flake8_main
 from rich import print  # noqa
+from rich_click import RichGroup
 
 import manageprojects
 from manageprojects import __version__
@@ -24,6 +21,7 @@ from manageprojects.cookiecutter_templates import (
 )
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.git import Git
+from manageprojects.utilities import code_style
 from manageprojects.utilities.log_utils import log_config
 from manageprojects.utilities.subprocess_utils import verbose_check_call
 
@@ -32,23 +30,42 @@ logger = logging.getLogger(__name__)
 
 
 PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
-assert_is_dir(PACKAGE_ROOT)
 assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
 
-
-app = typer.Typer(
-    name='./cli.py',
-    epilog='Project Homepage: https://github.com/jedie/manageprojects',
+OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
+OPTION_ARGS_DEFAULT_FALSE = dict(is_flag=True, show_default=True, default=False)
+ARGUMENT_EXISTING_DIR = dict(
+    type=click.Path(exists=True, file_okay=False, dir_okay=True, readable=True, path_type=Path)
+)
+ARGUMENT_NOT_EXISTING_DIR = dict(
+    type=click.Path(exists=False, file_okay=False, dir_okay=True, readable=False, writable=True, path_type=Path)
 )
 
 
-@app.command()
+class ClickGroup(RichGroup):  # FIXME: How to set the "info_name" easier?
+    def make_context(self, info_name, *args, **kwargs):
+        info_name = './cli.py'
+        return super().make_context(info_name, *args, **kwargs)
+
+
+@click.group(
+    cls=ClickGroup,
+    epilog='Project Homepage: https://github.com/jedie/manageprojects',
+)
+def cli():
+    pass
+
+
+@click.command()
 def mypy(verbose: bool = True):
     """Run Mypy (configured in pyproject.toml)"""
     verbose_check_call('mypy', '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
 
 
-@app.command()
+cli.add_command(mypy)
+
+
+@click.command()
 def coverage(verbose: bool = True):
     """
     Run and show coverage.
@@ -58,48 +75,67 @@ def coverage(verbose: bool = True):
     verbose_check_call('coverage', 'json', verbose=verbose, exit_on_error=True)
 
 
-@app.command()
+cli.add_command(coverage)
+
+
+@click.command()
 def install():
     """
     Run pip-sync and install 'manageprojects' via pip as editable.
     """
-    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements' / 'develop.txt')
+    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements.dev.txt')
     verbose_check_call('pip', 'install', '-e', '.')
 
 
-@app.command()
+cli.add_command(install)
+
+
+@click.command()
 def update():
     """
-    Update the development environment by calling:
-    - pip-compile production.in develop.in -> develop.txt
-    - pip-compile production.in -> production.txt
-    - pip-sync develop.txt
+    Update "requirements*.txt" dependencies files
     """
-    base_command = [
-        'pip-compile',
-        '--verbose',
-        '--upgrade',
-        '--allow-unsafe',
-        '--generate-hashes',
-        '--resolver=backtracking',
-        'pyproject.toml',
-    ]
-    verbose_check_call(  # develop + production
-        *base_command,
-        '--extra',
-        'dev',
-        '--output-file',
-        'requirements.develop.txt',
+    extra_env = dict(
+        CUSTOM_COMPILE_COMMAND='./cli.py update',
     )
-    verbose_check_call(  # production only
-        *base_command,
+    bin_path = Path(sys.executable).parent
+
+    pip_compile_base = [
+        bin_path / 'pip-compile',
+        '--verbose',
+        '--allow-unsafe',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
+        '--resolver=backtracking',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
+        '--upgrade',
+        '--generate-hashes',
+    ]
+
+    # Only "prod" dependencies:
+    verbose_check_call(
+        *pip_compile_base,
+        'pyproject.toml',
         '--output-file',
         'requirements.txt',
+        extra_env=extra_env,
     )
-    verbose_check_call('pip-sync', 'requirements.develop.txt')
+
+    # dependencies + "tests"-optional-dependencies:
+    verbose_check_call(
+        *pip_compile_base,
+        'pyproject.toml',
+        '--extra=dev',
+        '--output-file',
+        'requirements.dev.txt',
+        extra_env=extra_env,
+    )
+
+    # Install new dependencies in current .venv:
+    verbose_check_call('pip-sync', 'requirements.dev.txt')
 
 
-@app.command()
+cli.add_command(update)
+
+
+@click.command()
 def version(no_color: bool = False):
     """Print version and exit"""
     if no_color:
@@ -115,59 +151,63 @@ def version(no_color: bool = False):
     print(current_hash)
 
 
-@app.command()
+cli.add_command(version)
+
+
+@click.command()
+@click.argument('template')
+@click.argument('output_dir', **ARGUMENT_NOT_EXISTING_DIR)
+@click.option(
+    '--directory',
+    default=None,
+    help=(
+        'Cookiecutter Option: Directory within repo that holds cookiecutter.json file'
+        ' for advanced repositories with multi templates in it'
+    ),
+)
+@click.option(
+    '--checkout',
+    default=None,
+    help='Cookiecutter Option: branch, tag or commit to checkout after git clone',
+)
+@click.option(
+    '--input/--no-input',
+    **OPTION_ARGS_DEFAULT_TRUE,
+    help=('Cookiecutter Option: Do not prompt for parameters' ' and only use cookiecutter.json file content'),
+)
+@click.option(
+    '--replay/--no-replay',
+    **OPTION_ARGS_DEFAULT_FALSE,
+    help=('Cookiecutter Option: Do not prompt for parameters' ' and only use information entered previously'),
+)
+@click.option(
+    '--password',
+    default=None,
+    help='Cookiecutter Option: Password to use when extracting the repository',
+)
+@click.option(
+    '--config-file',
+    default=None,
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+    help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
+)
 def start_project(
-    template: str = typer.Argument(
-        default=None,
-        help='CookieCutter Template path or GitHub url. *Must* be a git based template!',
-    ),
-    output_dir: Path = typer.Argument(
-        default=None,
-        exists=False,
-        file_okay=False,
-        dir_okay=True,
-        help='Target path where CookieCutter should store the result files',
-    ),
-    directory: Optional[str] = typer.Option(
-        default=None,
-        help=(
-            'Cookiecutter Option: Directory within repo that holds cookiecutter.json file'
-            ' for advanced repositories with multi templates in it'
-        ),
-    ),
-    checkout: Optional[str] = typer.Option(
-        default=None,
-        help='Cookiecutter Option: branch, tag or commit to checkout after git clone',
-    ),
-    no_input: bool = typer.Option(
-        False,
-        '--no-input/--input',
-        help=(
-            'Cookiecutter Option: Do not prompt for parameters'
-            ' and only use cookiecutter.json file content'
-        ),
-    ),
-    replay: bool = typer.Option(
-        default=False,
-        help=(
-            'Cookiecutter Option: Do not prompt for parameters'
-            ' and only use information entered previously'
-        ),
-    ),
-    password: Optional[str] = typer.Option(
-        default=None,
-        help='Cookiecutter Option: Password to use when extracting the repository',
-    ),
-    config_file: Optional[Path] = typer.Option(
-        default=None,
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
-    ),
+    template: str,
+    output_dir: Path,
+    directory: Optional[str],
+    checkout: Optional[str],
+    input: bool,
+    replay: bool,
+    password: Optional[str],
+    config_file: Optional[Path],
 ):
     """
-    Start a new "managed" project via a CookieCutter Template
+    Start a new "managed" project via a CookieCutter Template.
+    Note: The CookieCutter Template *must* be use git!
+
+    e.g.:
+
+    ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/foobar/
     """
     log_config()
     print(f'Start project with template: {template!r}')
@@ -183,7 +223,7 @@ def start_project(
         template=template,
         checkout=checkout,
         output_dir=output_dir,
-        no_input=no_input,
+        input=input,
         replay=replay,
         password=password,
         directory=directory,
@@ -198,82 +238,121 @@ def start_project(
     return result
 
 
-@app.command()
+cli.add_command(start_project)
+
+
+@click.command()
+@click.argument('project_path', **ARGUMENT_EXISTING_DIR)
+@click.option(
+    '--password',
+    default=None,
+    help='Cookiecutter Option: Password to use when extracting the repository',
+)
+@click.option(
+    '--config-file',
+    default=None,
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+    help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
+)
+@click.option(
+    '--input/--no-input',
+    **OPTION_ARGS_DEFAULT_FALSE,
+    help=('Cookiecutter Option: Do not prompt for parameters' ' and only use cookiecutter.json file content'),
+)
+@click.option(
+    '--cleanup/--no-cleanup',
+    **OPTION_ARGS_DEFAULT_TRUE,
+    help='Cleanup created temporary files',
+)
 def update_project(
-    project_path: Path = typer.Argument(
-        default=None,
-        exists=True,
-        file_okay=False,
-        dir_okay=True,
-        help=(
-            'Path to the project source code that should be update'
-            ' with Cookiecutter template changes'
-        ),
-    ),
-    password: Optional[str] = typer.Option(
-        default=None,
-        help='Cookiecutter Option: Password to use when extracting the repository',
-    ),
-    config_file: Optional[Path] = typer.Option(
-        default=None,
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
-    ),
-    no_input: bool = typer.Option(
-        False,
-        '--no-input/--input',
-        help=(
-            'Cookiecutter Option: Do not prompt for parameters'
-            ' and only use cookiecutter.json file content'
-        ),
-    ),
-    cleanup: bool = typer.Option(default=True, help='Cleanup created temporary files'),
+    project_path: Path,
+    password: Optional[str],
+    config_file: Optional[Path],
+    input: bool,
+    cleanup: bool,
 ):
     """
-    Update a existing project.
+    Update a existing project. e.g.:
+
+    ./cli.py update-project ~/foo/bar/
     """
     log_config()
+    print(f'Update project: "{project_path}"...')
     update_managed_project(
         project_path=project_path,
         password=password,
         config_file=config_file,
         cleanup=cleanup,
-        no_input=no_input,
+        input=input,
     )
+    print(f'Managed project "{project_path}" updated, ok.')
 
 
-@app.command()
+cli.add_command(update_project)
+
+
+@click.command()
+@click.argument('project_path', **ARGUMENT_EXISTING_DIR)
+@click.argument('output_dir', **ARGUMENT_NOT_EXISTING_DIR)
+@click.option(
+    '--password',
+    default=None,
+    help='Cookiecutter Option: Password to use when extracting the repository',
+)
+@click.option(
+    '--config-file',
+    default=None,
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+    help='Cookiecutter Option: Optional path to "cookiecutter_config.yaml"',
+)
+@click.option(
+    '--input/--no-input',
+    **OPTION_ARGS_DEFAULT_FALSE,
+    help=('Cookiecutter Option: Do not prompt for parameters' ' and only use cookiecutter.json file content'),
+)
 def clone_project(
     project_path: Path,
-    destination: Path,
-    checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
-    no_input: bool = False,  # Prompt the user at command line for manual configuration?
+    output_dir: Path,
+    input: bool,
+    checkout: Optional[str] = None,
+    password: Optional[str] = None,
+    config_file: Optional[Path] = None,
 ):
     """
-    Clone a existing project by replay the cookiecutter template in a new directory.
+    Clone existing project by replay the cookiecutter template in a new directory.
+
+    e.g.:
+
+    ./cli.py clone-project ~/foo/bar ~/cloned/
     """
+    print(locals())
     log_config()
     return clone_managed_project(
         project_path=project_path,
-        destination=destination,
+        destination=output_dir,
         checkout=checkout,
         password=password,
         config_file=config_file,
-        no_input=no_input,
+        input=input,
     )
 
 
-@app.command()
+cli.add_command(clone_project)
+
+
+@click.command()
+@click.argument('project_path', **ARGUMENT_EXISTING_DIR)
+@click.argument('destination', **ARGUMENT_NOT_EXISTING_DIR)
 def reverse(
     project_path: Path,
     destination: Path,
 ):
     """
     Create a cookiecutter template from a managed project.
+
+    e.g.:
+
+    ./cli.py reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/
     """
     log_config()
     return reverse_managed_project(
@@ -282,11 +361,24 @@ def reverse(
     )
 
 
-@app.command()
-def wiggle(project_path: Path, words: bool = False):
+cli.add_command(reverse)
+
+
+@click.command()
+@click.argument('project_path', **ARGUMENT_EXISTING_DIR)
+@click.option(
+    '--words/--no-words',
+    **OPTION_ARGS_DEFAULT_FALSE,
+    help='wiggle Option: word-wise diff and merge.',
+)
+def wiggle(project_path: Path, words: bool):
     """
     Run wiggle to merge *.rej in given directory.
     https://github.com/neilbrown/wiggle
+
+    e.g.:
+
+    ./cli.py wiggle ~/my_managed_project/
     """
     wiggle_bin = shutil.which('wiggle')
     if not wiggle_bin:
@@ -318,7 +410,10 @@ def wiggle(project_path: Path, words: bool = False):
             continue
 
 
-@app.command()
+cli.add_command(wiggle)
+
+
+@click.command()
 def publish():
     """
     Build and upload this project to PyPi
@@ -354,58 +449,36 @@ def publish():
     git.push(tags=True)
 
 
-def _call_darker(*, argv):
-    # Work-a-round for:
-    #
-    #   File ".../site-packages/darker/linting.py", line 148, in _check_linter_output
-    #     with Popen(  # nosec
-    #   ...
-    #   File "/usr/lib/python3.10/subprocess.py", line 1845, in _execute_child
-    #     raise child_exception_type(errno_num, err_msg, err_filename)
-    # FileNotFoundError: [Errno 2] No such file or directory: 'flake8'
-    #
-    # Just add .venv/bin/ to PATH:
-    venv_path = Path(sys.executable).parent
-    assert_is_file(venv_path / 'flake8')
-    assert_is_file(venv_path / 'darker')
-    venv_path = str(venv_path)
-    if venv_path not in os.environ['PATH']:
-        os.environ['PATH'] = venv_path + os.pathsep + os.environ['PATH']
-
-    print(f'Run "darker {shlex.join(str(part) for part in argv)}"...')
-    exit_code = darker_main(argv=argv)
-    print(f'darker exit code: {exit_code!r}')
-    return exit_code
+cli.add_command(publish)
 
 
-@app.command()
-def fix_code_style():
+@click.command()
+@click.option('--color/--no-color', **OPTION_ARGS_DEFAULT_TRUE)
+@click.option('--verbose/--no-verbose', **OPTION_ARGS_DEFAULT_FALSE)
+def fix_code_style(color: bool = True, verbose: bool = False):
     """
     Fix code style via darker
     """
-    exit_code = _call_darker(argv=['--color'])
-    sys.exit(exit_code)
+    code_style.fix(package_root=PACKAGE_ROOT, color=color, verbose=verbose)
 
 
-@app.command()
-def check_code_style(verbose: bool = True):
-    darker_exit_code = _call_darker(argv=['--color', '--check'])
-    if verbose:
-        argv = ['--verbose']
-    else:
-        argv = []
-
-    print(f'Run flake8 {shlex.join(str(part) for part in argv)}')
-    flake8_exit_code = flake8_main(argv=argv)
-    print(f'flake8 exit code: {flake8_exit_code!r}')
-    sys.exit(max(darker_exit_code, flake8_exit_code))
+cli.add_command(fix_code_style)
 
 
-@app.command()  # Just add this command to help page
-def test():
+@click.command()
+@click.option('--color/--no-color', **OPTION_ARGS_DEFAULT_TRUE)
+@click.option('--verbose/--no-verbose', **OPTION_ARGS_DEFAULT_FALSE)
+def check_code_style(color: bool = True, verbose: bool = False):
     """
-    Run unittests
+    Check code style by calling darker + flake8
     """
+    code_style.check(package_root=PACKAGE_ROOT, color=color, verbose=verbose)
+
+
+cli.add_command(check_code_style)
+
+
+def _run_unittest_cli():
     args = sys.argv[2:]
     if not args:
         args = ('--verbose', '--locals', '--buffer')
@@ -421,12 +494,28 @@ def test():
             PYTHONWARNINGS='always',
         ),
     )
+    sys.exit(0)
+
+
+@click.command()  # Dummy command, to add "tests" into help page ;)
+def test():
+    """
+    Run unittests
+    """
+    _run_unittest_cli()
+
+
+cli.add_command(test)
 
 
 def main():
     if len(sys.argv) >= 2 and sys.argv[1] == 'test':
         # Just use the CLI from unittest with all available options and origin --help output ;)
-        return test()
+        _run_unittest_cli()
     else:
-        # Execute Typer App:
-        app()
+        # Execute Click CLI:
+        # context = click.get_current_context()
+        # context.info_name='./cli.py'
+        cli.name = './cli.py'
+        # print(cli.__dict__)
+        cli()
