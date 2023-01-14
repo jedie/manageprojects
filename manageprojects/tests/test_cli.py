@@ -20,8 +20,6 @@ assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
 
 
 class CliTestCase(BaseTestCase):
-    # def invoke_cli(self, *args):
-    #     return invoke_click(*args, cli=cli)
 
     def test_main_help(self):
         stdout = invoke_click(cli, '--help')

@@ -3,11 +3,8 @@ from collections.abc import Iterable
 from pathlib import Path
 from pprint import pprint
 from unittest import TestCase
-from unittest.mock import patch
 
-import rich_click
 from bx_py_utils.path import assert_is_file
-from bx_py_utils.test_utils.context_managers import MassContextManager
 
 from manageprojects.utilities.pyproject_toml import toml_load
 
@@ -66,10 +63,3 @@ class BaseTestCase(TestCase):
         assert_is_file(path)
         file_content = path.read_text().strip()
         self.assert_content(got=file_content, expected=content)
-
-
-class ForceRichTerminalWidth(MassContextManager):
-    mocks = (
-        patch.object(rich_click.rich_click, 'MAX_WIDTH', 100),
-        patch.object(rich_click.rich_click, 'FORCE_TERMINAL', False),
-    )
