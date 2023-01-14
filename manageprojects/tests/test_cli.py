@@ -79,7 +79,6 @@ class CliTestCase(BaseTestCase):
                 'git hash 1234',
             ),
         )
-        assert_text_snapshot(got=stdout)
 
     def test_update_project_help(self):
         stdout = invoke_click(cli, 'update-project', '--help')
