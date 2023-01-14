@@ -478,23 +478,35 @@ def check_code_style(color: bool = True, verbose: bool = False):
 cli.add_command(check_code_style)
 
 
-def _run_unittest_cli():
+def _run_unittest_cli(extra_env=None, verbose=True):
+    """
+    Call the origin unittest CLI and pass all args to it.
+    """
+    if extra_env is None:
+        extra_env = dict()
+
+    extra_env.update(
+        dict(
+            PYTHONUNBUFFERED='1',
+            PYTHONWARNINGS='always',
+        )
+    )
+
     args = sys.argv[2:]
     if not args:
-        args = ('--verbose', '--locals', '--buffer')
-    # Use the CLI from unittest module and pass all args to it:
+        if verbose:
+            args = ('--verbose', '--locals', '--buffer')
+        else:
+            args = ('--locals', '--buffer')
+
     verbose_check_call(
         sys.executable,
         '-m',
         'unittest',
         *args,
         timeout=15 * 60,
-        extra_env=dict(
-            PYTHONUNBUFFERED='1',
-            PYTHONWARNINGS='always',
-        ),
+        extra_env=extra_env,
     )
-    sys.exit(0)
 
 
 @click.command()  # Dummy command, to add "tests" into help page ;)
@@ -503,9 +515,40 @@ def test():
     Run unittests
     """
     _run_unittest_cli()
+    sys.exit(0)
 
 
 cli.add_command(test)
+
+
+@click.command()
+def update_test_snapshot_files():
+    """
+    Update all test snapshot files (by remove and recreate all snapshot files)
+    """
+
+    def iter_snapshot_files():
+        yield from PACKAGE_ROOT.rglob('*.snapshot.*')
+
+    removed_file_count = 0
+    for item in iter_snapshot_files():
+        item.unlink()
+        removed_file_count += 1
+    print(f'{removed_file_count} test snapshot files removed... run tests...')
+
+    # Just recreate them by running tests:
+    _run_unittest_cli(
+        extra_env=dict(
+            RAISE_SNAPSHOT_ERRORS='0',  # Recreate snapshot files without error
+        ),
+        verbose=False,
+    )
+
+    new_files = len(list(iter_snapshot_files()))
+    print(f'{new_files} test snapshot files created, ok.\n')
+
+
+cli.add_command(update_test_snapshot_files)
 
 
 def main():

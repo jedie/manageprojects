@@ -1,14 +1,33 @@
+from unittest.mock import patch
+
 import click
+import rich_click
 from bx_py_utils.path import assert_is_file
+from bx_py_utils.test_utils.context_managers import MassContextManager
 from click.testing import CliRunner
 
-from manageprojects.tests.base import ForceRichTerminalWidth
 from manageprojects.utilities.subprocess_utils import verbose_check_output
+
+
+TERMINAL_WIDTH = 100
 
 
 def subprocess_cli(*, cli_bin, args, exit_on_error=True):
     assert_is_file(cli_bin)
-    return verbose_check_output(cli_bin, *args, cwd=cli_bin.parent, exit_on_error=exit_on_error)
+    return verbose_check_output(
+        cli_bin,
+        *args,
+        cwd=cli_bin.parent,
+        extra_env=dict(TERMINAL_WIDTH=str(TERMINAL_WIDTH)),
+        exit_on_error=exit_on_error,
+    )
+
+
+class ForceRichTerminalWidth(MassContextManager):
+    mocks = (
+        patch.object(rich_click.rich_click, 'MAX_WIDTH', TERMINAL_WIDTH),
+        patch.object(rich_click.rich_click, 'FORCE_TERMINAL', False),
+    )
 
 
 def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, **kwargs):

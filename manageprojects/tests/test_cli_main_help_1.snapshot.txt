@@ -5,22 +5,25 @@
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ check-code-style  Check code style by calling darker + flake8                                    │
-│ clone-project     Clone existing project by replay the cookiecutter template in a new directory. │
-│ coverage          Run and show coverage.                                                         │
-│ fix-code-style    Fix code style via darker                                                      │
-│ install           Run pip-sync and install 'manageprojects' via pip as editable.                 │
-│ mypy              Run Mypy (configured in pyproject.toml)                                        │
-│ publish           Build and upload this project to PyPi                                          │
-│ reverse           Create a cookiecutter template from a managed project.                         │
-│ start-project     Start a new "managed" project via a CookieCutter Template. Note: The           │
-│                   CookieCutter Template *must* be use git!                                       │
-│ test              Run unittests                                                                  │
-│ update            Update "requirements*.txt" dependencies files                                  │
-│ update-project    Update a existing project. e.g.:                                               │
-│ version           Print version and exit                                                         │
-│ wiggle            Run wiggle to merge *.rej in given directory.                                  │
-│                   https://github.com/neilbrown/wiggle                                            │
+│ check-code-style            Check code style by calling darker + flake8                          │
+│ clone-project               Clone existing project by replay the cookiecutter template in a new  │
+│                             directory.                                                           │
+│ coverage                    Run and show coverage.                                               │
+│ fix-code-style              Fix code style via darker                                            │
+│ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
+│ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ publish                     Build and upload this project to PyPi                                │
+│ reverse                     Create a cookiecutter template from a managed project.               │
+│ start-project               Start a new "managed" project via a CookieCutter Template. Note: The │
+│                             CookieCutter Template *must* be use git!                             │
+│ test                        Run unittests                                                        │
+│ update                      Update "requirements*.txt" dependencies files                        │
+│ update-project              Update a existing project. e.g.:                                     │
+│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
+│                             files)                                                               │
+│ version                     Print version and exit                                               │
+│ wiggle                      Run wiggle to merge *.rej in given directory.                        │
+│                             https://github.com/neilbrown/wiggle                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     
  Project Homepage: https://github.com/jedie/manageprojects                                          
