@@ -418,7 +418,7 @@ def publish():
     """
     Build and upload this project to PyPi
     """
-    test()  # Don't publish a broken state
+    _run_unittest_cli(verbose=False)  # Don't publish a broken state
 
     git = Git(cwd=PACKAGE_ROOT, detect_root=True)
 
