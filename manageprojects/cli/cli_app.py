@@ -244,6 +244,16 @@ cli.add_command(start_project)
 @click.command()
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.option(
+    '--overwrite/--no-overwrite',
+    **OPTION_ARGS_DEFAULT_FALSE,
+    help=(
+        'Overwrite all Cookiecutter template files to the last template state and'
+        ' do not apply the changes via git patches.'
+        ' The developer is supposed to apply the differences manually via git.'
+        ' Will be aborted if the project git repro is not in a clean state.'
+    ),
+)
+@click.option(
     '--password',
     default=None,
     help='Cookiecutter Option: Password to use when extracting the repository',
@@ -257,7 +267,7 @@ cli.add_command(start_project)
 @click.option(
     '--input/--no-input',
     **OPTION_ARGS_DEFAULT_FALSE,
-    help=('Cookiecutter Option: Do not prompt for parameters' ' and only use cookiecutter.json file content'),
+    help='Cookiecutter Option: Do not prompt for parameters and only use cookiecutter.json file content',
 )
 @click.option(
     '--cleanup/--no-cleanup',
@@ -266,6 +276,7 @@ cli.add_command(start_project)
 )
 def update_project(
     project_path: Path,
+    overwrite: bool,
     password: Optional[str],
     config_file: Optional[Path],
     input: bool,
@@ -280,6 +291,7 @@ def update_project(
     print(f'Update project: "{project_path}"...')
     update_managed_project(
         project_path=project_path,
+        overwrite=overwrite,
         password=password,
         config_file=config_file,
         cleanup=cleanup,

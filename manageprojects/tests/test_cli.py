@@ -100,6 +100,7 @@ class CliTestCase(BaseTestCase):
 
         m.assert_called_once_with(
             project_path=Path(tempdir),
+            overwrite=False,
             password=None,
             config_file=None,
             cleanup=True,

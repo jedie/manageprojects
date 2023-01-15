@@ -208,3 +208,22 @@ class GitTestCase(TestCase):
                     '''
                 ),
             )
+
+    def test_status(self):
+        with TemporaryDirectory(prefix='test_status_') as temp_path:
+            change_txt_path = Path(temp_path, 'change.txt')
+            change_txt_path.write_text('This is the first revision!')
+
+            git, first_hash = init_git(temp_path)
+
+            change_txt_path.write_text('Changed content')
+            Path(temp_path, 'added.txt').write_text('Added file')
+
+            status = git.status(verbose=False)
+            self.assertEqual(status, [('M', 'change.txt'), ('??', 'added.txt')])
+
+            git.add('.', verbose=False)
+            git.commit('The second commit', verbose=False)
+
+            status = git.status(verbose=False)
+            self.assertEqual(status, [])

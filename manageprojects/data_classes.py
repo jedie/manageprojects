@@ -45,13 +45,22 @@ class ManageProjectsMeta:
 
 
 @dataclasses.dataclass
-class GenerateTemplatePatchResult:
+class ResultBase:
+    to_rev: str
+    to_commit_date: datetime.datetime
+
+
+@dataclasses.dataclass
+class GenerateTemplatePatchResult(ResultBase):
     repo_path: Path  # Cookiecutter template path
     patch_file_path: Path
 
     from_rev: str
     compiled_from_path: Path
 
-    to_rev: str
-    to_commit_date: datetime.datetime
     compiled_to_path: Path
+
+
+@dataclasses.dataclass
+class OverwriteResult(ResultBase):
+    pass

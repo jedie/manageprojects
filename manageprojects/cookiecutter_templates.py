@@ -12,8 +12,10 @@ from manageprojects.data_classes import (
     CookiecutterResult,
     GenerateTemplatePatchResult,
     ManageProjectsMeta,
+    OverwriteResult,
 )
 from manageprojects.git import Git
+from manageprojects.overwrite import overwrite_project
 from manageprojects.patching import generate_template_patch
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 
@@ -83,6 +85,7 @@ def start_managed_project(
 
 def update_managed_project(
     project_path: Path,
+    overwrite: bool = False,  # Don't apply git patches -> Just overwrite all template files!
     password: Optional[str] = None,
     config_file: Optional[Path] = None,  # CookieCutter config file
     cleanup: bool = True,  # Remove temp files if not exceptions happens
@@ -108,46 +111,64 @@ def update_managed_project(
     cookiecutter_template = meta.cookiecutter_template
     assert cookiecutter_template, f'Missing template in {toml.path}'
 
-    #############################################################################
-    # Generate the git diff/patch
+    if overwrite:
+        # Don't apply git patches -> Just overwrite all template files:
+        result = overwrite_project(
+            git=git,
+            project_path=project_path,
+            template=cookiecutter_template,
+            replay_context=cookiecutter_context,
+            directory=meta.cookiecutter_directory,
+            from_rev=from_rev,
+            password=password,
+            config_file=config_file,
+            cleanup=cleanup,
+            no_input=not input,
+        )
+        if not result:
+            logger.info('Project is up-to-date, no changed to applied.')
+            return None
+        assert isinstance(result, OverwriteResult)
+    else:
+        # Generate the git diff/patch
 
-    result = generate_template_patch(
-        project_path=project_path,
-        template=cookiecutter_template,
-        directory=meta.cookiecutter_directory,
-        from_rev=from_rev,
-        replay_context=cookiecutter_context,
-        password=password,
-        config_file=config_file,
-        cleanup=cleanup,
-        no_input=not input,
-    )
-    if not result:
-        logger.info('No git patch was created, nothing to apply.')
-        return None
-    assert isinstance(result, GenerateTemplatePatchResult)
+        result = generate_template_patch(
+            project_path=project_path,
+            template=cookiecutter_template,
+            directory=meta.cookiecutter_directory,
+            from_rev=from_rev,
+            replay_context=cookiecutter_context,
+            password=password,
+            config_file=config_file,
+            cleanup=cleanup,
+            no_input=not input,
+        )
+        if not result:
+            logger.info('No git patch was created, nothing to apply.')
+            return None
+        assert isinstance(result, GenerateTemplatePatchResult)
 
-    #############################################################################
-    # Apply the patch
+        #############################################################################
+        # Apply the patch
 
-    patch_file_path = result.patch_file_path
-    try:
-        git.apply(patch_path=patch_file_path)
-    except subprocess.CalledProcessError as err:
-        print(err.stdout)
-        if err.returncode == 1:
-            print()
-            print('Seems that the patch was not applied correctly!')
-            print('Hint: run wiggle on the project:')
-            print()
-            print(f'./cli.py wiggle {project_path}')
-            print()
+        patch_file_path = result.patch_file_path
+        try:
+            git.apply(patch_path=patch_file_path)
+        except subprocess.CalledProcessError as err:
+            print(err.stdout)
+            if err.returncode == 1:
+                print()
+                print('Seems that the patch was not applied correctly!')
+                print('Hint: run wiggle on the project:')
+                print()
+                print(f'./cli.py wiggle {project_path}')
+                print()
 
     #############################################################################
     # Update "pyproject.toml" with applied patch information
 
     # Important: We *must* read the current "pyproject.toml" here again!
-    # Otherwise we may overwrite template changed with old content!
+    # Otherwise, we may overwrite template changed with old content!
     toml = PyProjectToml(project_path=project_path)
     toml.add_applied_migrations(git_hash=result.to_rev, dt=result.to_commit_date)
     toml.save()
