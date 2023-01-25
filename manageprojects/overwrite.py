@@ -79,6 +79,9 @@ def overwrite_project(
             else:
                 print(f'UPDATE file: {dst_file_path}')
 
+            if not dst_file_path.parent.exists():
+                dst_file_path.parent.mkdir(parents=True)
+
             shutil.copyfile(src_file_path, dst_file_path)
             updated_file_count += 1
 
