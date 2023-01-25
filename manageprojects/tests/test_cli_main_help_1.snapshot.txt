@@ -1,6 +1,5 @@
-                                                                                                    
- Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...                                                        
-                                                                                                    
+Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
+
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -18,14 +17,12 @@
 │                             CookieCutter Template *must* be use git!                             │
 │ test                        Run unittests                                                        │
 │ update                      Update "requirements*.txt" dependencies files                        │
-│ update-project              Update a existing project. e.g.:                                     │
+│ update-project              Update a existing project.                                           │
 │ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
 │                             files)                                                               │
 │ version                     Print version and exit                                               │
 │ wiggle                      Run wiggle to merge *.rej in given directory.                        │
 │                             https://github.com/neilbrown/wiggle                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-                                                                                                    
- Project Homepage: https://github.com/jedie/manageprojects                                          
-                                                                                                    
 
+ Project Homepage: https://github.com/jedie/manageprojects

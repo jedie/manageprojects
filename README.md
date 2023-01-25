@@ -22,6 +22,110 @@ e.g.:
 ~/manageprojects$ ./cli.py --help
 ```
 
+The output of `./cli.py --help` looks like:
+
+[comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
+```
+Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+│ check-code-style            Check code style by calling darker + flake8                          │
+│ clone-project               Clone existing project by replay the cookiecutter template in a new  │
+│                             directory.                                                           │
+│ coverage                    Run and show coverage.                                               │
+│ fix-code-style              Fix code style via darker                                            │
+│ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
+│ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ publish                     Build and upload this project to PyPi                                │
+│ reverse                     Create a cookiecutter template from a managed project.               │
+│ start-project               Start a new "managed" project via a CookieCutter Template. Note: The │
+│                             CookieCutter Template *must* be use git!                             │
+│ test                        Run unittests                                                        │
+│ update                      Update "requirements*.txt" dependencies files                        │
+│ update-project              Update a existing project.                                           │
+│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
+│                             files)                                                               │
+│ version                     Print version and exit                                               │
+│ wiggle                      Run wiggle to merge *.rej in given directory.                        │
+│                             https://github.com/neilbrown/wiggle                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
+
+### most important commands
+
+#### start-project
+
+Help from `./cli.py start-project --help` Looks like:
+
+[comment]: <> (✂✂✂ auto generated start-project help start ✂✂✂)
+```
+Usage: ./cli.py start-project [OPTIONS] TEMPLATE OUTPUT_DIR
+
+ Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template *must*
+ be use git!
+ e.g.:
+ ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory
+ piptools-python ~/foobar/
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --directory             TEXT  Cookiecutter Option: Directory within repo that holds              │
+│                               cookiecutter.json file for advanced repositories with multi        │
+│                               templates in it                                                    │
+│ --checkout              TEXT  Cookiecutter Option: branch, tag or commit to checkout after git   │
+│                               clone                                                              │
+│ --input/--no-input            Cookiecutter Option: Do not prompt for parameters and only use     │
+│                               cookiecutter.json file content                                     │
+│                               [default: input]                                                   │
+│ --replay/--no-replay          Cookiecutter Option: Do not prompt for parameters and only use     │
+│                               information entered previously                                     │
+│                               [default: no-replay]                                               │
+│ --password              TEXT  Cookiecutter Option: Password to use when extracting the           │
+│                               repository                                                         │
+│ --config-file           FILE  Cookiecutter Option: Optional path to "cookiecutter_config.yaml"   │
+│ --help                        Show this message and exit.                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated start-project help end ✂✂✂)
+
+
+#### update-project
+
+Help from `./cli.py update-project --help` Looks like:
+
+[comment]: <> (✂✂✂ auto generated update-project help start ✂✂✂)
+```
+Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH
+
+ Update a existing project.
+ e.g. update by overwrite (and merge changes manually via git):
+ ./cli.py update-project --overwrite ~/foo/bar/
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --overwrite/--no-overwrite          Overwrite all Cookiecutter template files to the last        │
+│                                     template state and do not apply the changes via git patches. │
+│                                     The developer is supposed to apply the differences manually  │
+│                                     via git. Will be aborted if the project git repro is not in  │
+│                                     a clean state.                                               │
+│                                     [default: no-overwrite]                                      │
+│ --password                    TEXT  Cookiecutter Option: Password to use when extracting the     │
+│                                     repository                                                   │
+│ --config-file                 FILE  Cookiecutter Option: Optional path to                        │
+│                                     "cookiecutter_config.yaml"                                   │
+│ --input/--no-input                  Cookiecutter Option: Do not prompt for parameters and only   │
+│                                     use cookiecutter.json file content                           │
+│                                     [default: no-input]                                          │
+│ --cleanup/--no-cleanup              Cleanup created temporary files [default: cleanup]           │
+│ --help                              Show this message and exit.                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated update-project help end ✂✂✂)
+
+
+
 ## workflow
 
 ### 1. Create a new project
@@ -106,6 +210,21 @@ Just run `wiggle` via manageproject CLI, e.g.:
 
 ```bash
 ~/manageprojects$ ./cli.py wiggle ~/my_new_project/your_cool_package/
+```
+
+
+#### Update by overwrite
+
+A alternative way to update a project:
+
+1. Just overwrite all files with the current Cookiecutter template output
+2. Merge changes manually via `git`
+
+So you doesn't have trouble with not applyable git patches ;)
+
+Just add `--overwrite`, e.g.:
+```bash
+~/manageprojects$ ./cli.py update-project --overwrite ~/my_new_project/your_cool_package/
 ```
 
 

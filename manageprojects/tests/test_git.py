@@ -54,7 +54,7 @@ class GitTestCase(TestCase):
         git_hash = git.get_current_hash(verbose=False)
         self.assertEqual(len(git_hash), 7, f'Wrong: {git_hash!r}')
 
-        output = invoke_click(version)
+        output = invoke_click(version, strip=False)
         self.assertEqual(output, f'manageprojects v{__version__} {git_hash}\n')
 
         commit_date = git.get_commit_date(verbose=False)
