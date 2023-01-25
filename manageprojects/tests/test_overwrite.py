@@ -2,6 +2,7 @@ import inspect
 import json
 from pathlib import Path
 
+from bx_py_utils.path import assert_is_file
 from bx_py_utils.test_utils.redirect import RedirectOut
 
 from manageprojects.cookiecutter_templates import update_managed_project
@@ -102,6 +103,8 @@ class UpdateByOverwriteTestCase(BaseTestCase):
                     '''
                 )
             )
+            Path(template_dir_path, '{{cookiecutter.dir_name}}', 'a_new_file.txt').touch()
+
             git.add('.', verbose=False)
             git.commit('Template rev 2', verbose=False)
             to_rev = git.get_current_hash(verbose=False)
@@ -148,6 +151,7 @@ class UpdateByOverwriteTestCase(BaseTestCase):
                     )
             self.assertEqual(buffer.stderr, '')
             self.assertIn('Update by overwrite', buffer.stdout)
+            self.assertIn('UPDATE file', buffer.stdout)
             self.assertIn('NEW file', buffer.stdout)
 
             self.assert_file_content(
@@ -163,6 +167,7 @@ class UpdateByOverwriteTestCase(BaseTestCase):
                     '''
                 ),
             )
+            assert_is_file(path=Path(project_path / 'a_new_file.txt'))
 
             self.assertIsInstance(result, OverwriteResult)
             self.assertEqual(
