@@ -104,6 +104,9 @@ class UpdateByOverwriteTestCase(BaseTestCase):
                 )
             )
             Path(template_dir_path, '{{cookiecutter.dir_name}}', 'a_new_file.txt').touch()
+            new_file2 = Path(template_dir_path, '{{cookiecutter.dir_name}}', 'new_dir1', 'new_dir2', 'a_file.txt')
+            new_file2.parent.mkdir(parents=True)
+            new_file2.touch()
 
             git.add('.', verbose=False)
             git.commit('Template rev 2', verbose=False)
@@ -167,7 +170,8 @@ class UpdateByOverwriteTestCase(BaseTestCase):
                     '''
                 ),
             )
-            assert_is_file(path=Path(project_path / 'a_new_file.txt'))
+            assert_is_file(path=Path(project_path, 'a_new_file.txt'))
+            assert_is_file(path=Path(project_path, 'new_dir1', 'new_dir2', 'a_file.txt'))
 
             self.assertIsInstance(result, OverwriteResult)
             self.assertEqual(
