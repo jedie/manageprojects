@@ -1,9 +1,9 @@
-                                                                                                    
- Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH                                              
-                                                                                                    
- Update a existing project. e.g.:                                                                   
- ./cli.py update-project ~/foo/bar/                                                                 
-                                                                                                    
+Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH
+
+ Update a existing project.
+ e.g. update by overwrite (and merge changes manually via git):
+ ./cli.py update-project --overwrite ~/foo/bar/
+
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --overwrite/--no-overwrite          Overwrite all Cookiecutter template files to the last        │
 │                                     template state and do not apply the changes via git patches. │
@@ -21,4 +21,3 @@
 │ --cleanup/--no-cleanup              Cleanup created temporary files [default: cleanup]           │
 │ --help                              Show this message and exit.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-

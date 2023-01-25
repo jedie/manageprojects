@@ -30,7 +30,7 @@ class ForceRichTerminalWidth(MassContextManager):
     )
 
 
-def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, **kwargs):
+def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=True, **kwargs):
     assert isinstance(cli, click.Command)
 
     args = tuple([str(arg) for arg in args])  # e.g.: Path() -> str
@@ -46,4 +46,7 @@ def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, **kwargs)
         result.exit_code == expected_exit_code
     ), f'Exit code {result.exit_code} is not {expected_exit_code}\n{stdout}\n{stderr}'
 
+    if strip:
+        stdout = '\n'.join(line.rstrip() for line in stdout.splitlines())
+        stdout = stdout.strip()
     return stdout

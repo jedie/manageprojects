@@ -12,7 +12,7 @@ from rich import print  # noqa
 from rich_click import RichGroup
 
 import manageprojects
-from manageprojects import __version__
+from manageprojects import __version__, constants
 from manageprojects.cookiecutter_templates import (
     clone_managed_project,
     reverse_managed_project,
@@ -50,7 +50,7 @@ class ClickGroup(RichGroup):  # FIXME: How to set the "info_name" easier?
 
 @click.group(
     cls=ClickGroup,
-    epilog='Project Homepage: https://github.com/jedie/manageprojects',
+    epilog=constants.CLI_EPILOG,
 )
 def cli():
     pass
@@ -283,9 +283,11 @@ def update_project(
     cleanup: bool,
 ):
     """
-    Update a existing project. e.g.:
+    Update a existing project.
 
-    ./cli.py update-project ~/foo/bar/
+    e.g. update by overwrite (and merge changes manually via git):
+
+    ./cli.py update-project --overwrite ~/foo/bar/
     """
     log_config()
     print(f'Update project: "{project_path}"...')

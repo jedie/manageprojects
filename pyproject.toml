@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.7.0"
+version = "0.7.1"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
@@ -29,6 +29,7 @@ dev = [
     "tomli",  # https://github.com/hukkin/tomli
     "twine",  # https://github.com/pypa/twine
     "poetry-publish",  # https://github.com/jedie/poetry-publish
+    "pdoc", # Because: https://github.com/boxine/bx_py_utils/issues/157
 ]
 
 [project.urls]
