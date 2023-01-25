@@ -71,7 +71,7 @@ def overwrite_project(
                 continue
 
             dst_file_path = project_path / src_file_path.relative_to(to_rev_dst_path)
-            if dst_file_path.exists():
+            if not dst_file_path.exists():
                 print(f'NEW file: {dst_file_path}')
             elif filecmp.cmp(dst_file_path, src_file_path, shallow=False):
                 print(f'Skip unchanged file: {dst_file_path}, ok.')
