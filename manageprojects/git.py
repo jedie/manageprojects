@@ -241,3 +241,15 @@ class Git:
         assert output.startswith(
             test_str
         ), f'Reset error: {output!r} does not start with {test_str!r}'
+
+    def status(self, verbose=True) -> list:
+        """
+        Returns the changed files, if any.
+        """
+        output = self.git_verbose_check_output('status', '--porcelain', verbose=verbose, exit_on_error=True)
+        result = []
+        for line in output.splitlines():
+            line = line.strip()
+            status, filepath = line.split(' ', 1)
+            result.append((status, filepath))
+        return result
