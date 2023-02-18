@@ -23,7 +23,7 @@ from manageprojects.utilities.log_utils import log_func_call
 logger = logging.getLogger(__name__)
 
 
-def find_pyproject_toml(file_path: Path) -> Path | None:
+def find_pyproject_toml(file_path: Path) -> Optional[Path]:
     if file_path.is_file():
         return find_pyproject_toml(file_path.parent)
 

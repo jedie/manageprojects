@@ -4,8 +4,6 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
-
-import rich
 import rich_click as click
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from rich import print  # noqa
@@ -30,6 +28,7 @@ from manageprojects.git import Git
 from manageprojects.utilities import code_style
 from manageprojects.utilities.log_utils import log_config
 from manageprojects.utilities.subprocess_utils import verbose_check_call
+from manageprojects.utilities.version_info import print_version
 
 
 logger = logging.getLogger(__name__)
@@ -155,25 +154,6 @@ def update():
 
 
 cli.add_command(update)
-
-
-@click.command()
-def version(no_color: bool = False):
-    """Print version and exit"""
-    if no_color:
-        rich.reconfigure(no_color=True)
-
-    print('manageprojects v', end='')
-    from manageprojects import __version__
-
-    print(__version__, end=' ')
-
-    git = Git(cwd=PACKAGE_ROOT)
-    current_hash = git.get_current_hash(verbose=False)
-    print(current_hash)
-
-
-cli.add_command(version)
 
 
 @click.command()
@@ -632,6 +612,8 @@ cli.add_command(format_file)
 
 
 def main():
+    print_version(manageprojects)
+
     if len(sys.argv) >= 2 and sys.argv[1] == 'test':
         # Just use the CLI from unittest with all available options and origin --help output ;)
         _run_unittest_cli()

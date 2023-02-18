@@ -1,14 +1,15 @@
 import dataclasses
 import subprocess
 from pathlib import Path
+from typing import Optional, Union
 from unittest.mock import patch
 
 
 @dataclasses.dataclass
 class Call:
-    popenargs: tuple | list
+    popenargs: Union[tuple, list]
     args: tuple
-    kwargs: dict | None
+    kwargs: Optional[dict]
 
 
 class SubprocessCallMock:
@@ -26,7 +27,7 @@ class SubprocessCallMock:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.m.__exit__(exc_type, exc_val, exc_tb)
 
-    def get_popenargs(self, rstrip_path: Path | None = None):
+    def get_popenargs(self, rstrip_path: Optional[Path] = None):
         if isinstance(rstrip_path, Path):
             rstrip_path = str(rstrip_path)
 

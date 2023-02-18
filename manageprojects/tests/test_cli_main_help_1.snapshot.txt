@@ -24,7 +24,6 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ update-project              Update a existing project.                                           │
 │ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
 │                             files)                                                               │
-│ version                     Print version and exit                                               │
 │ wiggle                      Run wiggle to merge *.rej in given directory.                        │
 │                             https://github.com/neilbrown/wiggle                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯

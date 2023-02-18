@@ -4,14 +4,11 @@ from pathlib import Path
 import tomli
 from bx_py_utils.path import assert_is_file
 
-import manageprojects
 from manageprojects import __version__
+from manageprojects.cli.cli_app import PACKAGE_ROOT
 from manageprojects.test_utils.click_cli_utils import subprocess_cli
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities import code_style
-
-
-PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
 
 
 class ProjectSetupTestCase(BaseTestCase):
@@ -28,9 +25,6 @@ class ProjectSetupTestCase(BaseTestCase):
 
         cli_bin = PACKAGE_ROOT / 'cli.py'
         assert_is_file(cli_bin)
-
-        output = subprocess.check_output([cli_bin, 'version'], text=True)
-        self.assertIn(f'manageprojects v{__version__}', output)
 
     def test_code_style(self):
         cli_bin = PACKAGE_ROOT / 'cli.py'

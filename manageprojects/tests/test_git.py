@@ -8,10 +8,8 @@ from unittest import TestCase
 from bx_py_utils.test_utils.datetime import parse_dt
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
-from manageprojects import __version__
-from manageprojects.cli.cli_app import PACKAGE_ROOT, version
+from manageprojects.cli.cli_app import PACKAGE_ROOT
 from manageprojects.git import Git
-from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.utilities.temp_path import TemporaryDirectory
@@ -54,9 +52,6 @@ class GitTestCase(TestCase):
 
         git_hash = git.get_current_hash(verbose=False)
         self.assertEqual(len(git_hash), 7, f'Wrong: {git_hash!r}')
-
-        output = invoke_click(version, strip=False)
-        self.assertEqual(output, f'manageprojects v{__version__} {git_hash}\n')
 
         commit_date = git.get_commit_date(verbose=False)
         self.assertIsInstance(commit_date, datetime.datetime)

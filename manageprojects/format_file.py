@@ -1,5 +1,6 @@
 import dataclasses
 from pathlib import Path
+from typing import Optional
 
 from bx_py_utils.dict_utils import dict_get
 from editorconfig import EditorConfigError, get_properties
@@ -26,23 +27,23 @@ class GitInfo:
 @dataclasses.dataclass
 class PyProjectInfo:
     py_min_ver: Version
-    pyproject_toml_path: Path | None = None
-    raw_py_ver_req: str | None = None
+    pyproject_toml_path: Optional[Path] = None
+    raw_py_ver_req: Optional[str] = None
 
 
 @dataclasses.dataclass
 class Config:
-    git_info: GitInfo | None
+    git_info: Optional[GitInfo]
     pyproject_info: PyProjectInfo
     max_line_length: int
 
     @property
-    def py_ver_str(self) -> str | None:
+    def py_ver_str(self) -> Optional[str]:
         if pyproject_info := self.pyproject_info:
             return f'py{pyproject_info.py_min_ver.major}{pyproject_info.py_min_ver.minor}'
 
     @property
-    def project_root_path(self) -> Path | None:
+    def project_root_path(self) -> Optional[Path]:
         if git_info := self.git_info:
             if cwd := git_info.cwd:
                 return cwd
@@ -51,12 +52,12 @@ class Config:
             return pyproject_toml_path.parent
 
     @property
-    def main_branch_name(self) -> str | None:
+    def main_branch_name(self) -> Optional[str]:
         if git_info := self.git_info:
             return git_info.main_branch_name
 
 
-def get_git_info(file_path: Path) -> GitInfo | None:
+def get_git_info(file_path: Path) -> Optional[GitInfo]:
     try:
         git = Git(cwd=file_path.parent, detect_root=True)
     except NoGitRepoError:
@@ -74,7 +75,7 @@ def get_git_info(file_path: Path) -> GitInfo | None:
             )
 
 
-def get_py_min_version(raw_py_ver_req) -> Version | None:
+def get_py_min_version(raw_py_ver_req) -> Optional[Version]:
     specifier = SpecifierSet(raw_py_ver_req)
 
     # FIXME: How can this been simpler?
@@ -119,7 +120,7 @@ def get_pyproject_info(file_path: Path, default_min_py_version: str) -> PyProjec
     return pyproject_info
 
 
-def get_editorconfig_max_line_length(file_path) -> int | None:
+def get_editorconfig_max_line_length(file_path) -> Optional[int]:
     try:
         options = get_properties(file_path)
     except EditorConfigError as err:
