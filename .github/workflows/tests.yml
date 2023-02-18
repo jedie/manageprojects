@@ -20,14 +20,12 @@ jobs:
       PYTHONUNBUFFERED: 1
       PYTHONWARNINGS: always
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
+        ref: 'main'
         fetch-depth: 0
-    - name: 'fetch master'
-      run: |
-        git fetch origin main
     - name: 'Set up Python ${{ matrix.python-version }}'
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '${{ matrix.python-version }}'
 
@@ -39,6 +37,10 @@ jobs:
     - name: 'Bootstrap'
       run: |
         ./cli.py version
+
+    - name: 'Safety'
+      run: |
+        ./cli.py safety
 
     - name: 'Run tests with Python v${{ matrix.python-version }}'
       run: |

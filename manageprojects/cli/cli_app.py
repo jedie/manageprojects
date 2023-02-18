@@ -91,6 +91,17 @@ cli.add_command(install)
 
 
 @click.command()
+def safety():
+    """
+    Run safety check against current requirements files
+    """
+    verbose_check_call('safety', 'check', '-r', 'requirements.dev.txt')
+
+
+cli.add_command(safety)
+
+
+@click.command()
 def update():
     """
     Update "requirements*.txt" dependencies files
@@ -127,6 +138,8 @@ def update():
         'requirements.dev.txt',
         extra_env=extra_env,
     )
+
+    verbose_check_call('safety', 'check', '-r', 'requirements.dev.txt')
 
     # Install new dependencies in current .venv:
     verbose_check_call('pip-sync', 'requirements.dev.txt')
@@ -471,7 +484,7 @@ cli.add_command(publish)
 @click.option('--verbose/--no-verbose', **OPTION_ARGS_DEFAULT_FALSE)
 def fix_code_style(color: bool = True, verbose: bool = False):
     """
-    Fix code style via darker
+    Fix code style of all manageprojects source code files via darker
     """
     code_style.fix(package_root=PACKAGE_ROOT, color=color, verbose=verbose)
 
@@ -571,8 +584,5 @@ def main():
         _run_unittest_cli()
     else:
         # Execute Click CLI:
-        # context = click.get_current_context()
-        # context.info_name='./cli.py'
         cli.name = './cli.py'
-        # print(cli.__dict__)
         cli()
