@@ -13,14 +13,23 @@ import sys
 import venv
 from pathlib import Path
 
+
+def print_no_pip_error():
+    print('Error: Pip not available!')
+    print('Hint: "apt-get install python3-venv"\n')
+
+
 try:
-    import ensurepip  # noqa
+    from ensurepip import version
 except ModuleNotFoundError as err:
     print(err)
     print('-' * 100)
-    print('Error: Pip not available!')
-    print('Hint: "apt-get install python3-venv"\n')
+    print_no_pip_error()
     raise
+else:
+    if not version():
+        print_no_pip_error()
+        sys.exit(-1)
 
 
 assert sys.version_info >= (3, 9), 'Python version is too old!'

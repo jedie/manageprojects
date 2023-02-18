@@ -20,8 +20,9 @@ dev = [
     "pip-tools",  # https://github.com/jazzband/pip-tools/
     "tox",  # https://github.com/tox-dev/tox
     "coveralls",  # https://github.com/TheKevJames/coveralls-python
-    "darker",  # https://github.com/akaihola/darker
+    "darker>=1.7",  # https://github.com/akaihola/darker
     "isort",  # https://github.com/pycqa/isort
+    "flynt",  # https://github.com/ikamensh/flynt
     "flake8",  # https://github.com/pycqa/flake8
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
     "safety",  # https://github.com/pyupio/safety
@@ -58,6 +59,7 @@ diff = false
 check = false
 stdout = false
 isort = true
+flynt = true
 lint = [
     "flake8",
 ]
@@ -105,6 +107,7 @@ cookiecutter_template = "https://github.com/jedie/cookiecutter_templates"
 cookiecutter_directory = "piptools-python"
 applied_migrations = [
     "cf44769", # 2023-01-11T08:15:06+01:00
+    "cd164cd", # 2023-02-18T11:55:57+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
