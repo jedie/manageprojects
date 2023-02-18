@@ -13,6 +13,7 @@ from manageprojects.cli.cli_app import PACKAGE_ROOT, version
 from manageprojects.git import Git
 from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.test_utils.git_utils import init_git
+from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
@@ -227,3 +228,25 @@ class GitTestCase(TestCase):
 
             status = git.status(verbose=False)
             self.assertEqual(status, [])
+
+    def test_branch_names(self):
+        with TemporaryDirectory(prefix='test_branch_names_') as temp_path:
+            Path(temp_path, 'foo.txt').touch()
+            git, first_hash = init_git(temp_path)
+
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                branch_names = git.get_branch_names()
+                self.assertEqual(branch_names, ['main'])
+            logs.assert_in('Git branches: main')
+
+            git.git_verbose_check_call('checkout', '-b', 'foobar')
+
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                branch_names = git.get_branch_names()
+                self.assertEqual(branch_names, ['foobar', 'main'])
+            logs.assert_in('Git branches: foobar, main')
+
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                main_branch_name = git.get_main_branch_name()
+                self.assertEqual(main_branch_name, 'main')
+            logs.assert_in('Git main branch: "main"')

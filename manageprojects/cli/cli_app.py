@@ -13,6 +13,11 @@ from rich_click import RichGroup
 
 import manageprojects
 from manageprojects import __version__, constants
+from manageprojects.constants import (
+    FORMAT_PY_FILE_DARKER_PREFIXES,
+    FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
+    FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+)
 from manageprojects.cookiecutter_templates import (
     clone_managed_project,
     reverse_managed_project,
@@ -20,6 +25,7 @@ from manageprojects.cookiecutter_templates import (
     update_managed_project,
 )
 from manageprojects.data_classes import CookiecutterResult
+from manageprojects.format_file import format_one_file
 from manageprojects.git import Git
 from manageprojects.utilities import code_style
 from manageprojects.utilities.log_utils import log_config
@@ -39,6 +45,9 @@ ARGUMENT_EXISTING_DIR = dict(
 )
 ARGUMENT_NOT_EXISTING_DIR = dict(
     type=click.Path(exists=False, file_okay=False, dir_okay=True, readable=False, writable=True, path_type=Path)
+)
+ARGUMENT_EXISTING_FILE = dict(
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path)
 )
 
 
@@ -576,6 +585,50 @@ def update_test_snapshot_files():
 
 
 cli.add_command(update_test_snapshot_files)
+
+
+@click.command()
+@click.option(
+    '--py-version',
+    default=FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+    show_default=True,
+    help='Fallback Python version for darker/pyupgrade, if version is not defined in pyproject.toml',
+)
+@click.option(
+    '-l',
+    '--max-line-length',
+    default=FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
+    type=int,
+    show_default=True,
+    help='Fallback max. line length for darker/isort etc., if not defined in .editorconfig',
+)
+@click.option(
+    '--darker-prefixes',
+    default=FORMAT_PY_FILE_DARKER_PREFIXES,
+    show_default=True,
+    help='Apply prefixes via autopep8 before calling darker.',
+)
+@click.argument('file_path', **ARGUMENT_EXISTING_FILE)
+def format_file(
+    *,
+    py_version: str,
+    max_line_length: int,
+    darker_prefixes: str,
+    file_path: Path,
+):
+    """
+    Format and check the given python source code file with darker/isort/pyupgrade/autopep8/mypy etc.
+    Useful as manual action executed via IDE shortcut to fix and check a Python file.
+    """
+    format_one_file(
+        default_min_py_version=py_version,
+        default_max_line_length=max_line_length,
+        darker_prefixes=darker_prefixes,
+        file_path=file_path,
+    )
+
+
+cli.add_command(format_file)
 
 
 def main():

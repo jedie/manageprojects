@@ -36,11 +36,15 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ clone-project               Clone existing project by replay the cookiecutter template in a new  │
 │                             directory.                                                           │
 │ coverage                    Run and show coverage.                                               │
-│ fix-code-style              Fix code style via darker                                            │
+│ fix-code-style              Fix code style of all manageprojects source code files via darker    │
+│ format-file                 Format and check the given python source code file with              │
+│                             darker/isort/pyupgrade/autopep8/mypy etc. Useful as manual action    │
+│                             executed via IDE shortcut to fix and check a Python file.            │
 │ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
 │ publish                     Build and upload this project to PyPi                                │
 │ reverse                     Create a cookiecutter template from a managed project.               │
+│ safety                      Run safety check against current requirements files                  │
 │ start-project               Start a new "managed" project via a CookieCutter Template. Note: The │
 │                             CookieCutter Template *must* be use git!                             │
 │ test                        Run unittests                                                        │

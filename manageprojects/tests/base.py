@@ -6,7 +6,11 @@ from unittest import TestCase
 
 from bx_py_utils.path import assert_is_file
 
+import manageprojects
 from manageprojects.utilities.pyproject_toml import toml_load
+
+
+PROJECT_PATH = Path(manageprojects.__file__).parent.parent
 
 
 class BaseTestCase(TestCase):
