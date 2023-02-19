@@ -38,8 +38,7 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ coverage                    Run and show coverage.                                               │
 │ fix-code-style              Fix code style of all manageprojects source code files via darker    │
 │ format-file                 Format and check the given python source code file with              │
-│                             darker/isort/pyupgrade/autopep8/mypy etc. Useful as manual action    │
-│                             executed via IDE shortcut to fix and check a Python file.            │
+│                             darker/isort/pyupgrade/autopep8/mypy etc.                            │
 │ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
 │ publish                     Build and upload this project to PyPi                                │
@@ -231,12 +230,42 @@ Just add `--overwrite`, e.g.:
 ```
 
 
-## Helper: Reverse a project into a Cookiecutter template
+## Helper
+
+
+### "reverse" - Reverse a project into a Cookiecutter template
 
 A existing managed project can be converted back to a Cookiecutter template, e.g.:
 ```bash
 ~/manageprojects$ ./cli.py reverse ~/my_new_project/ ~/cookiecutter_template/
 ```
+
+
+### "format-file" - Format and check the given python source code file
+
+You can use `format-file` as "Action on save" or manual action in your IDE to fix code style ;)
+
+[comment]: <> (✂✂✂ auto generated format-file help start ✂✂✂)
+```
+Usage: ./cli.py format-file [OPTIONS] FILE_PATH
+
+ Format and check the given python source code file with darker/isort/pyupgrade/autopep8/mypy etc.
+ The optional fallback values will be only used, if we can't get them from the project meta files
+ like ".editorconfig" and "pyproject.toml"
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --py-version           TEXT     Fallback Python version for darker/pyupgrade, if version is not  │
+│                                 defined in pyproject.toml                                        │
+│                                 [default: 3.9]                                                   │
+│ --max-line-length  -l  INTEGER  Fallback max. line length for darker/isort etc., if not defined  │
+│                                 in .editorconfig                                                 │
+│                                 [default: 119]                                                   │
+│ --darker-prefixes      TEXT     Apply prefixes via autopep8 before calling darker.               │
+│                                 [default: E302,E303]                                             │
+│ --help                          Show this message and exit.                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated format-file help end ✂✂✂)
 
 
 ## Links
