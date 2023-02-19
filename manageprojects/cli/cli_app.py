@@ -613,6 +613,16 @@ def format_file(
 cli.add_command(format_file)
 
 
+@click.command()
+def version():
+    """Print version and exit"""
+    # Pseudo command, because the version always printed on every CLI call ;)
+    sys.exit(0)
+
+
+cli.add_command(version)
+
+
 def main():
     print_version(manageprojects)
 
