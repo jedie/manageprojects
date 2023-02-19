@@ -26,6 +26,9 @@ class ProjectSetupTestCase(BaseTestCase):
         cli_bin = PACKAGE_ROOT / 'cli.py'
         assert_is_file(cli_bin)
 
+        output = subprocess.check_output([cli_bin, 'version'], text=True)
+        self.assertIn(f'manageprojects v{__version__}', output)
+
     def test_code_style(self):
         cli_bin = PACKAGE_ROOT / 'cli.py'
         assert_is_file(cli_bin)

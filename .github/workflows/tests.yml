@@ -32,8 +32,9 @@ jobs:
         cache-dependency-path: '**/requirements.dev.txt'
 
     - name: 'Bootstrap'
+      # The first CLI call will create the .venv
       run: |
-        ./cli.py install
+        ./cli.py version
 
     - name: 'CLI help'
       run: |
