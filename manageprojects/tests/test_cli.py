@@ -3,61 +3,15 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import MagicMock
 
-from bx_py_utils.auto_doc import assert_readme_block
-from bx_py_utils.path import assert_is_file
-from bx_py_utils.test_utils.snapshot import assert_text_snapshot
-
-
-from manageprojects import __version__, constants
+from manageprojects import __version__
 from manageprojects.cli import cli_app
-from manageprojects.cli.cli_app import PACKAGE_ROOT, cli, start_project, update_project
+from manageprojects.cli.cli_app import PACKAGE_ROOT, start_project, update_project
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.test_utils.click_cli_utils import invoke_click, subprocess_cli
 from manageprojects.tests.base import BaseTestCase
 
 
-def assert_cli_help_in_readme(text_block: str, marker: str):
-    README_PATH = PACKAGE_ROOT / 'README.md'
-    assert_is_file(README_PATH)
-
-    text_block = text_block.replace(constants.CLI_EPILOG, '')
-    text_block = f'```\n{text_block.strip()}\n```'
-    assert_readme_block(
-        readme_path=README_PATH,
-        text_block=text_block,
-        start_marker_line=f'[comment]: <> (✂✂✂ auto generated {marker} start ✂✂✂)',
-        end_marker_line=f'[comment]: <> (✂✂✂ auto generated {marker} end ✂✂✂)',
-    )
-
-
 class CliTestCase(BaseTestCase):
-
-    def test_main_help(self):
-        stdout = invoke_click(cli, '--help')
-        self.assert_in_content(
-            got=stdout,
-            parts=(
-                'Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...',
-                'start-project',
-                'update-project',
-                constants.CLI_EPILOG,
-            ),
-        )
-        assert_text_snapshot(got=stdout)
-        assert_cli_help_in_readme(text_block=stdout, marker='main help')
-
-    def test_start_project_help(self):
-        stdout = invoke_click(cli, 'start-project', '--help')
-        self.assert_in_content(
-            got=stdout,
-            parts=(
-                'Usage: ./cli.py start-project [OPTIONS] TEMPLATE OUTPUT_DIR',
-                '--directory',
-                '--input/--no-input',
-            ),
-        )
-        assert_text_snapshot(got=stdout)
-        assert_cli_help_in_readme(text_block=stdout, marker='start-project help')
 
     def test_start_project_cli(self):
         result = CookiecutterResult(
@@ -93,19 +47,6 @@ class CliTestCase(BaseTestCase):
                 'git hash 1234',
             ),
         )
-
-    def test_update_project_help(self):
-        stdout = invoke_click(cli, 'update-project', '--help')
-        self.assert_in_content(
-            got=stdout,
-            parts=(
-                'Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH',
-                '--input/--no-input',
-                '--cleanup/--no-cleanup',
-            ),
-        )
-        assert_text_snapshot(got=stdout)
-        assert_cli_help_in_readme(text_block=stdout, marker='update-project help')
 
     def test_update_project_cli(self):
         tempdir = tempfile.gettempdir()

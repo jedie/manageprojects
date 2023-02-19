@@ -598,7 +598,9 @@ def format_file(
 ):
     """
     Format and check the given python source code file with darker/isort/pyupgrade/autopep8/mypy etc.
-    Useful as manual action executed via IDE shortcut to fix and check a Python file.
+
+    The optional fallback values will be only used, if we can't get them from the project meta files
+    like ".editorconfig" and "pyproject.toml"
     """
     format_one_file(
         default_min_py_version=py_version,
