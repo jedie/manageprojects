@@ -125,6 +125,7 @@ def verbose_check_call(
     exit_on_error=False,
     timeout=DEFAULT_TIMEOUT,
     env=None,
+    text=True,
     **kwargs,
 ):
     """'verbose' version of subprocess.check_call()"""
@@ -143,7 +144,7 @@ def verbose_check_call(
     try:
         return subprocess.check_call(
             [str(part) for part in popenargs],  # e.g.: Path() instance -> str,
-            text=True,
+            text=text,
             env=env,
             cwd=cwd,
             timeout=timeout,
@@ -165,6 +166,7 @@ def verbose_check_output(
     exit_on_error=False,
     timeout=DEFAULT_TIMEOUT,
     env=None,
+    text=True,
     **kwargs,
 ):
     """'verbose' version of subprocess.check_output()"""
@@ -183,7 +185,7 @@ def verbose_check_output(
     try:
         output = subprocess.check_output(
             [str(part) for part in popenargs],  # e.g.: Path() instance -> str,
-            text=True,
+            text=text,
             env=env,
             cwd=cwd,
             stderr=subprocess.STDOUT,
