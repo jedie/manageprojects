@@ -4,8 +4,6 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
-
-import rich
 import rich_click as click
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from rich import print  # noqa
@@ -13,6 +11,11 @@ from rich_click import RichGroup
 
 import manageprojects
 from manageprojects import __version__, constants
+from manageprojects.constants import (
+    FORMAT_PY_FILE_DARKER_PREFIXES,
+    FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
+    FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+)
 from manageprojects.cookiecutter_templates import (
     clone_managed_project,
     reverse_managed_project,
@@ -20,10 +23,12 @@ from manageprojects.cookiecutter_templates import (
     update_managed_project,
 )
 from manageprojects.data_classes import CookiecutterResult
+from manageprojects.format_file import format_one_file
 from manageprojects.git import Git
 from manageprojects.utilities import code_style
 from manageprojects.utilities.log_utils import log_config
 from manageprojects.utilities.subprocess_utils import verbose_check_call
+from manageprojects.utilities.version_info import print_version
 
 
 logger = logging.getLogger(__name__)
@@ -39,6 +44,9 @@ ARGUMENT_EXISTING_DIR = dict(
 )
 ARGUMENT_NOT_EXISTING_DIR = dict(
     type=click.Path(exists=False, file_okay=False, dir_okay=True, readable=False, writable=True, path_type=Path)
+)
+ARGUMENT_EXISTING_FILE = dict(
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path)
 )
 
 
@@ -91,6 +99,17 @@ cli.add_command(install)
 
 
 @click.command()
+def safety():
+    """
+    Run safety check against current requirements files
+    """
+    verbose_check_call('safety', 'check', '-r', 'requirements.dev.txt')
+
+
+cli.add_command(safety)
+
+
+@click.command()
 def update():
     """
     Update "requirements*.txt" dependencies files
@@ -128,30 +147,13 @@ def update():
         extra_env=extra_env,
     )
 
+    verbose_check_call('safety', 'check', '-r', 'requirements.dev.txt')
+
     # Install new dependencies in current .venv:
     verbose_check_call('pip-sync', 'requirements.dev.txt')
 
 
 cli.add_command(update)
-
-
-@click.command()
-def version(no_color: bool = False):
-    """Print version and exit"""
-    if no_color:
-        rich.reconfigure(no_color=True)
-
-    print('manageprojects v', end='')
-    from manageprojects import __version__
-
-    print(__version__, end=' ')
-
-    git = Git(cwd=PACKAGE_ROOT)
-    current_hash = git.get_current_hash(verbose=False)
-    print(current_hash)
-
-
-cli.add_command(version)
 
 
 @click.command()
@@ -471,7 +473,7 @@ cli.add_command(publish)
 @click.option('--verbose/--no-verbose', **OPTION_ARGS_DEFAULT_FALSE)
 def fix_code_style(color: bool = True, verbose: bool = False):
     """
-    Fix code style via darker
+    Fix code style of all manageprojects source code files via darker
     """
     code_style.fix(package_root=PACKAGE_ROOT, color=color, verbose=verbose)
 
@@ -565,14 +567,57 @@ def update_test_snapshot_files():
 cli.add_command(update_test_snapshot_files)
 
 
+@click.command()
+@click.option(
+    '--py-version',
+    default=FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+    show_default=True,
+    help='Fallback Python version for darker/pyupgrade, if version is not defined in pyproject.toml',
+)
+@click.option(
+    '-l',
+    '--max-line-length',
+    default=FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
+    type=int,
+    show_default=True,
+    help='Fallback max. line length for darker/isort etc., if not defined in .editorconfig',
+)
+@click.option(
+    '--darker-prefixes',
+    default=FORMAT_PY_FILE_DARKER_PREFIXES,
+    show_default=True,
+    help='Apply prefixes via autopep8 before calling darker.',
+)
+@click.argument('file_path', **ARGUMENT_EXISTING_FILE)
+def format_file(
+    *,
+    py_version: str,
+    max_line_length: int,
+    darker_prefixes: str,
+    file_path: Path,
+):
+    """
+    Format and check the given python source code file with darker/isort/pyupgrade/autopep8/mypy etc.
+    Useful as manual action executed via IDE shortcut to fix and check a Python file.
+    """
+    format_one_file(
+        default_min_py_version=py_version,
+        default_max_line_length=max_line_length,
+        darker_prefixes=darker_prefixes,
+        file_path=file_path,
+    )
+
+
+cli.add_command(format_file)
+
+
 def main():
+    print_version(manageprojects)
+
     if len(sys.argv) >= 2 and sys.argv[1] == 'test':
         # Just use the CLI from unittest with all available options and origin --help output ;)
         _run_unittest_cli()
     else:
         # Execute Click CLI:
-        # context = click.get_current_context()
-        # context.info_name='./cli.py'
         cli.name = './cli.py'
-        # print(cli.__dict__)
         cli()

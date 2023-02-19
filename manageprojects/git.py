@@ -253,3 +253,27 @@ class Git:
             status, filepath = line.split(' ', 1)
             result.append((status, filepath))
         return result
+
+    def get_branch_names(self, verbose=True):
+        output = self.git_verbose_check_output('branch', '--no-color', verbose=verbose)
+        branches = sorted(branch.strip('* ') for branch in output.splitlines())
+        logger.debug('Git branches: %s', ', '.join(branches))
+        return branches
+
+    def get_main_branch_name(self, possible_names=('main', 'master'), verbose=True):
+        """
+        Returns the name of the "main" git branch.
+        """
+        branches = self.get_branch_names(verbose=verbose)
+
+        branch_name = None
+        for name in possible_names:
+            if name in branches:
+                branch_name = name
+                break
+
+        if branch_name is None:
+            raise GitError(f'Git main branch not found in: {branches}')
+
+        logger.info('Git main branch: "%s"', branch_name)
+        return branch_name

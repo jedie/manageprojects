@@ -7,22 +7,19 @@ from bx_py_utils.auto_doc import assert_readme_block
 from bx_py_utils.path import assert_is_file
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 
-import manageprojects
+
 from manageprojects import __version__, constants
 from manageprojects.cli import cli_app
-from manageprojects.cli.cli_app import cli, start_project, update_project
+from manageprojects.cli.cli_app import PACKAGE_ROOT, cli, start_project, update_project
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.test_utils.click_cli_utils import invoke_click, subprocess_cli
 from manageprojects.tests.base import BaseTestCase
 
 
-PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
-assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
-README_PATH = PACKAGE_ROOT / 'README.md'
-assert_is_file(README_PATH)
-
-
 def assert_cli_help_in_readme(text_block: str, marker: str):
+    README_PATH = PACKAGE_ROOT / 'README.md'
+    assert_is_file(README_PATH)
+
     text_block = text_block.replace(constants.CLI_EPILOG, '')
     text_block = f'```\n{text_block.strip()}\n```'
     assert_readme_block(

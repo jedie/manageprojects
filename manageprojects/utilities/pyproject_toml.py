@@ -23,6 +23,19 @@ from manageprojects.utilities.log_utils import log_func_call
 logger = logging.getLogger(__name__)
 
 
+def find_pyproject_toml(file_path: Path) -> Optional[Path]:
+    if file_path.is_file():
+        return find_pyproject_toml(file_path.parent)
+
+    pyproject_toml = file_path / 'pyproject.toml'
+    if pyproject_toml.is_file():
+        return pyproject_toml
+
+    if parent_path := file_path.parent:
+        if parent_path != file_path:
+            return find_pyproject_toml(parent_path)
+
+
 def toml_load(path: Path) -> dict:
     assert_is_file(path)
     doc: TOMLDocument = tomlkit.parse(path.read_text(encoding='UTF-8'))

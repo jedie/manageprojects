@@ -16,36 +16,40 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.10", "3.9"]
-    env:
-      PYTHONUNBUFFERED: 1
-      PYTHONWARNINGS: always
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: 'fetch master'
+    - name: Checkout
       run: |
-        git fetch origin main
+        echo $GITHUB_REF $GITHUB_SHA
+        git clone --depth 1 https://github.com/$GITHUB_REPOSITORY.git .
+        git fetch origin $GITHUB_SHA:temporary-ci-branch
+        git checkout $GITHUB_SHA || (git fetch && git checkout $GITHUB_SHA)
     - name: 'Set up Python ${{ matrix.python-version }}'
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
+      # https://github.com/marketplace/actions/setup-python
       with:
         python-version: '${{ matrix.python-version }}'
-
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/
-        key: dot-cache-files
+        cache: 'pip' # caching pip dependencies
+        cache-dependency-path: '**/requirements.dev.txt'
 
     - name: 'Bootstrap'
       run: |
-        ./cli.py version
+        ./cli.py install
+
+    - name: 'CLI help'
+      run: |
+        ./cli.py --help
+
+    - name: 'Safety'
+      run: |
+        ./cli.py safety
 
     - name: 'Run tests with Python v${{ matrix.python-version }}'
       run: |
         ./cli.py coverage
 
     - name: 'Upload coverage report'
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
+      # https://github.com/marketplace/actions/codecov
       with:
         fail_ci_if_error: false
         verbose: true

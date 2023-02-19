@@ -1,34 +1,14 @@
 import os
-import re
-import shlex
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from bx_py_utils.path import assert_is_dir
+from bx_py_utils.path import assert_is_dir, assert_is_file
 from rich import print  # noqa
 
 
 DEFAULT_TIMEOUT = 5 * 60
-
-
-def argv2str(argv):
-    """
-    >>> argv2str(['foo', '--bar=123'])
-    'foo --bar=123'
-    """
-    items = []
-    for item in argv:
-        if isinstance(item, Path):
-            item = str(item)
-
-        if re.match(r'^[-0-9a-zA-Z_.=]+$', item):
-            items.append(item)
-        else:
-            items.append(shlex.quote(item))
-
-    return ' '.join(items)
 
 
 def make_absolute_path(path):
@@ -76,38 +56,39 @@ def _print_info(popenargs, *, cwd, kwargs):
 
     if len(popenargs) > 1:
         command, *args = popenargs
-        args = argv2str(args)
     else:
         command = popenargs[0]
-        args = ''
+        args = []
 
     command_path = make_relative_path(Path(command), relative_to=cwd)
-    cwd = make_relative_path(cwd, relative_to=Path.cwd())
 
     command_name = command_path.name
     command_dir = command_path.parent
 
-    info = ''
-
-    if cwd.absolute() != Path.cwd().absolute():
-        info = f'{str(cwd)}$ '
+    print(f'[white]{cwd}[/white][bold]$[/bold]', end=' ')
 
     if command_dir and command_dir != Path.cwd():
-        info += f'{command_dir}{os.sep}'
+        print(f'[green]{command_dir}{os.sep}[/green]', end='')
 
     if command_name:
-        info += command_name
+        print(f'[yellow bold]{command_name}[/yellow bold]', end='')
 
-    if args:
-        info += f' {args}'
+    for arg in args:
+        if isinstance(arg, str):
+            if arg.startswith('--'):
+                print(f' [magenta]{arg}[/magenta]', end='')
+                continue
+            elif arg.startswith('-'):
+                print(f' [cyan]{arg}[/cyan]', end='')
+                continue
 
-    msg = f'+ {info}'
+        print(f' [blue]{arg}[/blue]', end='')
 
-    verbose_kwargs = ', '.join(f'{k}={v!r}' for k, v in sorted(kwargs.items()))
-    if verbose_kwargs:
-        msg += f' (kwargs: {verbose_kwargs})'
+    if kwargs:
+        verbose_kwargs = ', '.join(f'{k}={v!r}' for k, v in sorted(kwargs.items()))
+        print(f' (kwargs: {verbose_kwargs})', end='')
 
-    print(f'{msg}\n', flush=True)
+    print('\n', flush=True)
 
 
 def prepare_popenargs(popenargs, cwd=None):
@@ -170,7 +151,7 @@ def verbose_check_call(
         )
     except subprocess.CalledProcessError as err:
         if verbose:
-            print(f'Process "{popenargs[0]}" finished with exit code {err.returncode!r}')
+            print(f'[red]Process "{popenargs[0]}" finished with exit code {err.returncode!r}[/red]')
         if exit_on_error:
             sys.exit(err.returncode)
         raise
@@ -214,8 +195,40 @@ def verbose_check_output(
             print('-' * 79)
             print(err.stdout)
             print('-' * 79)
-            print(f'Process "{popenargs[0]}" finished with exit code {err.returncode!r}')
+            print(f'[red]Process "{popenargs[0]}" finished with exit code {err.returncode!r}[/red]')
             sys.exit(err.returncode)
         raise
     else:
         return output
+
+
+class ToolsExecutor:
+    def __init__(self, cwd: Path):
+        self.cwd = cwd
+
+        self.bin_path = Path(sys.executable).parent
+        self.extra_env = {}
+
+        bin_path_str = str(self.bin_path)
+        if bin_path_str not in os.environ['PATH']:
+            self.extra_env['PATH'] = bin_path_str + os.pathsep + os.environ['PATH']
+
+        self.extra_env['PYTHONUNBUFFERED'] = '1'
+
+    def verbose_check_output(self, bin, *popenargs, verbose=True, exit_on_error=True, **kwargs):
+        """'verbose' version of subprocess.check_output()"""
+        bin_path = str(self.bin_path / bin)
+        assert_is_file(bin_path)
+
+        try:
+            verbose_check_call(
+                bin_path,
+                *popenargs,
+                verbose=verbose,
+                cwd=self.cwd,
+                extra_env=self.extra_env,
+                exit_on_error=exit_on_error,
+                **kwargs,
+            )
+        except subprocess.CalledProcessError:
+            pass
