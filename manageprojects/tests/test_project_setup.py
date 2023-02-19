@@ -1,12 +1,17 @@
 import subprocess
 from pathlib import Path
 
-import tomli
+try:
+    import tomllib  # New in Python 3.11
+except ImportError:
+    import tomli as tomllib
+
 from bx_py_utils.path import assert_is_file
 
 from manageprojects import __version__
 from manageprojects.cli.cli_app import PACKAGE_ROOT
 from manageprojects.test_utils.click_cli_utils import subprocess_cli
+from manageprojects.test_utils.project_setup import check_editor_config, get_py_max_line_length
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities import code_style
 
@@ -18,7 +23,7 @@ class ProjectSetupTestCase(BaseTestCase):
 
         self.assertIsNotNone(__version__)
 
-        pyproject_toml = tomli.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
+        pyproject_toml = tomllib.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
         pyproject_version = pyproject_toml['project']['version']
 
         self.assertEqual(__version__, pyproject_version)
@@ -74,3 +79,9 @@ class ProjectSetupTestCase(BaseTestCase):
             code_style.check(package_root=PACKAGE_ROOT)
         except SystemExit as err:
             self.assertEqual(err.code, 0, 'Code style error, see output above!')
+
+    def test_check_editor_config(self):
+        check_editor_config(package_root=PACKAGE_ROOT)
+
+        max_line_length = get_py_max_line_length(package_root=PACKAGE_ROOT)
+        self.assertEqual(max_line_length, 119)
