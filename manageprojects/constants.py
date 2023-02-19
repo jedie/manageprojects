@@ -7,6 +7,14 @@ COOKIECUTTER_CONTEXT = 'cookiecutter_context'
 
 CLI_EPILOG = 'Project Homepage: https://github.com/jedie/manageprojects'
 
-FORMAT_PY_FILE_DARKER_PREFIXES = 'E302,E303'
+FORMAT_PY_FILE_DARKER_PRE_FIXES = ','.join(
+    sorted(
+        [
+            'E302',  # expected 2 blank lines
+            'E303',  # too many blank lines
+            'W391',  # blank line at end of file
+        ]
+    )
+)
 FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION = '3.9'
 FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH = 119
