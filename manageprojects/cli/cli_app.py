@@ -12,7 +12,7 @@ from rich_click import RichGroup
 import manageprojects
 from manageprojects import __version__, constants
 from manageprojects.constants import (
-    FORMAT_PY_FILE_DARKER_PREFIXES,
+    FORMAT_PY_FILE_DARKER_PRE_FIXES,
     FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
     FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
 )
@@ -584,7 +584,7 @@ cli.add_command(update_test_snapshot_files)
 )
 @click.option(
     '--darker-prefixes',
-    default=FORMAT_PY_FILE_DARKER_PREFIXES,
+    default=FORMAT_PY_FILE_DARKER_PRE_FIXES,
     show_default=True,
     help='Apply prefixes via autopep8 before calling darker.',
 )
