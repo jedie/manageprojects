@@ -16,8 +16,8 @@ from manageprojects.format_file import (
     get_pyproject_info,
 )
 from manageprojects.test_utils.logs import AssertLogs
-from manageprojects.test_utils.subprocess import SubprocessCallMock
-from manageprojects.tests.base import PROJECT_PATH
+from manageprojects.test_utils.subprocess import SimpleRunReturnCallback, SubprocessCallMock
+from manageprojects.tests.base import GIT_BIN_PARENT, PROJECT_PATH
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
@@ -153,7 +153,11 @@ class FormatFileTestCase(TestCase):
                 )
 
     def test_format_one_file(self):
-        with AssertLogs(self, loggers=('manageprojects',)), SubprocessCallMock() as call_mock:
+        with AssertLogs(self, loggers=('manageprojects',)), SubprocessCallMock(
+            return_callback=SimpleRunReturnCallback(
+                stdout='* main',  # "git branch" call -> bach name found -> use Darker
+            )
+        ) as call_mock:
             format_one_file(
                 default_min_py_version='3.11',
                 default_max_line_length=123,
@@ -162,8 +166,9 @@ class FormatFileTestCase(TestCase):
             )
 
         self.assertEqual(
-            call_mock.get_popenargs(rstrip_path=PY_BIN_PATH),
+            call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH, GIT_BIN_PARENT)),
             [
+                ['.../git', 'branch', '--no-color'],
                 [
                     '.../pyupgrade',
                     '--exit-zero-even-if-changed',
@@ -190,6 +195,52 @@ class FormatFileTestCase(TestCase):
                     '119',
                     '--target-version',
                     'py39',
+                    'manageprojects/tests/test_format_file.py',
+                ],
+                ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
+                ['.../pyflakes', 'manageprojects/tests/test_format_file.py'],
+                ['.../codespell', 'manageprojects/tests/test_format_file.py'],
+                [
+                    '.../mypy',
+                    '--ignore-missing-imports',
+                    '--follow-imports',
+                    'skip',
+                    '--allow-redefinition',
+                    'manageprojects/tests/test_format_file.py',
+                ],
+            ],
+        )
+
+        with AssertLogs(self, loggers=('manageprojects',)), SubprocessCallMock(
+            return_callback=SimpleRunReturnCallback(
+                stdout='',  # No git branch name found -> Don't use Darker -> use autopep8
+            )
+        ) as call_mock:
+            format_one_file(
+                default_min_py_version='3.11',
+                default_max_line_length=123,
+                darker_prefixes='E456,E789',
+                file_path=Path(__file__),
+            )
+
+        self.assertEqual(
+            call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH, GIT_BIN_PARENT)),
+            [
+                ['.../git', 'branch', '--no-color'],
+                [
+                    '.../pyupgrade',
+                    '--exit-zero-even-if-changed',
+                    '--py39-plus',
+                    'manageprojects/tests/test_format_file.py',
+                ],
+                [
+                    '.../autopep8',  # <<< Instead of Darker!
+                    '--ignore-local-config',
+                    '--max-line-length',
+                    '119',
+                    '--aggressive',
+                    '--aggressive',
+                    '--in-place',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],

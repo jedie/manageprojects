@@ -1,4 +1,5 @@
 import datetime
+import shutil
 from collections.abc import Iterable
 from pathlib import Path
 from pprint import pprint
@@ -11,6 +12,7 @@ from manageprojects.utilities.pyproject_toml import toml_load
 
 
 PROJECT_PATH = Path(manageprojects.__file__).parent.parent
+GIT_BIN_PARENT = Path(shutil.which('git')).parent
 
 
 class BaseTestCase(TestCase):
