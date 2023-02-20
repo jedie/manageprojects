@@ -168,6 +168,7 @@ def verbose_check_output(
     cwd=None,
     extra_env=None,
     exit_on_error=False,
+    print_output_on_error=True,
     timeout=DEFAULT_TIMEOUT,
     env=None,
     text=True,
@@ -200,11 +201,14 @@ def verbose_check_output(
             **kwargs,
         )
     except subprocess.CalledProcessError as err:
-        if exit_on_error:
+        if print_output_on_error or exit_on_error:
+            if not verbose:
+                _print_info(popenargs, cwd=cwd, kwargs=kwargs)
+            print(f'[red]Process "{popenargs[0]}" finished with exit code {err.returncode!r}[/red]')
             print('-' * 79)
             print(err.stdout)
             print('-' * 79)
-            print(f'[red]Process "{popenargs[0]}" finished with exit code {err.returncode!r}[/red]')
+        if exit_on_error:
             sys.exit(err.returncode)
         raise
     else:

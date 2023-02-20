@@ -7,6 +7,7 @@ from unittest import TestCase
 
 from bx_py_utils.test_utils.datetime import parse_dt
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
+from packaging.version import Version
 
 from manageprojects.cli.cli_app import PACKAGE_ROOT
 from manageprojects.git import Git
@@ -232,16 +233,44 @@ class GitTestCase(TestCase):
             with AssertLogs(self, loggers=('manageprojects',)) as logs:
                 branch_names = git.get_branch_names()
                 self.assertEqual(branch_names, ['main'])
-            logs.assert_in('Git branches: main')
+            logs.assert_in("Git raw branches: ['* main']")
 
             git.git_verbose_check_call('checkout', '-b', 'foobar')
 
             with AssertLogs(self, loggers=('manageprojects',)) as logs:
                 branch_names = git.get_branch_names()
                 self.assertEqual(branch_names, ['foobar', 'main'])
-            logs.assert_in('Git branches: foobar, main')
+            logs.assert_in("Git raw branches: ['* foobar', '  main']")
 
-            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+            with AssertLogs(self, loggers=('manageprojects',)):
                 main_branch_name = git.get_main_branch_name()
                 self.assertEqual(main_branch_name, 'main')
-            logs.assert_in('Git main branch: "main"')
+
+    def test_get_version_from_tags(self):
+        with TemporaryDirectory(prefix='test_get_version_from_tags') as temp_path:
+            Path(temp_path, 'foo.txt').touch()
+            git, first_hash = init_git(temp_path)
+
+            git.tag('v0.0.1', message='one', verbose=False)
+            git.tag('v0.2.dev1', message='dev release', verbose=False)
+            git.tag('v0.2.0a1', message='pre release', verbose=False)
+            git.tag('v0.2.0rc2', message='release candidate', verbose=False)
+            git.tag('v0.2.0', message='two', verbose=False)
+            git.tag('foo', message='foo', verbose=False)
+            git.tag('bar', message='bar', verbose=False)
+
+            self.assertEqual(git.tag_list(), ['bar', 'foo', 'v0.0.1', 'v0.2.0', 'v0.2.0a1', 'v0.2.0rc2', 'v0.2.dev1'])
+
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                self.assertEqual(
+                    git.get_version_from_tags(),
+                    [Version('0.0.1'), Version('0.2.dev1'), Version('0.2.0a1'), Version('0.2.0rc2'), Version('0.2.0')],
+                )
+            logs.assert_in('Ignore: Invalid version')
+
+            with AssertLogs(self, loggers=('manageprojects',)) as logs:
+                self.assertEqual(
+                    git.get_version_from_tags(dev_release=False, pre_release=False),
+                    [Version('0.0.1'), Version('0.2.0')],
+                )
+            logs.assert_in('Ignore: Invalid version')

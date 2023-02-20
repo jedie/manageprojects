@@ -4,8 +4,10 @@ import os
 import subprocess  # nosec B404
 from pathlib import Path
 from shutil import which
+from typing import Optional
 
 from bx_py_utils.path import assert_is_file
+from packaging.version import InvalidVersion, Version
 
 from manageprojects.utilities.subprocess_utils import verbose_check_call, verbose_check_output
 
@@ -202,8 +204,8 @@ class Git:
         lines = output.splitlines()
         return lines
 
-    def tag(self, git_tag: str, message: str):
-        self.git_verbose_check_call('tag', '-a', git_tag, '-m', message)
+    def tag(self, git_tag: str, message: str, verbose=True, exit_on_error=True):
+        self.git_verbose_check_call('tag', '-a', git_tag, '-m', message, verbose=verbose, exit_on_error=exit_on_error)
 
     def push(self, tags=False):
         if tags:
@@ -217,6 +219,25 @@ class Git:
         output = self.git_verbose_check_output('tag', verbose=verbose, exit_on_error=exit_on_error)
         lines = output.splitlines()
         return lines
+
+    def get_version_from_tags(
+        self, dev_release=True, pre_release=True, verbose=True, exit_on_error=True
+    ) -> list[Version]:
+        raw_tags = self.tag_list(verbose=verbose, exit_on_error=exit_on_error)
+        versions = []
+        for raw_tag in raw_tags:
+            try:
+                version = Version(raw_tag)
+            except InvalidVersion as err:
+                logger.warning(f'Ignore: {err}')
+            else:
+                if version.is_devrelease and not dev_release:
+                    continue
+                if version.is_prerelease and not pre_release:
+                    continue
+                versions.append(version)
+        versions.sort()
+        return versions
 
     def ls_files(self, verbose=True) -> list[Path]:
         output = self.git_verbose_check_output('ls-files', verbose=verbose, exit_on_error=True)
@@ -254,11 +275,21 @@ class Git:
             result.append((status, filepath))
         return result
 
-    def get_branch_names(self, verbose=True):
+    def get_raw_branch_names(self, verbose=True) -> list[str]:
         output = self.git_verbose_check_output('branch', '--no-color', verbose=verbose)
-        branches = sorted(branch.strip('* ') for branch in output.splitlines())
-        logger.debug('Git branches: %s', ', '.join(branches))
+        branches = output.splitlines()
+        logger.debug('Git raw branches: %r', branches)
         return branches
+
+    def get_current_branch_name(self, verbose=True) -> Optional[str]:
+        raw_branch_names = self.get_raw_branch_names(verbose=verbose)
+        for branch_name in raw_branch_names:
+            if branch_name.startswith('*'):
+                return branch_name.strip('* ')
+        raise GitError(f'Current branch name not found in: {raw_branch_names}')
+
+    def get_branch_names(self, verbose=True) -> list[str]:
+        return sorted(branch.strip('* ') for branch in self.get_raw_branch_names(verbose=verbose))
 
     def get_main_branch_name(self, possible_names=('main', 'master'), verbose=True):
         """
