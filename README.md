@@ -9,7 +9,15 @@
 Mix the idea of Ansible with CookieCutter Templates and Django Migrations to manage and update your Python Packages and Django Projects...
 
 The main idea it to transfer changes of a CookieCutter template back to the created project.
-Manageproject used git to create a patch of the template changes and applies it to the created project.
+Manageprojects used git to create a patch of the template changes and applies it to the created project.
+
+Besides this, `manageprojects` also includes other generic helper for Python packages:
+
+ * `publish_package()` - Build and upload a new release to PyPi, but with many pre-checks.
+ * `format-file` - Format/Check a Python source file with Darker & Co., useful as IDE action.
+
+Read below the `Helper` section.
+
 
 ## install
 
@@ -234,6 +242,7 @@ Just add `--overwrite`, e.g.:
 
 ## Helper
 
+Below are some generic tools helpful for Python packages.
 
 ### "reverse" - Reverse a project into a Cookiecutter template
 
@@ -268,6 +277,21 @@ Usage: ./cli.py format-file [OPTIONS] FILE_PATH
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated format-file help end ✂✂✂)
+
+
+### publish
+
+The `manageprojects.utilities.publish.publish_package()` is designed for external packages, too.
+
+Build and upload (with twine) a project to PyPi with many pre-checks:
+
+ * Has correct version number?
+ * Is on main branch and up-to-date with origin?
+ * Check if current version already published
+ * Build a git tag based on current package version
+ * Adds change messages since last release to git tag message
+
+Some checks result in a hard exit, but some can be manually confirmed from the user to continue publishing.
 
 
 ## Links
