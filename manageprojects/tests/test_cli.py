@@ -77,7 +77,7 @@ class CliTestCase(BaseTestCase):
             invoke_click(cli, 'install')
 
         self.assertEqual(
-            call_mock.get_popenargs(rstrip_path=PY_BIN_PATH),
+            call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH,)),
             [
                 ['.../pip-sync', f'{PACKAGE_ROOT}/requirements.dev.txt'],
                 ['.../pip', 'install', '-e', '.'],
