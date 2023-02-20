@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from packaging.version import Version
 
+from manageprojects.constants import PY_BIN_PATH
 from manageprojects.format_file import (
     Config,
     GitInfo,
@@ -161,16 +162,16 @@ class FormatFileTestCase(TestCase):
             )
 
         self.assertEqual(
-            call_mock.get_popenargs(rstrip_path=PROJECT_PATH),
+            call_mock.get_popenargs(rstrip_path=PY_BIN_PATH),
             [
                 [
-                    '.../.venv/bin/pyupgrade',
+                    '.../pyupgrade',
                     '--exit-zero-even-if-changed',
                     '--py39-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 [
-                    '.../.venv/bin/autopep8',
+                    '.../autopep8',
                     '--ignore-local-config',
                     '--select',
                     'E456,E789',
@@ -179,7 +180,7 @@ class FormatFileTestCase(TestCase):
                     'manageprojects/tests/test_format_file.py',
                 ],
                 [
-                    '.../.venv/bin/darker',
+                    '.../darker',
                     '--flynt',
                     '--isort',
                     '--skip-string-normalization',
@@ -191,11 +192,11 @@ class FormatFileTestCase(TestCase):
                     'py39',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../.venv/bin/flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
-                ['.../.venv/bin/pyflakes', 'manageprojects/tests/test_format_file.py'],
-                ['.../.venv/bin/codespell', 'manageprojects/tests/test_format_file.py'],
+                ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
+                ['.../pyflakes', 'manageprojects/tests/test_format_file.py'],
+                ['.../codespell', 'manageprojects/tests/test_format_file.py'],
                 [
-                    '.../.venv/bin/mypy',
+                    '.../mypy',
                     '--ignore-missing-imports',
                     '--follow-imports',
                     'skip',

@@ -7,6 +7,8 @@ from pathlib import Path
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from rich import print  # noqa
 
+from manageprojects.constants import PY_BIN_PATH
+
 
 DEFAULT_TIMEOUT = 5 * 60
 
@@ -100,8 +102,7 @@ def prepare_popenargs(popenargs, cwd=None):
     command_path = Path(popenargs[0])
     if not command_path.is_file():
         # Lookup in current venv bin path first:
-        bin_path = str(Path(sys.executable).parent.absolute())
-        command = shutil.which(str(command_path), path=bin_path)
+        command = shutil.which(str(command_path), path=str(PY_BIN_PATH))
         if not command:
             # Search in PATH for this command that doesn't point to a existing file:
             command = shutil.which(str(command_path))
@@ -128,7 +129,10 @@ def verbose_check_call(
     text=True,
     **kwargs,
 ):
-    """'verbose' version of subprocess.check_call()"""
+    """
+    'verbose' version of subprocess.check_call()
+    Will try to find the command in current Python venv/bin/ path
+    """
 
     popenargs, cwd = prepare_popenargs(popenargs, cwd=cwd)
 
@@ -169,7 +173,10 @@ def verbose_check_output(
     text=True,
     **kwargs,
 ):
-    """'verbose' version of subprocess.check_output()"""
+    """
+    'verbose' version of subprocess.check_output()
+    Will try to find the command in current Python venv/bin/ path
+    """
 
     popenargs, cwd = prepare_popenargs(popenargs, cwd=cwd)
 
@@ -208,10 +215,9 @@ class ToolsExecutor:
     def __init__(self, cwd: Path):
         self.cwd = cwd
 
-        self.bin_path = Path(sys.executable).parent
         self.extra_env = {}
 
-        bin_path_str = str(self.bin_path)
+        bin_path_str = str(PY_BIN_PATH)
         if bin_path_str not in os.environ['PATH']:
             self.extra_env['PATH'] = bin_path_str + os.pathsep + os.environ['PATH']
 
@@ -219,7 +225,7 @@ class ToolsExecutor:
 
     def verbose_check_output(self, bin, *popenargs, verbose=True, exit_on_error=True, **kwargs):
         """'verbose' version of subprocess.check_output()"""
-        bin_path = str(self.bin_path / bin)
+        bin_path = PY_BIN_PATH / bin
         assert_is_file(bin_path)
 
         try:
