@@ -3,11 +3,13 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import MagicMock
 
-from manageprojects import __version__
+
 from manageprojects.cli import cli_app
-from manageprojects.cli.cli_app import PACKAGE_ROOT, start_project, update_project
+from manageprojects.cli.cli_app import PACKAGE_ROOT, cli, start_project, update_project
+from manageprojects.constants import PY_BIN_PATH
 from manageprojects.data_classes import CookiecutterResult
-from manageprojects.test_utils.click_cli_utils import invoke_click, subprocess_cli
+from manageprojects.test_utils.click_cli_utils import invoke_click
+from manageprojects.test_utils.subprocess import SubprocessCallMock
 from manageprojects.tests.base import BaseTestCase
 
 
@@ -71,11 +73,13 @@ class CliTestCase(BaseTestCase):
         )
 
     def test_install(self):
-        output = subprocess_cli(cli_bin=PACKAGE_ROOT / 'cli.py', args=('install',))
-        self.assert_in_content(
-            got=output,
-            parts=(
-                'pip install -e .',
-                f'Successfully installed manageprojects-{__version__}',
-            ),
+        with SubprocessCallMock() as call_mock:
+            invoke_click(cli, 'install')
+
+        self.assertEqual(
+            call_mock.get_popenargs(rstrip_path=PY_BIN_PATH),
+            [
+                ['.../pip-sync', f'{PACKAGE_ROOT}/requirements.dev.txt'],
+                ['.../pip', 'install', '-e', '.'],
+            ],
         )

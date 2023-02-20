@@ -4,6 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
+
 import rich_click as click
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from rich import print  # noqa
@@ -114,17 +115,15 @@ def update():
     """
     Update "requirements*.txt" dependencies files
     """
-    bin_path = Path(sys.executable).parent
-
-    verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip')
-    verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip-tools')
+    verbose_check_call('pip', 'install', '-U', 'pip')
+    verbose_check_call('pip', 'install', '-U', 'pip-tools')
 
     extra_env = dict(
         CUSTOM_COMPILE_COMMAND='./cli.py update',
     )
 
     pip_compile_base = [
-        bin_path / 'pip-compile',
+        'pip-compile',
         '--verbose',
         '--allow-unsafe',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
         '--resolver=backtracking',  # https://pip-tools.readthedocs.io/en/latest/#deprecations

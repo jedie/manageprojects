@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+
 INITIAL_REVISION = 'initial_revision'
 INITIAL_DATE = 'initial_date'
 APPLIED_MIGRATIONS = 'applied_migrations'
@@ -21,3 +25,5 @@ FORMAT_PY_FILE_DARKER_PRE_FIXES = ','.join(
 )
 FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION = '3.9'
 FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH = 119
+
+PY_BIN_PATH = Path(sys.executable).parent

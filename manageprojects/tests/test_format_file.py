@@ -1,10 +1,10 @@
 import inspect
-import sys
 from pathlib import Path
 from unittest import TestCase
 
 from packaging.version import Version
 
+from manageprojects.constants import PY_BIN_PATH
 from manageprojects.format_file import (
     Config,
     GitInfo,
@@ -161,9 +161,8 @@ class FormatFileTestCase(TestCase):
                 file_path=Path(__file__),
             )
 
-        bin_path = Path(sys.executable).parent
         self.assertEqual(
-            call_mock.get_popenargs(rstrip_path=bin_path),
+            call_mock.get_popenargs(rstrip_path=PY_BIN_PATH),
             [
                 [
                     '.../pyupgrade',
