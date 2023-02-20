@@ -7,12 +7,15 @@ COOKIECUTTER_CONTEXT = 'cookiecutter_context'
 
 CLI_EPILOG = 'Project Homepage: https://github.com/jedie/manageprojects'
 
+# Draker has some troubles fixing new lines,
+# so just call autopep8 with following selection before call darker:
 FORMAT_PY_FILE_DARKER_PRE_FIXES = ','.join(
     sorted(
         [
             'E302',  # expected 2 blank lines
             'E303',  # too many blank lines
             'W391',  # blank line at end of file
+            'E305',  # expected 2 blank lines after class or function definition
         ]
     )
 )

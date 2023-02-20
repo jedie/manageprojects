@@ -263,7 +263,7 @@ Usage: ./cli.py format-file [OPTIONS] FILE_PATH
 │                                 in .editorconfig                                                 │
 │                                 [default: 119]                                                   │
 │ --darker-prefixes      TEXT     Apply prefixes via autopep8 before calling darker.               │
-│                                 [default: E302,E303,W391]                                        │
+│                                 [default: E302,E303,E305,W391]                                   │
 │ --help                          Show this message and exit.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
