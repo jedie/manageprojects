@@ -47,6 +47,7 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ start-project               Start a new "managed" project via a CookieCutter Template. Note: The │
 │                             CookieCutter Template *must* be use git!                             │
 │ test                        Run unittests                                                        │
+│ tox                         Run tox                                                              │
 │ update                      Update "requirements*.txt" dependencies files                        │
 │ update-project              Update a existing project.                                           │
 │ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
