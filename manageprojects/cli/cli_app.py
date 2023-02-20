@@ -11,7 +11,7 @@ from rich import print  # noqa
 from rich_click import RichGroup
 
 import manageprojects
-from manageprojects import __version__, constants
+from manageprojects import constants
 from manageprojects.constants import (
     FORMAT_PY_FILE_DARKER_PRE_FIXES,
     FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
@@ -25,9 +25,9 @@ from manageprojects.cookiecutter_templates import (
 )
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.format_file import format_one_file
-from manageprojects.git import Git
 from manageprojects.utilities import code_style
 from manageprojects.utilities.log_utils import log_config
+from manageprojects.utilities.publish import publish_package
 from manageprojects.utilities.subprocess_utils import verbose_check_call
 from manageprojects.utilities.version_info import print_version
 
@@ -437,35 +437,14 @@ def publish():
     """
     Build and upload this project to PyPi
     """
-    _run_unittest_cli(verbose=False, exit_after_run=False)  # Don't publish a broken state
+    # verbose_check_call('pip', 'install', '-e', '.')  # Auto fix: Maybe the current version is not installed ;)
 
-    git = Git(cwd=PACKAGE_ROOT, detect_root=True)
+    # _run_unittest_cli(verbose=False, exit_after_run=False)  # Don't publish a broken state
 
-    # TODO: Add the checks from:
-    #       https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
-
-    dist_path = PACKAGE_ROOT / 'dist'
-    if dist_path.exists():
-        shutil.rmtree(dist_path)
-
-    verbose_check_call(sys.executable, '-m', 'build')
-    verbose_check_call('twine', 'check', 'dist/*')
-
-    git_tag = f'v{__version__}'
-    print('\ncheck git tag')
-    git_tags = git.tag_list()
-    if git_tag in git_tags:
-        print(f'\n *** ERROR: git tag {git_tag!r} already exists!')
-        print(git_tags)
-        sys.exit(3)
-    else:
-        print('OK')
-
-    verbose_check_call('twine', 'upload', 'dist/*')
-
-    git.tag(git_tag, message=f'publish version {git_tag}')
-    print('\ngit push tag to server')
-    git.push(tags=True)
+    publish_package(
+        module=manageprojects,
+        package_path=PACKAGE_ROOT,
+    )
 
 
 cli.add_command(publish)
