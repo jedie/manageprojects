@@ -1,11 +1,14 @@
+import dataclasses
 import datetime
 import logging
 import os
 import subprocess  # nosec B404
 from pathlib import Path
 from shutil import which
+from typing import Optional
 
 from bx_py_utils.path import assert_is_file
+from packaging.version import InvalidVersion, Version
 
 from manageprojects.utilities.subprocess_utils import verbose_check_call, verbose_check_output
 
@@ -25,6 +28,52 @@ class NoGitRepoError(GitError):
 class GitBinNotFoundError(GitError):
     def __init__(self):
         super().__init__('Git executable not found in PATH')
+
+
+@dataclasses.dataclass
+class GitTagInfo:
+    raw_tag: str
+    version: Optional[Version] = None
+
+
+@dataclasses.dataclass
+class GitTagInfos:
+    tags: list[GitTagInfo]
+
+    @classmethod
+    def from_raw_tags(cls, raw_tags: list[str]) -> 'GitTagInfos':
+        tags = []
+        for raw_tag in raw_tags:
+            try:
+                version = Version(raw_tag)
+            except InvalidVersion as err:
+                logger.warning(f'Ignore: {err}')
+                version = None
+            tags.append(GitTagInfo(raw_tag=raw_tag, version=version))
+
+        null_version = Version('0')
+        tags.sort(key=lambda x: x.version or null_version)
+
+        return cls(tags=tags)
+
+    def get_releases(self):
+        result = []
+        for tag in self.tags:
+            if version := tag.version:
+                if version.is_devrelease or version.is_prerelease:
+                    continue
+                result.append(tag)
+        return result
+
+    def get_last_release(self):
+        if releases := self.get_releases():
+            return releases[-1]
+
+    def exists(self, version: Version):
+        for tag in self.tags:
+            if tag.version and tag.version == version:
+                return True
+        return False
 
 
 def get_git_root(path: Path):
@@ -195,28 +244,49 @@ class Git:
     def reflog(self, verbose=True) -> str:
         return self.git_verbose_check_output('reflog', verbose=verbose, exit_on_error=True)
 
-    def log(self, format='%h - %an, %ar : %s', verbose=True) -> list[str]:
-        output = self.git_verbose_check_output(
-            'log', f'--pretty=format:{format}', verbose=verbose, exit_on_error=True
-        )
+    def log(
+        self,
+        format='%h - %an, %ar : %s',
+        no_merges=False,
+        commit1: Optional[str] = None,  # e.g.: "HEAD"
+        commit2: Optional[str] = None,  # e.g.: "v0.8.0"
+        verbose=True,
+        exit_on_error=True,
+    ) -> list[str]:
+        """
+        e.g.: git log --no-merges HEAD...v0.8.0 --pretty=format:"%h %as %s"
+        """
+        args = ['log']
+        if no_merges:
+            args.append('--no-merges')
+
+        if commit1 and commit2:
+            args.append(f'{commit1}...{commit2}')
+
+        args.append(f'--pretty=format:{format}')
+        output = self.git_verbose_check_output(*args, verbose=verbose, exit_on_error=exit_on_error)
         lines = output.splitlines()
         return lines
 
-    def tag(self, git_tag: str, message: str):
-        self.git_verbose_check_call('tag', '-a', git_tag, '-m', message)
+    def tag(self, git_tag: str, message: str, verbose=True, exit_on_error=True):
+        self.git_verbose_check_call('tag', '-a', git_tag, '-m', message, verbose=verbose, exit_on_error=exit_on_error)
 
-    def push(self, tags=False):
+    def push(self, tags=False, verbose=True):
         if tags:
             args = ['--tags']
         else:
             args = []
 
-        self.git_verbose_check_call('push', *args)
+        self.git_verbose_check_call('push', *args, verbose=verbose)
 
     def tag_list(self, verbose=True, exit_on_error=True) -> list[str]:
         output = self.git_verbose_check_output('tag', verbose=verbose, exit_on_error=exit_on_error)
         lines = output.splitlines()
         return lines
+
+    def get_tag_infos(self, verbose=True, exit_on_error=True) -> GitTagInfos:
+        raw_tags = self.tag_list(verbose=verbose, exit_on_error=exit_on_error)
+        return GitTagInfos.from_raw_tags(raw_tags)
 
     def ls_files(self, verbose=True) -> list[Path]:
         output = self.git_verbose_check_output('ls-files', verbose=verbose, exit_on_error=True)
@@ -254,11 +324,21 @@ class Git:
             result.append((status, filepath))
         return result
 
-    def get_branch_names(self, verbose=True):
+    def get_raw_branch_names(self, verbose=True) -> list[str]:
         output = self.git_verbose_check_output('branch', '--no-color', verbose=verbose)
-        branches = sorted(branch.strip('* ') for branch in output.splitlines())
-        logger.debug('Git branches: %s', ', '.join(branches))
+        branches = output.splitlines()
+        logger.debug('Git raw branches: %r', branches)
         return branches
+
+    def get_current_branch_name(self, verbose=True) -> Optional[str]:
+        raw_branch_names = self.get_raw_branch_names(verbose=verbose)
+        for branch_name in raw_branch_names:
+            if branch_name.startswith('*'):
+                return branch_name.strip('* ')
+        raise GitError(f'Current branch name not found in: {raw_branch_names}')
+
+    def get_branch_names(self, verbose=True) -> list[str]:
+        return sorted(branch.strip('* ') for branch in self.get_raw_branch_names(verbose=verbose))
 
     def get_main_branch_name(self, possible_names=('main', 'master'), verbose=True):
         """
