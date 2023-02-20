@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.8.2"
+version = "0.8.3"
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
@@ -15,7 +15,6 @@ dependencies = [
     "rich-click",  # https://github.com/ewels/rich-click
     "rich",  # https://github.com/Textualize/rich
     "packaging",  # https://github.com/pypa/packaging
-    "tox",  # https://github.com/tox-dev/tox
     "darker>=1.7",  # https://github.com/akaihola/darker
     "autopep8",  # https://github.com/hhatto/autopep8
     "pyupgrade",  # https://github.com/asottile/pyupgrade
@@ -31,7 +30,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pip-tools",  # https://github.com/jazzband/pip-tools/
-    "tox",  # https://github.com/tox-dev/tox
+    "tox>=4.4.5",  # https://github.com/tox-dev/tox
     "coveralls",  # https://github.com/TheKevJames/coveralls-python
     "tomli",  # https://github.com/hukkin/tomli
     "twine",  # https://github.com/pypa/twine
