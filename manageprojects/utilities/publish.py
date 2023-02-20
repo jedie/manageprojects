@@ -181,13 +181,23 @@ def build(package_path) -> None:
 
 
 def publish_package(
-    *, module, package_path: Path, possible_branch_names=('main', 'master'), tag_msg_log_format='%h %as %s'
-):
+    *,
+    module,
+    package_path: Path,
+    possible_branch_names: tuple[str] = ('main', 'master'),
+    tag_msg_log_format: str = '%h %as %s',
+) -> None:
     """
-    Build and upload a project to PyPi
+    Build and upload (with twine) a project to PyPi with many pre-checks:
 
-    TODO: Add all checks from:
-        https://github.com/jedie/poetry-publish/blob/main/poetry_publish/publish.py
+     * Has correct version number?
+     * Is on main branch and up-to-date with origin?
+     * Check if current version already published
+     * Build a git tag based on current package version
+     * Adds change messages since last release to git tag message
+
+    Designed to be useful for external packages.
+    Some checks result in a hard exit, but some can be manually confirmed from the user to continue publishing.
     """
     # Version number correct?
     version: Version = check_version(module=module, package_path=package_path)
