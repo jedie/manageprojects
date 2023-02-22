@@ -3,7 +3,9 @@ import tempfile
 from collections.abc import Iterable
 from importlib.metadata import version
 from pathlib import Path
+from typing import Optional
 
+from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_file
 
 
@@ -134,11 +136,22 @@ def clean_version(version: str) -> Version:
     return Version(version)
 
 
-def check_version(*, module, package_path: Path) -> Version:
-    module_version = clean_version(module.__version__)
+def get_pyproject_toml_version(package_path: Path) -> Optional[Version]:
     pyproject_toml_path = Path(package_path, 'pyproject.toml')
     assert_is_file(pyproject_toml_path)
 
+    pyproject_toml = tomllib.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
+
+    ver_str = dict_get(pyproject_toml, 'project', 'version')
+    if not ver_str:
+        ver_str = dict_get(pyproject_toml, 'tool', 'poetry', 'version')
+
+    if ver_str:
+        return clean_version(ver_str)
+
+
+def check_version(*, module, package_path: Path) -> Version:
+    module_version = clean_version(module.__version__)
     installed_version = clean_version(version(module.__name__))
     if module_version != installed_version:
         exit_with_error(
@@ -146,9 +159,10 @@ def check_version(*, module, package_path: Path) -> Version:
             hint='Install package and run publish again',
         )
 
-    pyproject_toml = tomllib.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
-    pyproject_version = clean_version(pyproject_toml['project']['version'])
-    if pyproject_version != installed_version:
+    pyproject_version = get_pyproject_toml_version(package_path)
+    if not pyproject_version:
+        confirm('Can not get package version from pyproject.toml')
+    elif pyproject_version != installed_version:
         exit_with_error(
             (
                 f'Version mismatch:'
