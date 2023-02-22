@@ -1,3 +1,4 @@
+import inspect
 from pathlib import Path
 from unittest import TestCase
 
@@ -7,11 +8,45 @@ from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.test_utils.subprocess import FakeStdout, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT
-from manageprojects.utilities.publish import PublisherGit
+from manageprojects.utilities.publish import PublisherGit, get_pyproject_toml_version
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class PublishTestCase(TestCase):
+    def test_get_pyproject_toml_version(self):
+        with TemporaryDirectory(prefix='test_get_pyproject_toml_version') as temp_path:
+            pyproject_toml_path = temp_path / 'pyproject.toml'
+            pyproject_toml_path.touch()
+
+            version = get_pyproject_toml_version(temp_path)
+            self.assertIs(version, None)
+
+            pyproject_toml_path.write_text(
+                inspect.cleandoc(
+                    '''
+                    [project]
+                    name = "foo"
+                    version = "1.2"
+                    description = "bar"
+                    '''
+                )
+            )
+            version = get_pyproject_toml_version(temp_path)
+            self.assertEqual(version, Version('1.2'))
+
+            pyproject_toml_path.write_text(
+                inspect.cleandoc(
+                    '''
+                    [tool.poetry]
+                    name = "foo"
+                    version = "2.3"
+                    description = "bar"
+                    '''
+                )
+            )
+            version = get_pyproject_toml_version(temp_path)
+            self.assertEqual(version, Version('2.3'))
+
     def test_publisher_git(self):
         with AssertLogs(self, loggers=('manageprojects',)), TemporaryDirectory(
             prefix='test_publisher_git'
