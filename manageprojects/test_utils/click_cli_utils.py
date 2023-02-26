@@ -30,6 +30,11 @@ class ForceRichTerminalWidth(MassContextManager):
     )
 
 
+class ClickInvokeCliException(Exception):
+    def __init__(self, result: Result):
+        self.result = result
+
+
 def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=True, **kwargs):
     assert isinstance(cli, click.Command)
 
@@ -40,7 +45,7 @@ def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=Tru
         result: Result = runner.invoke(cli=cli, args=args, **kwargs, color=False)
 
     if result.exception:
-        raise result.exception
+        raise ClickInvokeCliException(result) from result.exception
 
     stdout = result.stdout
     stderr = result.stderr
