@@ -4,7 +4,7 @@ import click
 import rich_click
 from bx_py_utils.path import assert_is_file
 from bx_py_utils.test_utils.context_managers import MassContextManager
-from click.testing import CliRunner
+from click.testing import CliRunner, Result
 
 from manageprojects.utilities.subprocess_utils import verbose_check_output
 
@@ -37,7 +37,10 @@ def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=Tru
 
     with ForceRichTerminalWidth():
         runner = CliRunner(mix_stderr=False)
-        result = runner.invoke(cli=cli, args=args, **kwargs, color=False)
+        result: Result = runner.invoke(cli=cli, args=args, **kwargs, color=False)
+
+    if result.exception:
+        raise result.exception
 
     stdout = result.stdout
     stderr = result.stderr
