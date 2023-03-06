@@ -26,7 +26,11 @@ dependencies = [
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
     "mypy",  # https://github.com/python/mypy
     "safety",  # https://github.com/pyupio/safety
-    "tomli;python_version<\"3.11\"",  # https://github.com/hukkin/tomli
+    "tomli",  # https://github.com/hukkin/tomli
+    #
+    # tomli only needed for Python <3.11, but see bug:
+    # https://github.com/pypa/pip/issues/9644#issuecomment-1456583402
+    #"tomli;python_version<\"3.11\"",  # https://github.com/hukkin/tomli
 ]
 [project.optional-dependencies]
 dev = [
