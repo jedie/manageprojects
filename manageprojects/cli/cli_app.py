@@ -115,15 +115,17 @@ def update():
     """
     Update "requirements*.txt" dependencies files
     """
-    verbose_check_call('pip', 'install', '-U', 'pip')
-    verbose_check_call('pip', 'install', '-U', 'pip-tools')
+    bin_path = Path(sys.executable).parent
+
+    verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip')
+    verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip-tools')
 
     extra_env = dict(
         CUSTOM_COMPILE_COMMAND='./cli.py update',
     )
 
     pip_compile_base = [
-        'pip-compile',
+        bin_path / 'pip-compile',
         '--verbose',
         '--allow-unsafe',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
         '--resolver=backtracking',  # https://pip-tools.readthedocs.io/en/latest/#deprecations
@@ -140,7 +142,7 @@ def update():
         extra_env=extra_env,
     )
 
-    # dependencies + "tests"-optional-dependencies:
+    # dependencies + "dev"-optional-dependencies:
     verbose_check_call(
         *pip_compile_base,
         'pyproject.toml',
