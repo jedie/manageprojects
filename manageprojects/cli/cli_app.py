@@ -75,6 +75,7 @@ cli.add_command(mypy)
 
 
 @click.command()
+@click.option('--verbose/--no-verbose', **OPTION_ARGS_DEFAULT_FALSE)
 def coverage(verbose: bool = True):
     """
     Run and show coverage.
@@ -82,6 +83,7 @@ def coverage(verbose: bool = True):
     verbose_check_call('coverage', 'run', verbose=verbose, exit_on_error=True)
     verbose_check_call('coverage', 'combine', '--append', verbose=verbose, exit_on_error=True)
     verbose_check_call('coverage', 'report', '--fail-under=50', verbose=verbose, exit_on_error=True)
+    verbose_check_call('coverage', 'xml', verbose=verbose, exit_on_error=True)
     verbose_check_call('coverage', 'json', verbose=verbose, exit_on_error=True)
 
 
