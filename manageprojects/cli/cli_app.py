@@ -80,6 +80,7 @@ def coverage(verbose: bool = True):
     Run and show coverage.
     """
     verbose_check_call('coverage', 'run', verbose=verbose, exit_on_error=True)
+    verbose_check_call('coverage', 'combine', '--append', verbose=verbose, exit_on_error=True)
     verbose_check_call('coverage', 'report', '--fail-under=50', verbose=verbose, exit_on_error=True)
     verbose_check_call('coverage', 'json', verbose=verbose, exit_on_error=True)
 
