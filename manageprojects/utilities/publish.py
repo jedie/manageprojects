@@ -8,7 +8,6 @@ from typing import Optional
 from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_file
 
-
 try:
     import tomllib  # New in Python 3.11
 except ImportError:
@@ -150,9 +149,12 @@ def get_pyproject_toml_version(package_path: Path) -> Optional[Version]:
         return clean_version(ver_str)
 
 
-def check_version(*, module, package_path: Path) -> Version:
+def check_version(*, module, package_path: Path, distribution_name: Optional[str] = None) -> Version:
+    if not distribution_name:
+        distribution_name = module.__name__
+
     module_version = clean_version(module.__version__)
-    installed_version = clean_version(version(module.__name__))
+    installed_version = clean_version(version(distribution_name))
     if module_version != installed_version:
         exit_with_error(
             f'Version mismatch: current version {module_version} is not the installed one: {installed_version}',
@@ -200,6 +202,7 @@ def publish_package(
     package_path: Path,
     possible_branch_names: tuple[str] = ('main', 'master'),
     tag_msg_log_format: str = '%h %as %s',
+    distribution_name: Optional[str] = None,  # Must be given, if it's not == module.__name__
 ) -> None:
     """
     Build and upload (with twine) a project to PyPi with many pre-checks:
@@ -214,7 +217,7 @@ def publish_package(
     Some checks result in a hard exit, but some can be manually confirmed from the user to continue publishing.
     """
     # Version number correct?
-    version: Version = check_version(module=module, package_path=package_path)
+    version: Version = check_version(module=module, package_path=package_path, distribution_name=distribution_name)
     if version.is_devrelease or version.is_prerelease:
         confirm(f'Current version {version} is dev/pre release!')
 
