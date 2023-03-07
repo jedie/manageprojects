@@ -66,6 +66,7 @@ def cli():
 
 
 @click.command()
+@click.option('--verbose/--no-verbose', **OPTION_ARGS_DEFAULT_FALSE)
 def mypy(verbose: bool = True):
     """Run Mypy (configured in pyproject.toml)"""
     verbose_check_call('mypy', '.', cwd=PACKAGE_ROOT, verbose=verbose, exit_on_error=True)
