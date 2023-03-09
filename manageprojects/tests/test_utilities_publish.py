@@ -1,6 +1,8 @@
 import inspect
+import sys
 from pathlib import Path
 from unittest import TestCase
+from unittest.mock import patch
 
 from packaging.version import Version
 
@@ -8,11 +10,50 @@ from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.test_utils.subprocess import FakeStdout, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT
-from manageprojects.utilities.publish import PublisherGit, get_pyproject_toml_version
+from manageprojects.utilities import subprocess_utils
+from manageprojects.utilities.publish import PublisherGit, build, get_pyproject_toml_version
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class PublishTestCase(TestCase):
+    def test_build(self):
+        def return_callback(popenargs, args, kwargs):
+            return FakeStdout(stdout='Mocked run output')
+
+        with TemporaryDirectory(prefix='test_build') as temp_path, SubprocessCallMock(return_callback) as call_mock:
+            build(package_path=temp_path)
+
+        self.assertEqual(
+            call_mock.get_popenargs(rstrip_paths=(str(Path(sys.executable).parent),)),
+            [
+                ['.../python', '-m', 'build'],
+            ],
+        )
+
+        # Use poetry:
+
+        def prepare_popenargs_mock(popenargs, cwd=None):
+            return popenargs, cwd
+
+        def make_relative_path_mock(path, **kwargs):
+            return path
+
+        with TemporaryDirectory(prefix='test_build') as temp_path, SubprocessCallMock(
+            return_callback
+        ) as call_mock, patch.object(subprocess_utils, 'prepare_popenargs', prepare_popenargs_mock), patch.object(
+            subprocess_utils, 'make_relative_path', make_relative_path_mock
+        ):
+            Path(temp_path / 'poetry.lock').touch()
+
+            build(package_path=temp_path)
+
+        self.assertEqual(
+            call_mock.get_popenargs(),
+            [
+                ['poetry', 'build'],
+            ],
+        )
+
     def test_get_pyproject_toml_version(self):
         with TemporaryDirectory(prefix='test_get_pyproject_toml_version') as temp_path:
             pyproject_toml_path = temp_path / 'pyproject.toml'
