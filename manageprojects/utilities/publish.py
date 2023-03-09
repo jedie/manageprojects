@@ -188,7 +188,13 @@ def build(package_path) -> None:
     rmtree(package_path / 'build')
     print('OK')
 
-    output = verbose_check_output(sys.executable, '-m', 'build', verbose=True, exit_on_error=True)
+    if Path(package_path / 'poetry.lock').is_file():
+        # Poetry used -> build with it
+        output = verbose_check_output('poetry', 'build', verbose=True, exit_on_error=True)
+    else:
+        # use normal build
+        output = verbose_check_output(sys.executable, '-m', 'build', verbose=True, exit_on_error=True)
+
     with tempfile.NamedTemporaryFile(
         mode='w', suffix='.txt', prefix=f'{package_path.name}_', encoding='utf-8', delete=False
     ) as temp_file:
