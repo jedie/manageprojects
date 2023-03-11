@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
@@ -46,12 +47,18 @@ def copy_replaced(src_path, dst_path, reverse_info):
     dst_parent = dst_path.parent
     dst_parent.mkdir(parents=True, exist_ok=True)
 
-    content = src_path.read_text(encoding='UTF-8')
+    try:
+        content = src_path.read_text(encoding='UTF-8')
+    except UnicodeDecodeError as err:
+        # XXX: Detect binary files in a other way
+        print(f'[yellow]Warning: {err} for file {src_path}')
+        print('copy as binary file')
+        shutil.copy2(src_path, dst_path)
+    else:
+        for src_str, dst_str in reverse_info:
+            content = content.replace(src_str, dst_str)
 
-    for src_str, dst_str in reverse_info:
-        content = content.replace(src_str, dst_str)
-
-    dst_path.write_text(content, encoding='UTF-8')
+        dst_path.write_text(content, encoding='UTF-8')
 
 
 def create_cookiecutter_template(
