@@ -88,6 +88,27 @@ class PublishTestCase(TestCase):
             version = get_pyproject_toml_version(temp_path)
             self.assertEqual(version, Version('2.3'))
 
+    def test_publisher_fast_checks_not_existing_tag(self):
+        # https://github.com/jedie/manageprojects/issues/68
+        with AssertLogs(self, loggers=('manageprojects',)), TemporaryDirectory(
+            prefix='test_publisher_fast_checks_not_existing_tag'
+        ) as temp_path:
+            Path(temp_path, '1.txt').touch()
+            init_git(temp_path, comment='The initial commit ;)')
+
+            pgit = PublisherGit(
+                package_path=temp_path,
+                version=Version('0.0.1'),
+                possible_branch_names=('main',),
+                tag_msg_log_format='%s',
+            )
+            self.assertIs(pgit.git_tag_msg, None)
+            pgit.fast_checks()
+            self.assertEqual(
+                pgit.git_tag_msg,
+                'publish version v0.0.1 with these changes:\n\n * The initial commit ;)\n',
+            )
+
     def test_publisher_git(self):
         with AssertLogs(self, loggers=('manageprojects',)), TemporaryDirectory(
             prefix='test_publisher_git'
