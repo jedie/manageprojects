@@ -102,9 +102,12 @@ class PublisherGit:
         change_msg = '\n'.join(f' * {line}' for line in log_lines)
         print('done:')
         print(change_msg)
-        self.git_tag_msg = (
-            f'publish version v{self.version} with these changes (since {last_tag.version_tag}):\n\n{change_msg}\n'
-        )
+        if last_tag:
+            self.git_tag_msg = (
+                f'publish version v{self.version} with these changes (since {last_tag.version_tag}):\n\n{change_msg}\n'
+            )
+        else:
+            self.git_tag_msg = f'publish version v{self.version} with these changes:\n\n{change_msg}\n'
 
     def slow_checks(self):
         print('\nLocal repository up-to-date: fetch origin...', end='')
