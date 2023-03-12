@@ -80,6 +80,6 @@ class CliTestCase(BaseTestCase):
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH,)),
             [
                 ['.../pip-sync', f'{PACKAGE_ROOT}/requirements.dev.txt'],
-                ['.../pip', 'install', '-e', '.'],
+                ['.../pip', 'install', '--no-deps', '-e', '.'],
             ],
         )
