@@ -101,7 +101,7 @@ def main(argv):
         verbose_check_call(PIP_SYNC_PATH, str(DEP_LOCK_PATH))
 
         # install project
-        verbose_check_call(PIP_PATH, 'install', '-e', '.')
+        verbose_check_call(PIP_PATH, 'install', '--no-deps', '-e', '.')
         store_dep_hash()
 
     # Call our entry point CLI:
