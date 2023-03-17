@@ -1,6 +1,6 @@
 [project]
 name = "manageprojects"
-version = "0.9.6"
+dynamic = ["version"]
 description = "Manage Python / Django projects"
 readme = "README.md"
 authors = [
@@ -50,13 +50,16 @@ Source = "https://github.com/jedie/manageprojects"
 [project.scripts]
 manageprojects = "manageprojects.__main__:main"
 
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["manageprojects*"]
 
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+[tool.setuptools.dynamic]
+version = {attr = "manageprojects.__version__"}
 
 
 [tool.darker]
@@ -151,6 +154,7 @@ applied_migrations = [
     "d970456", # 2023-02-20T16:19:35+01:00
     "80d0a0c", # 2023-03-06T17:52:14+01:00
     "04d5a25", # 2023-03-07T16:25:36+01:00
+    "be96b03", # 2023-03-17T08:17:11+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
