@@ -1,6 +1,7 @@
-"""manageprojects - Manage Python / Django projects"""
+"""
+    manageprojects
+    Manage Python / Django projects
+"""
 
-from importlib.metadata import version
-
-__version__ = version('manageprojects')
+__version__ = '0.9.6'
 __author__ = 'Jens Diemer <mamageprojects@jensdiemer.de>'

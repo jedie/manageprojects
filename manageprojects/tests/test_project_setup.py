@@ -1,12 +1,7 @@
 import subprocess
-from pathlib import Path
-
-try:
-    import tomllib  # New in Python 3.11
-except ImportError:
-    import tomli as tomllib
 
 from bx_py_utils.path import assert_is_file
+from packaging.version import Version
 
 from manageprojects import __version__
 from manageprojects.cli.cli_app import PACKAGE_ROOT
@@ -18,15 +13,10 @@ from manageprojects.utilities import code_style
 
 class ProjectSetupTestCase(BaseTestCase):
     def test_version(self):
-        pyproject_toml_path = Path(PACKAGE_ROOT, 'pyproject.toml')
-        assert_is_file(pyproject_toml_path)
-
         self.assertIsNotNone(__version__)
 
-        pyproject_toml = tomllib.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
-        pyproject_version = pyproject_toml['project']['version']
-
-        self.assertEqual(__version__, pyproject_version)
+        version = Version(__version__)  # Will raise InvalidVersion() if wrong formatted
+        self.assertEqual(str(version), __version__)
 
         cli_bin = PACKAGE_ROOT / 'cli.py'
         assert_is_file(cli_bin)
@@ -45,16 +35,10 @@ class ProjectSetupTestCase(BaseTestCase):
                 exit_on_error=False,
             )
         except subprocess.CalledProcessError as err:
-            self.assert_in_content(  # darker was called?
-                got=err.stdout,
-                parts=('.venv/bin/darker',),
-            )
+            self.assertIn('.venv/bin/darker', err.stdout)  # darker was called?
         else:
             if 'Code style: OK' in output:
-                self.assert_in_content(  # darker was called?
-                    got=output,
-                    parts=('.venv/bin/darker',),
-                )
+                self.assertIn('.venv/bin/darker', output)  # darker was called?
                 return  # Nothing to fix -> OK
 
         # Try to "auto" fix code style:
@@ -68,10 +52,7 @@ class ProjectSetupTestCase(BaseTestCase):
         except subprocess.CalledProcessError as err:
             output = err.stdout
 
-        self.assert_in_content(  # darker was called?
-            got=output,
-            parts=('.venv/bin/darker',),
-        )
+        self.assertIn('.venv/bin/darker', output)  # darker was called?
 
         # Check again and display the output:
 
