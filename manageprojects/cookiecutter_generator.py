@@ -23,7 +23,7 @@ def generate_reverse_info(*, cookiecutter_context: dict) -> tuple:
     reverse_info = [
         (value, '{{ %s }}' % key) for key, value in iter_context(context=cookiecutter_context)
     ]
-    reverse_info.sort(key=lambda x: len(x[1]))
+    reverse_info.sort(key=lambda x: len(x[0]), reverse=True)
     return tuple(reverse_info)
 
 
