@@ -140,9 +140,9 @@ cookiecutter==2.1.1 \
     --hash=sha256:9f3ab027cec4f70916e28f03470bdb41e637a3ad354b4d65c765d93aad160022 \
     --hash=sha256:f3982be8d9c53dac1261864013fdec7f83afd2e42ede6f6dd069c5e149c540d5
     # via manageprojects (pyproject.toml)
-darker==1.7.0 \
-    --hash=sha256:34e259681e931414b3d7bf3467b0af2f29005545cfc72aa4c8739a8705cbf51f \
-    --hash=sha256:8d260185295fc672aefe008a300a5164f60c557b7202464c4dd74176325e15b0
+darker==1.7.1 \
+    --hash=sha256:cf4173be4ad2982e5b2ebab7e08bd0d27173f2459ec1b1cf66aec9290da80cce \
+    --hash=sha256:d72126418194871aeaf1e8aa620ad06edc5472848bef71c4d393c22b65571878
     # via manageprojects (pyproject.toml)
 dparse==0.6.2 \
     --hash=sha256:8097076f1dd26c377f30d4745e6ec18fef42f3bf493933b842ac5bafad8c345f \
@@ -156,9 +156,9 @@ flake8==6.0.0 \
     --hash=sha256:3833794e27ff64ea4e9cf5d410082a8b97ff1a06c16aa3d2027339cd0f1195c7 \
     --hash=sha256:c61007e76655af75e6785a931f452915b371dc48f56efd765247c8fe68f2b181
     # via manageprojects (pyproject.toml)
-flynt==0.77 \
-    --hash=sha256:2863ac8ec19d6ec8d29e760546e6ced644baf6dff3c7cdc77e03abbd29b80f14 \
-    --hash=sha256:2bd1b37043ad88a3f3c3c34a76fc0b64d24e5f03d36ea6b48cb69cc642bff17e
+flynt==0.78 \
+    --hash=sha256:15082167a538ea56b6ce4ca6874c22c739710759832dda78d8f43b6079b7e646 \
+    --hash=sha256:3a4cf278518f7dec3af52c94b5e7c395f623186503a684b2ba28705522871e74
     # via manageprojects (pyproject.toml)
 idna==3.4 \
     --hash=sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4 \
@@ -283,13 +283,13 @@ packaging==21.3 \
     #   dparse
     #   manageprojects (pyproject.toml)
     #   safety
-pathspec==0.11.0 \
-    --hash=sha256:3a66eb970cbac598f9e5ccb5b2cf58930cd8e3ed86d393d541eaf2d8b1705229 \
-    --hash=sha256:64d338d4e0914e91c1792321e6907b5a593f1ab1851de7fc269557a21b30ebbc
+pathspec==0.11.1 \
+    --hash=sha256:2798de800fa92780e33acca925945e9a19a133b715067cf165b8866c15a31687 \
+    --hash=sha256:d8af70af76652554bd134c22b3e8a1cc46ed7d91edcdd721ef1a0c51a84a5293
     # via black
-platformdirs==3.1.0 \
-    --hash=sha256:13b08a53ed71021350c9e300d4ea8668438fb0046ab3937ac9a29913a1a1350a \
-    --hash=sha256:accc3665857288317f32c7bebb5a8e482ba717b474f3fc1d18ca7f9214be0cef
+platformdirs==3.2.0 \
+    --hash=sha256:d5b638ca397f25f979350ff789db335903d7ea010ab28903f57b27e1b16c2b08 \
+    --hash=sha256:ebe11c0d7a805086e99506aa331612429a72ca7cd52a1f0d277dc4adc20cb10e
     # via black
 pycodestyle==2.10.0 \
     --hash=sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053 \
@@ -371,9 +371,9 @@ requests==2.28.2 \
     # via
     #   cookiecutter
     #   safety
-rich==13.3.2 \
-    --hash=sha256:91954fe80cfb7985727a467ca98a7618e5dd15178cc2da10f553b36a93859001 \
-    --hash=sha256:a104f37270bf677148d8acb07d33be1569eeee87e2d1beb286a4e9113caf6f2f
+rich==13.3.3 \
+    --hash=sha256:540c7d6d26a1178e8e8b37e9ba44573a3cd1464ff6348b99ee7061b95d1c6333 \
+    --hash=sha256:dc84400a9d842b3a9c5ff74addd8eb798d155f36c1c91303888e0a66850d2a15
     # via
     #   manageprojects (pyproject.toml)
     #   rich-click
@@ -454,21 +454,21 @@ tomli==2.0.1 \
     #   flynt
     #   manageprojects (pyproject.toml)
     #   mypy
-tomlkit==0.11.6 \
-    --hash=sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b \
-    --hash=sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73
+tomlkit==0.11.7 \
+    --hash=sha256:5325463a7da2ef0c6bbfefb62a3dc883aebe679984709aee32a317907d0a8d3c \
+    --hash=sha256:f392ef70ad87a672f02519f99967d28a4d3047133e2d1df936511465fbb3791d
     # via manageprojects (pyproject.toml)
 typing-extensions==4.5.0 \
     --hash=sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb \
     --hash=sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4
     # via mypy
-urllib3==1.26.14 \
-    --hash=sha256:076907bf8fd355cde77728471316625a4d2f7e713c125f51953bb5b3eecf4f72 \
-    --hash=sha256:75edcdc2f7d85b137124a6c3c9fc3933cdeaa12ecb9a6a959f22797a0feca7e1
+urllib3==1.26.15 \
+    --hash=sha256:8a388717b9476f934a21484e8c8e61875ab60644d29b9b39e11e4b9dc1c6b305 \
+    --hash=sha256:aa751d169e23c7479ce47a0cb0da579e3ede798f994f5816a74e4f4500dcea42
     # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==67.6.0 \
-    --hash=sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077 \
-    --hash=sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2
+setuptools==67.6.1 \
+    --hash=sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a \
+    --hash=sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078
     # via safety
