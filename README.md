@@ -114,7 +114,7 @@ Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH
 
  Update a existing project.
  e.g. update by overwrite (and merge changes manually via git):
- ./cli.py update-project --overwrite ~/foo/bar/
+ ./cli.py update-project ~/foo/bar/
 
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --overwrite/--no-overwrite          Overwrite all Cookiecutter template files to the last        │
@@ -122,7 +122,7 @@ Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH
 │                                     The developer is supposed to apply the differences manually  │
 │                                     via git. Will be aborted if the project git repro is not in  │
 │                                     a clean state.                                               │
-│                                     [default: no-overwrite]                                      │
+│                                     [default: overwrite]                                         │
 │ --password                    TEXT  Cookiecutter Option: Password to use when extracting the     │
 │                                     repository                                                   │
 │ --config-file                 FILE  Cookiecutter Option: Optional path to                        │

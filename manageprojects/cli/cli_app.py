@@ -256,7 +256,7 @@ cli.add_command(start_project)
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.option(
     '--overwrite/--no-overwrite',
-    **OPTION_ARGS_DEFAULT_FALSE,
+    **OPTION_ARGS_DEFAULT_TRUE,
     help=(
         'Overwrite all Cookiecutter template files to the last template state and'
         ' do not apply the changes via git patches.'
@@ -298,7 +298,7 @@ def update_project(
 
     e.g. update by overwrite (and merge changes manually via git):
 
-    ./cli.py update-project --overwrite ~/foo/bar/
+    ./cli.py update-project ~/foo/bar/
     """
     log_config()
     print(f'Update project: "{project_path}"...')
