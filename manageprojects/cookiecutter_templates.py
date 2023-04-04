@@ -254,12 +254,13 @@ def reverse_managed_project(
     *,
     project_path: Path,
     destination: Path,
+    overwrite: bool = False,
 ):
     """
     Create a cookiecutter template from a managed project.
     """
     rprint(f'Create cookiecutter template from {project_path} in {destination}')
-    if destination.exists():
+    if not overwrite and destination.exists():
         print(f'ERROR: Destination {destination} already exists!')
         sys.exit(1)
 
@@ -273,4 +274,5 @@ def reverse_managed_project(
         source_path=project_path,
         destination=destination,
         cookiecutter_context=cookiecutter_context,
+        overwrite=overwrite,
     )

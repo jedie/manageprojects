@@ -368,9 +368,15 @@ cli.add_command(clone_project)
 @click.command()
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.argument('destination', **ARGUMENT_NOT_EXISTING_DIR)
+@click.option(
+    '--overwrite/--no-overwrite',
+    **OPTION_ARGS_DEFAULT_FALSE,
+    help='Overwrite existing files.',
+)
 def reverse(
     project_path: Path,
     destination: Path,
+    overwrite: bool,
 ):
     """
     Create a cookiecutter template from a managed project.
@@ -383,6 +389,7 @@ def reverse(
     return reverse_managed_project(
         project_path=project_path,
         destination=destination,
+        overwrite=overwrite,
     )
 
 
