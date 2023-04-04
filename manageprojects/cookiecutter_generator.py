@@ -66,10 +66,12 @@ def create_cookiecutter_template(
     source_path: Path,
     destination: Path,
     cookiecutter_context: dict,
+    overwrite: bool = False,
 ):
     source_path = source_path.resolve()
     assert_is_dir(source_path)
-    assert not destination.exists(), f'Destination {destination} already exists!'
+    if not overwrite:
+        assert not destination.exists(), f'Destination {destination} already exists!'
 
     reverse_info = generate_reverse_info(cookiecutter_context=cookiecutter_context)
 
