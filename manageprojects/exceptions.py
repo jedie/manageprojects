@@ -8,3 +8,7 @@ class NoManageprojectsMeta(Exception):
     """
 
     pass
+
+
+class NoPyProjectTomlFound(FileNotFoundError):
+    pass

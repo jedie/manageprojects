@@ -8,7 +8,7 @@ from unittest import TestCase
 from bx_py_utils.path import assert_is_file
 
 import manageprojects
-from manageprojects.utilities.pyproject_toml import toml_load
+from manageprojects.utilities.pyproject_toml import TomlDocument, get_toml_document
 
 
 PROJECT_PATH = Path(manageprojects.__file__).parent.parent
@@ -19,7 +19,8 @@ class BaseTestCase(TestCase):
     maxDiff = None
 
     def assert_toml(self, path: Path, expected: dict):
-        got = toml_load(path)
+        toml_document: TomlDocument = get_toml_document(path)
+        got = toml_document.doc.unwrap()  # TOMLDocument -> dict
         try:
             self.assertDictEqual(got, expected)
         except AssertionError:

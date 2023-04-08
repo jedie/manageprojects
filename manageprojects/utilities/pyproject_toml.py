@@ -1,3 +1,4 @@
+import dataclasses
 import datetime
 import logging
 from pathlib import Path
@@ -17,13 +18,37 @@ from manageprojects.constants import (
     INITIAL_REVISION,
 )
 from manageprojects.data_classes import ManageProjectsMeta
+from manageprojects.exceptions import NoPyProjectTomlFound
 from manageprojects.utilities.log_utils import log_func_call
 
 
 logger = logging.getLogger(__name__)
 
 
+@dataclasses.dataclass
+class TomlDocument:
+    file_path: Path
+    doc: TOMLDocument
+
+
+def get_toml_document(path: Path) -> TomlDocument:
+    """
+    Read the file path and returns the TOMLDocument.
+    Just use unwrap() if a normal dict is needed, e.g.:
+
+        doc: TOMLDocument = get_toml_document(path)
+        toml: dict = doc.unwrap()
+    """
+    assert_is_file(path)
+    doc: TOMLDocument = tomlkit.parse(path.read_text(encoding='UTF-8'))
+
+    return TomlDocument(file_path=path, doc=doc)
+
+
 def find_pyproject_toml(file_path: Path) -> Optional[Path]:
+    """
+    Go back down the directory tree to find the "pyproject.toml" file.
+    """
     if file_path.is_file():
         return find_pyproject_toml(file_path.parent)
 
@@ -35,11 +60,22 @@ def find_pyproject_toml(file_path: Path) -> Optional[Path]:
         if parent_path != file_path:
             return find_pyproject_toml(parent_path)
 
+    return None
 
-def toml_load(path: Path) -> dict:
-    assert_is_file(path)
-    doc: TOMLDocument = tomlkit.parse(path.read_text(encoding='UTF-8'))
-    return dict(doc)
+
+def get_pyproject_toml(*, file_path: Optional[Path] = None) -> TomlDocument:
+    """
+    Find the "pyproject.toml" and return it.
+    """
+    if not file_path:
+        file_path = Path.cwd()
+    pyproject_toml_path = find_pyproject_toml(file_path=file_path)
+    if not pyproject_toml_path:
+        raise NoPyProjectTomlFound(f'Can not find "pyproject.toml" in {file_path}')
+
+    assert_is_file(pyproject_toml_path)
+    toml_document: TomlDocument = get_toml_document(pyproject_toml_path)
+    return toml_document
 
 
 class PyProjectToml:
