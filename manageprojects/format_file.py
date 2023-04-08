@@ -10,8 +10,9 @@ from rich import print  # noqa
 from rich.pretty import pprint
 
 from manageprojects.constants import FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH, FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION
+from manageprojects.exceptions import NoPyProjectTomlFound
 from manageprojects.git import Git, GitError, NoGitRepoError
-from manageprojects.utilities.pyproject_toml import find_pyproject_toml, toml_load
+from manageprojects.utilities.pyproject_toml import TomlDocument, get_pyproject_toml
 from manageprojects.utilities.subprocess_utils import ToolsExecutor
 
 
@@ -94,15 +95,15 @@ def get_pyproject_info(file_path: Path, default_min_py_version: str) -> PyProjec
         py_min_ver=Version(default_min_py_version),
     )
 
-    pyproject_toml_path = find_pyproject_toml(file_path=file_path)
-    if not pyproject_toml_path:
-        print('No "pyproject.toml" found: Cannot detect the minimal Python version')
+    try:
+        toml_document: TomlDocument = get_pyproject_toml(file_path=file_path)
+    except NoPyProjectTomlFound as err:
+        print(err)
+        print('Cannot detect the minimal Python version')
         return pyproject_info
 
-    print(f'Read {pyproject_toml_path}...')
-    data = toml_load(pyproject_toml_path)
-
-    pyproject_info.pyproject_toml_path = pyproject_toml_path
+    pyproject_info.pyproject_toml_path = toml_document.file_path
+    data = toml_document.doc.unwrap()  # TOMLDocument -> dict
 
     if raw_py_ver_req := dict_get(data, 'project', 'requires-python'):
         # [project]
