@@ -2,6 +2,7 @@
 name = "manageprojects"
 dynamic = ["version"]
 description = "Manage Python / Django projects"
+license = {text = "GPL-3.0-or-later"}
 readme = "README.md"
 authors = [
     {name = 'Jens Diemer', email = 'mamageprojects@jensdiemer.de'}
@@ -153,6 +154,7 @@ applied_migrations = [
     "04d5a25", # 2023-03-07T16:25:36+01:00
     "be96b03", # 2023-03-17T08:17:11+01:00
     "588caaa", # 2023-04-04T15:40:44+02:00
+    "00fbc5d", # 2023-04-07T12:35:09+02:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
