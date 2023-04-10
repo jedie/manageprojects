@@ -1,4 +1,11 @@
+import os
+import unittest.util
+
 from manageprojects.utilities.log_utils import log_config
+
+
+# Hacky way to expand the failed test output:
+unittest.util._MAX_LENGTH = os.environ.get('UNITTEST_MAX_LENGTH', 300)
 
 
 log_config(
