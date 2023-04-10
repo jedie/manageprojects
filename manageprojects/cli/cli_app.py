@@ -156,10 +156,10 @@ def update():
         extra_env=extra_env,
     )
 
-    verbose_check_call('safety', 'check', '-r', 'requirements.dev.txt')
+    verbose_check_call(bin_path / 'safety', 'check', '-r', 'requirements.dev.txt')
 
     # Install new dependencies in current .venv:
-    verbose_check_call('pip-sync', 'requirements.dev.txt')
+    verbose_check_call(bin_path / 'pip-sync', 'requirements.dev.txt')
 
 
 cli.add_command(update)
