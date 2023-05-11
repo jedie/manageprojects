@@ -46,7 +46,7 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ coverage                    Run and show coverage.                                               │
 │ fix-code-style              Fix code style of all manageprojects source code files via darker    │
 │ format-file                 Format and check the given python source code file with              │
-│                             darker/isort/pyupgrade/autopep8/mypy etc.                            │
+│                             darker/autoflake/isort/pyupgrade/autopep8/mypy etc.                  │
 │ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
 │ publish                     Build and upload this project to PyPi                                │
@@ -260,7 +260,8 @@ You can use `format-file` as "Action on save" or manual action in your IDE to fi
 ```
 Usage: ./cli.py format-file [OPTIONS] FILE_PATH
 
- Format and check the given python source code file with darker/isort/pyupgrade/autopep8/mypy etc.
+ Format and check the given python source code file with
+ darker/autoflake/isort/pyupgrade/autopep8/mypy etc.
  The optional fallback values will be only used, if we can't get them from the project meta files
  like ".editorconfig" and "pyproject.toml"
 
