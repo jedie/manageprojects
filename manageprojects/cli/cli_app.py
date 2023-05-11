@@ -613,7 +613,7 @@ def format_file(
     file_path: Path,
 ):
     """
-    Format and check the given python source code file with darker/isort/pyupgrade/autopep8/mypy etc.
+    Format and check the given python source code file with darker/autoflake/isort/pyupgrade/autopep8/mypy etc.
 
     The optional fallback values will be only used, if we can't get them from the project meta files
     like ".editorconfig" and "pyproject.toml"

@@ -175,6 +175,7 @@ class FormatFileTestCase(TestCase):
                     '--py39-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
+                ['.../autoflake', '--in-place', 'manageprojects/tests/test_format_file.py'],
                 [
                     '.../autopep8',
                     '--ignore-local-config',
@@ -233,6 +234,7 @@ class FormatFileTestCase(TestCase):
                     '--py39-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
+                ['.../autoflake', '--in-place', 'manageprojects/tests/test_format_file.py'],
                 [
                     '.../autopep8',  # <<< Instead of Darker!
                     '--ignore-local-config',
