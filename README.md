@@ -266,15 +266,18 @@ Usage: ./cli.py format-file [OPTIONS] FILE_PATH
  like ".editorconfig" and "pyproject.toml"
 
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --py-version           TEXT     Fallback Python version for darker/pyupgrade, if version is not  │
-│                                 defined in pyproject.toml                                        │
-│                                 [default: 3.9]                                                   │
-│ --max-line-length  -l  INTEGER  Fallback max. line length for darker/isort etc., if not defined  │
-│                                 in .editorconfig                                                 │
-│                                 [default: 119]                                                   │
-│ --darker-prefixes      TEXT     Apply prefixes via autopep8 before calling darker.               │
-│                                 [default: E301,E302,E303,E305,W391]                              │
-│ --help                          Show this message and exit.                                      │
+│ --py-version                     TEXT     Fallback Python version for darker/pyupgrade, if       │
+│                                           version is not defined in pyproject.toml               │
+│                                           [default: 3.9]                                         │
+│ --max-line-length            -l  INTEGER  Fallback max. line length for darker/isort etc., if    │
+│                                           not defined in .editorconfig                           │
+│                                           [default: 119]                                         │
+│ --darker-prefixes                TEXT     Apply prefixes via autopep8 before calling darker.     │
+│                                           [default: E301,E302,E303,E305,W391]                    │
+│ --remove-all-unused-imports               Remove all unused imports (not just those from the     │
+│                                           standard library) via autoflake                        │
+│                                           [default: True]                                        │
+│ --help                                    Show this message and exit.                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated format-file help end ✂✂✂)

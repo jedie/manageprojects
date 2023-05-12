@@ -162,6 +162,7 @@ class FormatFileTestCase(TestCase):
                 default_min_py_version='3.11',
                 default_max_line_length=123,
                 darker_prefixes='E456,E789',
+                remove_all_unused_imports=True,
                 file_path=Path(__file__),
             )
 
@@ -175,7 +176,12 @@ class FormatFileTestCase(TestCase):
                     '--py39-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../autoflake', '--in-place', 'manageprojects/tests/test_format_file.py'],
+                [
+                    '.../autoflake',
+                    '--in-place',
+                    '--remove-all-unused-imports',
+                    'manageprojects/tests/test_format_file.py',
+                ],
                 [
                     '.../autopep8',
                     '--ignore-local-config',
@@ -222,6 +228,7 @@ class FormatFileTestCase(TestCase):
                 default_max_line_length=123,
                 darker_prefixes='E456,E789',
                 file_path=Path(__file__),
+                remove_all_unused_imports=False,
             )
 
         self.assertEqual(

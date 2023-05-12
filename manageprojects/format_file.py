@@ -160,13 +160,13 @@ def run_pyupgrade(tools_executor, file_path, config):
     )
 
 
-def run_autoflake(tools_executor, file_path, config):
+def run_autoflake(tools_executor, file_path, config, remove_all_unused_imports):
     # TODO: Remove if isort can do the job: https://github.com/PyCQA/isort/issues/1105
-    tools_executor.verbose_check_output(
-        'autoflake',
-        '--in-place',
-        file_path,
-    )
+    args = ['autoflake', '--in-place']
+    if remove_all_unused_imports:
+        args.append('--remove-all-unused-imports')
+    args.append(file_path)
+    tools_executor.verbose_check_output(*args)
 
 
 def run_darker(tools_executor, file_path, config, darker_prefixes):
@@ -246,6 +246,7 @@ def format_one_file(
     default_min_py_version: str,
     default_max_line_length: int,
     darker_prefixes: str,
+    remove_all_unused_imports: bool,
     file_path: Path,
 ) -> None:
     file_path = file_path.resolve()
@@ -271,7 +272,12 @@ def format_one_file(
     print('\n')
 
     run_pyupgrade(tools_executor, file_path, config)
-    run_autoflake(tools_executor, file_path, config)
+    run_autoflake(
+        tools_executor,
+        file_path,
+        config,
+        remove_all_unused_imports=remove_all_unused_imports,
+    )
 
     if config.main_branch_name:
         run_darker(tools_executor, file_path, config, darker_prefixes)
