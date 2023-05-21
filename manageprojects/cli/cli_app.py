@@ -604,12 +604,18 @@ cli.add_command(tox)
     show_default=True,
     help='Apply prefixes via autopep8 before calling darker.',
 )
+@click.option(
+    '--remove-all-unused-imports',
+    help='Remove all unused imports (not just those from the standard library) via autoflake',
+    **OPTION_ARGS_DEFAULT_TRUE,
+)
 @click.argument('file_path', **ARGUMENT_EXISTING_FILE)
 def format_file(
     *,
     py_version: str,
     max_line_length: int,
     darker_prefixes: str,
+    remove_all_unused_imports: bool,
     file_path: Path,
 ):
     """
@@ -622,6 +628,7 @@ def format_file(
         default_min_py_version=py_version,
         default_max_line_length=max_line_length,
         darker_prefixes=darker_prefixes,
+        remove_all_unused_imports=remove_all_unused_imports,
         file_path=file_path,
     )
 
