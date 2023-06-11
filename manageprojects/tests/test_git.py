@@ -355,3 +355,18 @@ class GitTestCase(TestCase):
                 git_tag_infos.get_last_release(),
                 GitTagInfo(raw_tag='v0.2.0', version=Version('0.2.0')),
             )
+
+    def test_get_remote_url_and_github_username(self):
+        with self.assertLogs('manageprojects'), TemporaryDirectory(
+            prefix='test_get_remote_url_and_github_username'
+        ) as temp_path:
+            Path(temp_path, 'foo.txt').touch()
+            git, first_hash = init_git(temp_path)
+
+            self.assertEqual(git.get_remote_url(), '.')
+            self.assertIs(git.get_github_username(), None)
+
+            git.git_verbose_check_call('remote', 'set-url', 'origin', 'git@github.com:user-name/project-name.git')
+
+            self.assertEqual(git.get_remote_url(), 'git@github.com:user-name/project-name.git')
+            self.assertEqual(git.get_github_username(), 'user-name')
