@@ -302,17 +302,23 @@ class Git:
     def tag(self, git_tag: str, message: str, verbose=True, exit_on_error=True):
         self.git_verbose_check_call('tag', '-a', git_tag, '-m', message, verbose=verbose, exit_on_error=exit_on_error)
 
-    def push(self, name: str | None = None, branch_name: str | None = None, tags: bool = False, verbose=True):
+    def push(
+        self,
+        name: str | None = None,
+        branch_name: str | None = None,
+        tags: bool = False,
+        verbose=True,
+        get_output=False,
+    ):
         """
         e.g.:
             git.push()
             git.push(name='origin')
             git.push(name='origin', branch_name='my_branch')
         """
+        args = ['push']
         if tags:
-            args = ['--tags']
-        else:
-            args = []
+            args.append('--tags')
 
         if name:
             args.append(name)
@@ -321,7 +327,10 @@ class Git:
             assert name
             args.append(branch_name)
 
-        self.git_verbose_check_call('push', *args, verbose=verbose)
+        if get_output:
+            return self.git_verbose_check_output(*args, verbose=verbose)
+        else:
+            self.git_verbose_check_call(*args, verbose=verbose)
 
     def tag_list(self, verbose=True, exit_on_error=True) -> list[str]:
         output = self.git_verbose_check_output('tag', verbose=verbose, exit_on_error=exit_on_error)

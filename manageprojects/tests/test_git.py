@@ -76,6 +76,11 @@ class GitTestCase(TestCase):
             git.push(name='origin', branch_name='my_branch')
         self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'push', 'origin', 'my_branch']])
 
+        with SubprocessCallMock(return_callback=SimpleRunReturnCallback(stdout='mocked output')) as call_mock:
+            output = git.push(name='origin', branch_name='my_branch', get_output=True)
+        self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'push', 'origin', 'my_branch']])
+        self.assertEqual(output, 'mocked output')
+
         with SubprocessCallMock() as call_mock:
             git.checkout_branch('foo-bar')
         self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'checkout', 'foo-bar']])
