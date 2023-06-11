@@ -4,6 +4,7 @@ import dataclasses
 import datetime
 import logging
 import os
+import re
 import subprocess  # nosec B404
 from pathlib import Path
 from shutil import which
@@ -410,3 +411,32 @@ class Git:
 
     def checkout_new_branch(self, branch_name, verbose=True):
         return self.git_verbose_check_call('checkout', '-b', branch_name, verbose=verbose)
+
+    def get_remote_url(self, name='origin', action_type='push', verbose=True):
+        """
+        returns a string like:
+            'git@github.com:<username>/<project_name>.git'
+        """
+        output = self.git_verbose_check_output('remote', '-v', verbose=verbose)
+        matches = re.findall(r'(\S+)\s+(\S+)\s+\((\S+)\)', output)
+        for current_name, url, current_action in matches:
+            logger.info('Fount git remote: %r %r %r', current_name, url, current_action)
+            if current_name == name and current_action == action_type:
+                logger.info('Use git remote url: %r', url)
+                return url
+
+    def get_github_username(self, name='origin', action_type='push', verbose=True):
+        """
+        returns the user name from the git remote url
+        e.g.:
+            remote url is: 'git@github.com:<username>/<project_name>.git'
+            -> returns '<username>'
+        """
+        url = self.get_remote_url(name=name, action_type=action_type, verbose=verbose)
+        if 'github.com' not in url:
+            logger.info('Non github url: %r', url)
+            return
+
+        matches = re.findall(r':(\S+)/', url)
+        if matches:
+            return matches[0]
