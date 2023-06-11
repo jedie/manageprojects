@@ -13,6 +13,7 @@ from manageprojects.cli.cli_app import PACKAGE_ROOT
 from manageprojects.git import Git, GitTagInfo, GitTagInfos
 from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
+from manageprojects.test_utils.subprocess import SimpleRunReturnCallback, SubprocessCallMock
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
@@ -58,6 +59,34 @@ class GitTestCase(TestCase):
         self.assertIsInstance(commit_date, datetime.datetime)
         self.assertGreater(commit_date, parse_dt('2023-01-01T00:00:00+0000'))
         self.assertLess(commit_date, parse_dt('2024-01-01T00:00:00+0000'))  # ;)
+
+        with self.assertLogs('manageprojects'):
+            file_dt1 = git.get_file_dt('cli.py', with_tz=True)
+            self.assertIsInstance(file_dt1, datetime.datetime)
+            self.assertGreater(file_dt1, parse_dt('2023-01-01T00:00:00+0000'))
+            self.assertLess(file_dt1, parse_dt('2024-01-01T00:00:00+0000'))  # ;)
+
+            file_dt2 = git.get_file_dt('cli.py', with_tz=False)
+            self.assertIsInstance(file_dt2, datetime.datetime)
+            self.assertEqual(file_dt2.isoformat(), file_dt1.strftime('%Y-%m-%dT%H:%M:%S'))
+
+        git_bin = shutil.which('git')
+        with SubprocessCallMock() as call_mock:
+            git.push(name='origin', branch_name='my_branch')
+        self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'push', 'origin', 'my_branch']])
+
+        with SubprocessCallMock() as call_mock:
+            git.checkout_branch('foo-bar')
+        self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'checkout', 'foo-bar']])
+
+        with SubprocessCallMock() as call_mock:
+            git.checkout_new_branch('foo-bar')
+        self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'checkout', '-b', 'foo-bar']])
+
+        with SubprocessCallMock(return_callback=SimpleRunReturnCallback(stdout='mocked output')) as call_mock:
+            output = git.pull(name='origin', branch_name='my_branch')
+        self.assertEqual(call_mock.get_popenargs(), [[git_bin, 'pull', 'origin', 'my_branch']])
+        self.assertEqual(output, 'mocked output')
 
     def test_init_git(self):
         with TemporaryDirectory(prefix='test_init_git_') as temp_path:
