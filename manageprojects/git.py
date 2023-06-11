@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import dataclasses
 import datetime
 import logging
@@ -5,7 +7,6 @@ import os
 import subprocess  # nosec B404
 from pathlib import Path
 from shutil import which
-from typing import Optional
 
 from bx_py_utils.path import assert_is_file
 from packaging.version import InvalidVersion, Version
@@ -33,7 +34,7 @@ class GitBinNotFoundError(GitError):
 @dataclasses.dataclass
 class GitTagInfo:
     raw_tag: str
-    version: Optional[Version] = None
+    version: Version | None = None
 
     @property
     def version_tag(self):
@@ -47,7 +48,7 @@ class GitTagInfos:
     tags: list[GitTagInfo]
 
     @classmethod
-    def from_raw_tags(cls, raw_tags: list[str]) -> 'GitTagInfos':
+    def from_raw_tags(cls, raw_tags: list[str]) -> GitTagInfos:
         tags = []
         for raw_tag in raw_tags:
             try:
@@ -254,8 +255,8 @@ class Git:
         self,
         format='%h - %an, %ar : %s',
         no_merges=False,
-        commit1: Optional[str] = None,  # e.g.: "HEAD"
-        commit2: Optional[str] = None,  # e.g.: "v0.8.0"
+        commit1: str | None = None,  # e.g.: "HEAD"
+        commit2: str | None = None,  # e.g.: "v0.8.0"
         verbose=True,
         exit_on_error=True,
     ) -> list[str]:
@@ -274,14 +275,50 @@ class Git:
         lines = output.splitlines()
         return lines
 
+    def get_file_dt(self, file_name, verbose=True, with_tz=True) -> datetime.datetime | None:
+        output = self.git_verbose_check_output(
+            'log',
+            '-1',
+            '--format="%aI"',  # author date, strict ISO 8601 format
+            '--',
+            file_name,
+            verbose=verbose,
+        )
+        iso_dt = output.strip('" \n')
+        if not iso_dt:
+            logger.warning('No date time found in: %r', output)
+            return None
+
+        dt = datetime.datetime.fromisoformat(iso_dt)
+        if with_tz:
+            return dt
+
+        # Remove time zone information:
+        dt2 = datetime.datetime.fromtimestamp(dt.timestamp())
+        logger.info('%r -> %s -> %s', iso_dt, dt, dt2)
+        return dt2
+
     def tag(self, git_tag: str, message: str, verbose=True, exit_on_error=True):
         self.git_verbose_check_call('tag', '-a', git_tag, '-m', message, verbose=verbose, exit_on_error=exit_on_error)
 
-    def push(self, tags=False, verbose=True):
+    def push(self, name: str | None = None, branch_name: str | None = None, tags: bool = False, verbose=True):
+        """
+        e.g.:
+            git.push()
+            git.push(name='origin')
+            git.push(name='origin', branch_name='my_branch')
+        """
         if tags:
             args = ['--tags']
         else:
             args = []
+
+        if name:
+            args.append(name)
+
+        if branch_name:
+            assert name
+            args.append(branch_name)
 
         self.git_verbose_check_call('push', *args, verbose=verbose)
 
@@ -336,7 +373,7 @@ class Git:
         logger.debug('Git raw branches: %r', branches)
         return branches
 
-    def get_current_branch_name(self, verbose=True) -> Optional[str]:
+    def get_current_branch_name(self, verbose=True) -> str | None:
         raw_branch_names = self.get_raw_branch_names(verbose=verbose)
         for branch_name in raw_branch_names:
             if branch_name.startswith('*'):
@@ -363,3 +400,13 @@ class Git:
 
         logger.info('Git main branch: "%s"', branch_name)
         return branch_name
+
+    def pull(self, name='origin', branch_name=None, verbose=True):
+        assert branch_name
+        return self.git_verbose_check_output('pull', name, branch_name, verbose=verbose)
+
+    def checkout_branch(self, branch_name, verbose=True):
+        return self.git_verbose_check_call('checkout', branch_name, verbose=verbose)
+
+    def checkout_new_branch(self, branch_name, verbose=True):
+        return self.git_verbose_check_call('checkout', '-b', branch_name, verbose=verbose)
