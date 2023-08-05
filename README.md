@@ -40,29 +40,16 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ check-code-style            Check code style by calling darker + flake8                          │
-│ clone-project               Clone existing project by replay the cookiecutter template in a new  │
-│                             directory.                                                           │
-│ coverage                    Run and show coverage.                                               │
-│ fix-code-style              Fix code style of all manageprojects source code files via darker    │
-│ format-file                 Format and check the given python source code file with              │
-│                             darker/autoflake/isort/pyupgrade/autopep8/mypy etc.                  │
-│ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
-│ mypy                        Run Mypy (configured in pyproject.toml)                              │
-│ publish                     Build and upload this project to PyPi                                │
-│ reverse                     Create a cookiecutter template from a managed project.               │
-│ safety                      Run safety check against current requirements files                  │
-│ start-project               Start a new "managed" project via a CookieCutter Template. Note: The │
-│                             CookieCutter Template *must* be use git!                             │
-│ test                        Run unittests                                                        │
-│ tox                         Run tox                                                              │
-│ update                      Update "requirements*.txt" dependencies files                        │
-│ update-project              Update a existing project.                                           │
-│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
-│                             files)                                                               │
-│ version                     Print version and exit                                               │
-│ wiggle                      Run wiggle to merge *.rej in given directory.                        │
-│                             https://github.com/neilbrown/wiggle                                  │
+│ clone-project   Clone existing project by replay the cookiecutter template in a new directory.   │
+│ format-file     Format and check the given python source code file with                          │
+│                 darker/autoflake/isort/pyupgrade/autopep8/mypy etc.                              │
+│ reverse         Create a cookiecutter template from a managed project.                           │
+│ start-project   Start a new "managed" project via a CookieCutter Template. Note: The             │
+│                 CookieCutter Template *must* be use git!                                         │
+│ update-project  Update a existing project.                                                       │
+│ version         Print version and exit                                                           │
+│ wiggle          Run wiggle to merge *.rej in given directory.                                    │
+│                 https://github.com/neilbrown/wiggle                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
@@ -296,6 +283,37 @@ Build and upload (with twine) a project to PyPi with many pre-checks:
  * Adds change messages since last release to git tag message
 
 Some checks result in a hard exit, but some can be manually confirmed from the user to continue publishing.
+
+## development
+
+For developing manageprojects, there is the `dev-cli.py`.
+
+The output of `./dev-cli.py --help` looks like:
+
+[comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
+```
+Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+│ check-code-style            Check code style by calling darker + flake8                          │
+│ coverage                    Run and show coverage.                                               │
+│ fix-code-style              Fix code style of all manageprojects source code files via darker    │
+│ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
+│ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ publish                     Build and upload this project to PyPi                                │
+│ safety                      Run safety check against current requirements files                  │
+│ test                        Run unittests                                                        │
+│ tox                         Run tox                                                              │
+│ update                      Update "requirements*.txt" dependencies files                        │
+│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
+│                             files)                                                               │
+│ version                     Print version and exit                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
 
 
 ## Links

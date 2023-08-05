@@ -117,10 +117,10 @@ class PyProjectToml:
             self.mp_table.add(COOKIECUTTER_DIRECTORY, directory)
 
     def create_or_update_cookiecutter_context(self, context: dict) -> None:
-        # Don't store the '_output_dir':
-        context['cookiecutter'] = {
-            k: v for k, v in context['cookiecutter'].items() if k != '_output_dir'
-        }
+        cc_context = context['cookiecutter']
+        excluded_keys = {'_output_dir', '_repo_dir'}
+        cc_context = {k: v for k, v in cc_context.items() if k not in excluded_keys}
+        context = {'cookiecutter': cc_context}
         self.mp_table[COOKIECUTTER_CONTEXT] = tomlkit.item(context)
 
     def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:

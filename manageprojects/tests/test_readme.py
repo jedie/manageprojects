@@ -3,6 +3,7 @@ from bx_py_utils.path import assert_is_file
 
 from manageprojects import constants
 from manageprojects.cli.cli_app import PACKAGE_ROOT, cli
+from manageprojects.cli.dev import cli as dev_cli
 from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.tests.base import BaseTestCase
 
@@ -28,12 +29,25 @@ class ReadmeTestCase(BaseTestCase):
             got=stdout,
             parts=(
                 'Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...',
-                'start-project',
-                'update-project',
+                ' start-project ',
+                ' update-project ',
                 constants.CLI_EPILOG,
             ),
         )
         assert_cli_help_in_readme(text_block=stdout, marker='main help')
+
+    def test_dev_help(self):
+        stdout = invoke_click(dev_cli, '--help')
+        self.assert_in_content(
+            got=stdout,
+            parts=(
+                'Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...',
+                ' check-code-style ',
+                ' coverage ',
+                constants.CLI_EPILOG,
+            ),
+        )
+        assert_cli_help_in_readme(text_block=stdout, marker='dev help')
 
     def test_start_project_help(self):
         stdout = invoke_click(cli, 'start-project', '--help')

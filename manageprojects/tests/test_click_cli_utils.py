@@ -10,11 +10,13 @@ from manageprojects.tests.base import BaseTestCase
 
 class CliTestCase(BaseTestCase):
     def test_invoke_click(self):
-        with patch.object(cli_app, 'verbose_check_call', side_effect=RuntimeError('Bam!')):
+        with patch.object(cli_app, 'format_one_file', side_effect=RuntimeError('Bam!')):
             with self.assertRaises(ClickInvokeCliException) as cm:
-                invoke_click(cli, 'install')
+                invoke_click(cli, 'format-file', __file__)
 
         self.assertIsInstance(cm.exception, ClickInvokeCliException)
         self.assertIsInstance(cm.exception.result, Result)
+        self.assertEqual(cm.exception.result.stdout, '')
+        self.assertEqual(cm.exception.result.stderr, '')
         self.assertIsInstance(cm.exception.result.exception, RuntimeError)
         self.assertEqual(cm.exception.result.exception.args, ('Bam!',))

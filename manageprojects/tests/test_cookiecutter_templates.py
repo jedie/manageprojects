@@ -70,14 +70,16 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             assert_is_file(replay_file_path)
             replay_json = replay_file_path.read_text()
             replay_data = json.loads(replay_json)
-            assert replay_data == {
-                'cookiecutter': {
+            self.assertEqual(
+                replay_data['cookiecutter'],
+                {
                     'dir_name': 'a_dir_name',
                     'file_name': 'a_file_name',
                     '_template': cookiecutter_template,
+                    '_repo_dir': str(git_path / directory),
                     '_output_dir': str(cookiecutter_output_dir),
-                }
-            }
+                },
+            )
 
             # Our replay config was used?
             assert_is_file(cookiecutter_output_dir / 'a_dir_name' / 'a_file_name.py')

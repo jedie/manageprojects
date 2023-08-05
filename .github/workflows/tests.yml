@@ -1,3 +1,5 @@
+
+
 name: tests
 
 on:
@@ -34,22 +36,31 @@ jobs:
         cache: 'pip' # caching pip dependencies
         cache-dependency-path: '**/requirements.dev.txt'
 
-    - name: 'Bootstrap'
+    - name: 'Bootstrap app venv'
       # The first CLI call will create the .venv
       run: |
         ./cli.py version
 
-    - name: 'CLI help'
+    - name: 'app CLI help'
       run: |
         ./cli.py --help
 
+    - name: 'Bootstrap dev venv'
+      # The first CLI call will create the .venv
+      run: |
+        ./dev-cli.py version
+
+    - name: 'dev CLI help'
+      run: |
+        ./dev-cli.py --help
+
     - name: 'Safety'
       run: |
-        ./cli.py safety
+        ./dev-cli.py safety
 
     - name: 'Run tests with Python v${{ matrix.python-version }}'
       run: |
-        ./cli.py coverage
+        ./dev-cli.py coverage
 
     - name: 'Upload coverage report'
       uses: codecov/codecov-action@v3
@@ -57,3 +68,4 @@ jobs:
       with:
         fail_ci_if_error: false
         verbose: true
+

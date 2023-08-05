@@ -3,9 +3,9 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import MagicMock
 
-
 from manageprojects.cli import cli_app
-from manageprojects.cli.cli_app import PACKAGE_ROOT, cli, start_project, update_project
+from manageprojects.cli.cli_app import PACKAGE_ROOT, start_project, update_project
+from manageprojects.cli.dev import cli as dev_cli
 from manageprojects.constants import PY_BIN_PATH
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.test_utils.click_cli_utils import invoke_click
@@ -74,7 +74,7 @@ class CliTestCase(BaseTestCase):
 
     def test_install(self):
         with SubprocessCallMock() as call_mock:
-            invoke_click(cli, 'install')
+            invoke_click(dev_cli, 'install')
 
         self.assertEqual(
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH,)),

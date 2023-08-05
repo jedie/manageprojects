@@ -1,4 +1,5 @@
 import subprocess
+from unittest import TestCase
 
 from bx_py_utils.path import assert_is_file
 from packaging.version import Version
@@ -7,11 +8,10 @@ from manageprojects import __version__
 from manageprojects.cli.cli_app import PACKAGE_ROOT
 from manageprojects.test_utils.click_cli_utils import subprocess_cli
 from manageprojects.test_utils.project_setup import check_editor_config, get_py_max_line_length
-from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities import code_style
 
 
-class ProjectSetupTestCase(BaseTestCase):
+class ProjectSetupTestCase(TestCase):
     def test_version(self):
         self.assertIsNotNone(__version__)
 
@@ -24,13 +24,19 @@ class ProjectSetupTestCase(BaseTestCase):
         output = subprocess.check_output([cli_bin, 'version'], text=True)
         self.assertIn(f'manageprojects v{__version__}', output)
 
+        dev_cli_bin = PACKAGE_ROOT / 'dev-cli.py'
+        assert_is_file(dev_cli_bin)
+
+        output = subprocess.check_output([dev_cli_bin, 'version'], text=True)
+        self.assertIn(f'manageprojects v{__version__}', output)
+
     def test_code_style(self):
-        cli_bin = PACKAGE_ROOT / 'cli.py'
-        assert_is_file(cli_bin)
+        dev_cli_bin = PACKAGE_ROOT / 'dev-cli.py'
+        assert_is_file(dev_cli_bin)
 
         try:
             output = subprocess_cli(
-                cli_bin=cli_bin,
+                cli_bin=dev_cli_bin,
                 args=('check-code-style',),
                 exit_on_error=False,
             )
@@ -45,7 +51,7 @@ class ProjectSetupTestCase(BaseTestCase):
 
         try:
             output = subprocess_cli(
-                cli_bin=cli_bin,
+                cli_bin=dev_cli_bin,
                 args=('fix-code-style',),
                 exit_on_error=False,
             )
