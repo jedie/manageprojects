@@ -6,13 +6,27 @@ from unittest.mock import patch
 
 from packaging.version import Version
 
+import manageprojects
+from manageprojects.cli.dev import PACKAGE_ROOT
 from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.test_utils.subprocess import FakeStdout, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT
 from manageprojects.utilities import subprocess_utils
-from manageprojects.utilities.publish import PublisherGit, build, get_pyproject_toml_version
+from manageprojects.utilities.publish import (
+    PublisherGit,
+    build,
+    clean_version,
+    get_pyproject_toml_version,
+    setuptools_dynamic_version,
+)
 from manageprojects.utilities.temp_path import TemporaryDirectory
+
+
+try:
+    import tomllib  # New in Python 3.11
+except ImportError:
+    import tomli as tomllib
 
 
 class PublishTestCase(TestCase):
@@ -53,6 +67,17 @@ class PublishTestCase(TestCase):
                 ['poetry', 'build'],
             ],
         )
+
+    def setuptools_dynamic_version(self):
+        pyproject_toml_path = PACKAGE_ROOT / 'pyproject.toml'
+        pyproject_toml = tomllib.loads(pyproject_toml_path.read_text(encoding='UTF-8'))
+        setuptools_version = setuptools_dynamic_version(
+            pyproject_toml=pyproject_toml,
+            pyproject_toml_path=pyproject_toml_path,
+        )
+        self.assertIsNotNone(setuptools_version)
+        real_version = clean_version(manageprojects.__version__)
+        self.assertEqual(setuptools_version, real_version)
 
     def test_get_pyproject_toml_version(self):
         with TemporaryDirectory(prefix='test_get_pyproject_toml_version') as temp_path:
