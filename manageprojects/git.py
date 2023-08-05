@@ -391,7 +391,7 @@ class Git:
         raise GitError(f'Current branch name not found in: {raw_branch_names}')
 
     def get_branch_names(self, verbose=True) -> list[str]:
-        return sorted(branch.strip('* ') for branch in self.get_raw_branch_names(verbose=verbose))
+        return sorted(branch.strip('*+ ') for branch in self.get_raw_branch_names(verbose=verbose))
 
     def get_main_branch_name(self, possible_names=('main', 'master'), verbose=True):
         """

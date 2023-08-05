@@ -281,6 +281,12 @@ class GitTestCase(TestCase):
                 main_branch_name = git.get_main_branch_name()
                 self.assertEqual(main_branch_name, 'main')
 
+        # Test with local "manageprojects" git clone:
+        with AssertLogs(self, loggers=('manageprojects',)):
+            git = Git(cwd=PACKAGE_ROOT, detect_root=True)
+            main_branch_name = git.get_main_branch_name()
+            self.assertEqual(main_branch_name, 'main')
+
     def test_log(self):
         with TemporaryDirectory(prefix='test_get_version_from_tags') as temp_path:
             Path(temp_path, '1.txt').touch()

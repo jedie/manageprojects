@@ -11,6 +11,22 @@ requires-python = ">=3.9,<4"
 dependencies = [
     "cookiecutter",
     "tomlkit",
+    "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
+
+    # https://github.com/akaihola/darker
+    # https://github.com/ikamensh/flynt
+    # https://github.com/pycqa/isort
+    # https://github.com/pygments/pygments
+    "darker[flynt, isort, color]",
+
+    "autoflake",  # https://github.com/PyCQA/autoflake
+    "pyflakes",  # https://github.com/PyCQA/pyflakes
+    "autopep8",  # https://github.com/hhatto/autopep8
+    "flake8",  # https://github.com/pycqa/flake8
+    "pyupgrade",  # https://github.com/asottile/pyupgrade
+    "codespell",  # https://github.com/codespell-project/codespell
+    "mypy",  # https://github.com/python/mypy
+
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "click",  # https://github.com/pallets/click/
     "rich-click",  # https://github.com/ewels/rich-click
@@ -19,30 +35,16 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pip-tools",  # https://github.com/jazzband/pip-tools/
-    "tox>=4.4.5",  # https://github.com/tox-dev/tox
-    "coveralls",  # https://github.com/TheKevJames/coveralls-python
-    "twine",  # https://github.com/pypa/twine
-    "pdoc", # Because: https://github.com/boxine/bx_py_utils/issues/157
-    "autopep8",  # https://github.com/hhatto/autopep8
-    "pyupgrade",  # https://github.com/asottile/pyupgrade
-    "flake8",  # https://github.com/pycqa/flake8
-    "autoflake",  # https://github.com/PyCQA/autoflake
-    "pyflakes",  # https://github.com/PyCQA/pyflakes
-    "codespell",  # https://github.com/codespell-project/codespell
-    "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
-    "mypy",  # https://github.com/python/mypy
+    "tox",  # https://github.com/tox-dev/tox
+    "coverage",  # https://github.com/nedbat/coveragepy
     "safety",  # https://github.com/pyupio/safety
-
-    # https://github.com/akaihola/darker
-    # https://github.com/ikamensh/flynt
-    # https://github.com/pycqa/isort
-    # https://github.com/pygments/pygments
-    "darker[flynt, isort, color]",
+    "twine",  # https://github.com/pypa/twine
 
     "tomli",  # https://github.com/hukkin/tomli
-    # tomli only needed for Python <3.11, but see bug:
-    # https://github.com/pypa/pip/issues/9644#issuecomment-1456583402
-    #"tomli;python_version<\"3.11\"",  # https://github.com/hukkin/tomli
+    #
+    # tomli only needed for Python <3.11, but see pip bug:
+    # https://github.com/pypa/pip/issues/9644 / https://github.com/jazzband/pip-tools/issues/1866
+    #'tomli;python_version<"3.11"',  # https://github.com/hukkin/tomli
 ]
 
 [project.urls]
@@ -50,7 +52,8 @@ Documentation = "https://github.com/jedie/manageprojects"
 Source = "https://github.com/jedie/manageprojects"
 
 [project.scripts]
-manageprojects = "manageprojects.__main__:main"
+manageprojects_app = "manageprojects.__main__:main"
+manageprojects_dev = "manageprojects.cli.dev:main"
 
 [build-system]
 requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
@@ -157,6 +160,7 @@ applied_migrations = [
     "588caaa", # 2023-04-04T15:40:44+02:00
     "00fbc5d", # 2023-04-07T12:35:09+02:00
     "39b7eab", # 2023-04-10T18:48:00+02:00
+    "034be26", # 2023-08-05T21:37:12+02:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
