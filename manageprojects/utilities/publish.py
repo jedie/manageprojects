@@ -8,6 +8,7 @@ from typing import Optional
 from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_file
 
+
 try:
     import tomllib  # New in Python 3.11
 except ImportError:
@@ -138,6 +139,18 @@ def clean_version(version: str) -> Version:
     return Version(version)
 
 
+def setuptools_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Path) -> Optional[Version]:
+    dynamic = dict_get(pyproject_toml, 'project', 'dynamic')
+    if dynamic and 'version' in dynamic:
+        if dict_get(pyproject_toml, 'tool', 'setuptools', 'dynamic', 'version'):
+            # Project used "dynamic metadata" from setuptools for the version
+            from setuptools.config.pyprojecttoml import read_configuration
+
+            setuptools_pyproject_toml = read_configuration(pyproject_toml_path)
+            if ver_str := dict_get(setuptools_pyproject_toml, 'project', 'version'):
+                return clean_version(ver_str)
+
+
 def get_pyproject_toml_version(package_path: Path) -> Optional[Version]:
     pyproject_toml_path = Path(package_path, 'pyproject.toml')
     assert_is_file(pyproject_toml_path)
@@ -150,6 +163,8 @@ def get_pyproject_toml_version(package_path: Path) -> Optional[Version]:
 
     if ver_str:
         return clean_version(ver_str)
+
+    return setuptools_dynamic_version(pyproject_toml=pyproject_toml, pyproject_toml_path=pyproject_toml_path)
 
 
 def check_version(*, module, package_path: Path, distribution_name: Optional[str] = None) -> Version:
