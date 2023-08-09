@@ -27,7 +27,7 @@ dependencies = [
     "codespell",  # https://github.com/codespell-project/codespell
     "mypy",  # https://github.com/python/mypy
 
-    "bx_py_utils",  # https://github.com/boxine/bx_py_utils
+    "cli-base-utilities",  # https://github.com/jedie/cli-base-utilities
     "click",  # https://github.com/pallets/click/
     "rich-click",  # https://github.com/ewels/rich-click
     "rich",  # https://github.com/Textualize/rich

@@ -1,8 +1,7 @@
 import sys
 from pathlib import Path
 
-
-from manageprojects.utilities.subprocess_utils import ToolsExecutor, verbose_check_call
+from cli_base.cli_tools.subprocess_utils import ToolsExecutor, verbose_check_call
 
 
 def _call_darker(*args, package_root: Path, color: bool = True, verbose: bool = False):

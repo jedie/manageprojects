@@ -10,9 +10,8 @@ from pathlib import Path
 from shutil import which
 
 from bx_py_utils.path import assert_is_file
+from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
 from packaging.version import InvalidVersion, Version
-
-from manageprojects.utilities.subprocess_utils import verbose_check_call, verbose_check_output
 
 
 logger = logging.getLogger(__name__)

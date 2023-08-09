@@ -51,7 +51,7 @@ black==23.7.0 \
 bx-py-utils==85 \
     --hash=sha256:8d6ee4bb0c431304b812f5bebb1bc8e2ab05f1b6c2f8d16d352cbcee5e916cd2 \
     --hash=sha256:df023fa05cda8e969d2cbdb4cc348d8b7670567a2fe775faf7a0c869ec56eaa2
-    # via manageprojects (pyproject.toml)
+    # via cli-base-utilities
 certifi==2023.7.22 \
     --hash=sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082 \
     --hash=sha256:92d6037539857d8206b8f6ae472e8b77db8058fec5937a1ef3f54304089edbb9
@@ -137,11 +137,16 @@ charset-normalizer==3.2.0 \
     --hash=sha256:f779d3ad205f108d14e99bb3859aa7dd8e9c68874617c72354d7ecaec2a054ac \
     --hash=sha256:f87f746ee241d30d6ed93969de31e5ffd09a2961a051e60ae6bddde9ec3583aa
     # via requests
+cli-base-utilities==0.2.0 \
+    --hash=sha256:4fb89f4980c45eeeae69c7d745ddf7449740d42a072a42dd2c46ae1519ad7128 \
+    --hash=sha256:5edd26c07063ab031e30712c80fd3b8a2b9dffe33143ebd25cb1bc932a55488e
+    # via manageprojects (pyproject.toml)
 click==8.1.6 \
     --hash=sha256:48ee849951919527a045bfe3bf7baa8a959c423134e1a5b98c05c20ba75a1cbd \
     --hash=sha256:fa244bb30b3b5ee2cae3da8f55c9e5e0c0e86093306301fb418eb9dc40fbded5
     # via
     #   black
+    #   cli-base-utilities
     #   cookiecutter
     #   manageprojects (pyproject.toml)
     #   rich-click
@@ -304,9 +309,9 @@ pyflakes==3.1.0 \
     #   autoflake
     #   flake8
     #   manageprojects (pyproject.toml)
-pygments==2.15.1 \
-    --hash=sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c \
-    --hash=sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1
+pygments==2.16.1 \
+    --hash=sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692 \
+    --hash=sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29
     # via
     #   darker
     #   rich
@@ -372,13 +377,16 @@ rich==13.5.2 \
     --hash=sha256:146a90b3b6b47cac4a73c12866a499e9817426423f57c5a66949c086191a8808 \
     --hash=sha256:fb9d6c0a0f643c99eed3875b5377a184132ba9be4d61516a55273d3554d75a39
     # via
+    #   cli-base-utilities
     #   cookiecutter
     #   manageprojects (pyproject.toml)
     #   rich-click
 rich-click==1.6.1 \
     --hash=sha256:0fcf4d1a09029d79322dd814ab0b2e66ac183633037561881d45abae8a161d95 \
     --hash=sha256:f8ff96693ec6e261d1544e9f7d9a5811c5ef5d74c8adb4978430fc0dac16777e
-    # via manageprojects (pyproject.toml)
+    # via
+    #   cli-base-utilities
+    #   manageprojects (pyproject.toml)
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -407,7 +415,9 @@ tomli==2.0.1 \
 tomlkit==0.12.1 \
     --hash=sha256:38e1ff8edb991273ec9f6181244a6a391ac30e9f5098e7535640ea6be97a7c86 \
     --hash=sha256:712cbd236609acc6a3e2e97253dfc52d4c2082982a88f61b640ecf0817eab899
-    # via manageprojects (pyproject.toml)
+    # via
+    #   cli-base-utilities
+    #   manageprojects (pyproject.toml)
 typing-extensions==4.7.1 \
     --hash=sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36 \
     --hash=sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2
