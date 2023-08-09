@@ -4,9 +4,8 @@ import click
 import rich_click
 from bx_py_utils.path import assert_is_file
 from bx_py_utils.test_utils.context_managers import MassContextManager
+from cli_base.cli_tools.subprocess_utils import verbose_check_output
 from click.testing import CliRunner, Result
-
-from manageprojects.utilities.subprocess_utils import verbose_check_output
 
 
 TERMINAL_WIDTH = 100

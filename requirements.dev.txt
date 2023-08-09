@@ -59,7 +59,7 @@ build==0.10.0 \
 bx-py-utils==85 \
     --hash=sha256:8d6ee4bb0c431304b812f5bebb1bc8e2ab05f1b6c2f8d16d352cbcee5e916cd2 \
     --hash=sha256:df023fa05cda8e969d2cbdb4cc348d8b7670567a2fe775faf7a0c869ec56eaa2
-    # via manageprojects (pyproject.toml)
+    # via cli-base-utilities
 cachetools==5.3.1 \
     --hash=sha256:95ef631eeaea14ba2e36f06437f36463aac3a096799e876ee55e5cdccb102590 \
     --hash=sha256:dce83f2d9b4e1f732a8cd44af8e8fab2dbe46201467fc98b3ef8f269092bf62b
@@ -217,11 +217,16 @@ charset-normalizer==3.2.0 \
     --hash=sha256:f779d3ad205f108d14e99bb3859aa7dd8e9c68874617c72354d7ecaec2a054ac \
     --hash=sha256:f87f746ee241d30d6ed93969de31e5ffd09a2961a051e60ae6bddde9ec3583aa
     # via requests
+cli-base-utilities==0.2.0 \
+    --hash=sha256:4fb89f4980c45eeeae69c7d745ddf7449740d42a072a42dd2c46ae1519ad7128 \
+    --hash=sha256:5edd26c07063ab031e30712c80fd3b8a2b9dffe33143ebd25cb1bc932a55488e
+    # via manageprojects (pyproject.toml)
 click==8.1.6 \
     --hash=sha256:48ee849951919527a045bfe3bf7baa8a959c423134e1a5b98c05c20ba75a1cbd \
     --hash=sha256:fa244bb30b3b5ee2cae3da8f55c9e5e0c0e86093306301fb418eb9dc40fbded5
     # via
     #   black
+    #   cli-base-utilities
     #   cookiecutter
     #   manageprojects (pyproject.toml)
     #   pip-tools
@@ -508,9 +513,9 @@ pathspec==0.11.2 \
     --hash=sha256:1d6ed233af05e679efb96b1851550ea95bbb64b7c490b0f5aa52996c11e92a20 \
     --hash=sha256:e0d8d0ac2f12da61956eb2306b69f9469b42f4deb0f3cb6ed47b9cce9996ced3
     # via black
-pip-tools==7.2.0 \
-    --hash=sha256:360b8d30bc9ee2531857494afb98c41e96534f2eec9dad6500ae2a71f7c631c4 \
-    --hash=sha256:616488b539e14b8aa85436ed597a33c291f4885c1d2e0bec97400abe5aff2c0d
+pip-tools==7.3.0 \
+    --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e \
+    --hash=sha256:8e9c99127fe024c025b46a0b2d15c7bd47f18f33226cf7330d35493663fc1d1d
     # via manageprojects (pyproject.toml)
 pkginfo==1.9.6 \
     --hash=sha256:4b7a555a6d5a22169fcc9cf7bfd78d296b0361adad412a346c1226849af5e546 \
@@ -544,9 +549,9 @@ pyflakes==3.1.0 \
     #   autoflake
     #   flake8
     #   manageprojects (pyproject.toml)
-pygments==2.15.1 \
-    --hash=sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c \
-    --hash=sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1
+pygments==2.16.1 \
+    --hash=sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692 \
+    --hash=sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29
     # via
     #   darker
     #   readme-renderer
@@ -637,6 +642,7 @@ rich==13.5.2 \
     --hash=sha256:146a90b3b6b47cac4a73c12866a499e9817426423f57c5a66949c086191a8808 \
     --hash=sha256:fb9d6c0a0f643c99eed3875b5377a184132ba9be4d61516a55273d3554d75a39
     # via
+    #   cli-base-utilities
     #   cookiecutter
     #   manageprojects (pyproject.toml)
     #   rich-click
@@ -644,7 +650,9 @@ rich==13.5.2 \
 rich-click==1.6.1 \
     --hash=sha256:0fcf4d1a09029d79322dd814ab0b2e66ac183633037561881d45abae8a161d95 \
     --hash=sha256:f8ff96693ec6e261d1544e9f7d9a5811c5ef5d74c8adb4978430fc0dac16777e
-    # via manageprojects (pyproject.toml)
+    # via
+    #   cli-base-utilities
+    #   manageprojects (pyproject.toml)
 ruamel-yaml==0.17.32 \
     --hash=sha256:23cd2ed620231677564646b0c6a89d138b6822a0d78656df7abda5879ec4f447 \
     --hash=sha256:ec939063761914e14542972a5cba6d33c23b0859ab6342f61cf070cfc600efc2
@@ -733,10 +741,12 @@ tomli==2.0.1 \
 tomlkit==0.12.1 \
     --hash=sha256:38e1ff8edb991273ec9f6181244a6a391ac30e9f5098e7535640ea6be97a7c86 \
     --hash=sha256:712cbd236609acc6a3e2e97253dfc52d4c2082982a88f61b640ecf0817eab899
-    # via manageprojects (pyproject.toml)
-tox==4.6.4 \
-    --hash=sha256:1b8f8ae08d6a5475cad9d508236c51ea060620126fd7c3c513d0f5c7f29cc776 \
-    --hash=sha256:5e2ad8845764706170d3dcaac171704513cc8a725655219acb62fe4380bdadda
+    # via
+    #   cli-base-utilities
+    #   manageprojects (pyproject.toml)
+tox==4.7.0 \
+    --hash=sha256:79399a3d4641d1fd15eb6bd62c2f35923988038bf0ecf37a688b5e7a767de7d7 \
+    --hash=sha256:89120e1568c763924301cfde61ba7d4b5c4615eeb1086d5370deb03e9cf63c41
     # via manageprojects (pyproject.toml)
 twine==4.0.2 \
     --hash=sha256:929bc3c280033347a00f847236564d1c52a3e61b1ac2516c97c48f3ceab756d8 \

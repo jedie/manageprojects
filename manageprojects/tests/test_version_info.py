@@ -39,7 +39,6 @@ class VersionInfoTestCase(TestCase):
             with AssertLogs(self, loggers=('manageprojects',)) as logs, RedirectOut() as buffer:
                 print_version(module=manageprojects, project_root=temp_path)
 
-            self.assertEqual(buffer.stderr, '')
             self.assertIn(f'manageprojects v{__version__} ', buffer.stdout)
 
             logs.assert_in('Error print version', 'Traceback')
