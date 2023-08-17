@@ -2,10 +2,9 @@ import shutil
 from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
+from cli_base.cli_tools.git import Git
 from rich import print  # noqa
 from rich.pretty import pprint
-
-from manageprojects.git import Git
 
 
 def iter_context(*, context: dict, prefix='') -> tuple:

@@ -4,12 +4,12 @@ from typing import Optional
 from unittest.mock import patch
 
 from bx_py_utils.path import assert_is_dir
+from cli_base.cli_tools.git import Git
 from cookiecutter import generate
 from cookiecutter.config import get_user_config
 from cookiecutter.main import cookiecutter
 from cookiecutter.repository import determine_repo_dir
 
-from manageprojects.git import Git
 from manageprojects.utilities.cookiecutter_utils import CookieCutterHookHandler
 from manageprojects.utilities.log_utils import log_func_call
 

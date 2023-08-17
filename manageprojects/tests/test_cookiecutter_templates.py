@@ -5,16 +5,12 @@ from pathlib import Path
 import yaml
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
+from cli_base.cli_tools.test_utils.git_utils import init_git
 
 from manageprojects.cli.cli_app import clone_project
 from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
-from manageprojects.data_classes import (
-    CookiecutterResult,
-    GenerateTemplatePatchResult,
-    ManageProjectsMeta,
-)
+from manageprojects.data_classes import CookiecutterResult, GenerateTemplatePatchResult, ManageProjectsMeta
 from manageprojects.test_utils.click_cli_utils import invoke_click
-from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.pyproject_toml import PyProjectToml

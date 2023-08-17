@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from cli_base.cli_tools.git import Git
 from rich import print as rprint
 
 from manageprojects.cookiecutter_api import execute_cookiecutter
@@ -14,7 +15,6 @@ from manageprojects.data_classes import (
     ManageProjectsMeta,
     OverwriteResult,
 )
-from manageprojects.git import Git
 from manageprojects.overwrite import overwrite_project
 from manageprojects.patching import generate_template_patch
 from manageprojects.utilities.pyproject_toml import PyProjectToml

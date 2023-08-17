@@ -23,7 +23,7 @@ from manageprojects.utilities.temp_path import TemporaryDirectory
 
 class FormatFileTestCase(TestCase):
     def test_get_git_info(self):
-        with AssertLogs(self, loggers=('manageprojects',)):
+        with AssertLogs(self, loggers=('cli_base',)):
             git_info = get_git_info(file_path=Path(__file__))
             self.assertIsInstance(git_info, GitInfo)
             self.assertEqual(git_info.main_branch_name, 'main')
@@ -123,7 +123,7 @@ class FormatFileTestCase(TestCase):
             self.assertIsNone(get_editorconfig_max_line_length(file_path=temp_path))
 
     def test_get_config(self):
-        with AssertLogs(self, loggers=('manageprojects',)):
+        with AssertLogs(self, loggers=('cli_base',)):
             config = get_config(file_path=Path(__file__))
             self.assertIsInstance(config, Config)
             self.assertEqual(
@@ -153,7 +153,7 @@ class FormatFileTestCase(TestCase):
                 )
 
     def test_format_one_file(self):
-        with AssertLogs(self, loggers=('manageprojects',)), SubprocessCallMock(
+        with AssertLogs(self, loggers=('cli_base',)), SubprocessCallMock(
             return_callback=SimpleRunReturnCallback(
                 stdout='* main',  # "git branch" call -> bach name found -> use Darker
             )
@@ -218,7 +218,7 @@ class FormatFileTestCase(TestCase):
             ],
         )
 
-        with AssertLogs(self, loggers=('manageprojects',)), SubprocessCallMock(
+        with AssertLogs(self, loggers=('cli_base',)), SubprocessCallMock(
             return_callback=SimpleRunReturnCallback(
                 stdout='',  # No git branch name found -> Don't use Darker -> use autopep8
             )

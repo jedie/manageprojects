@@ -16,11 +16,10 @@ except ImportError:
 
 import sys
 
+from cli_base.cli_tools.git import Git, GitError
 from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
 from packaging.version import Version
 from rich import print  # noqa
-
-from manageprojects.git import Git, GitError
 
 
 def exit_with_error(txt, hint=None):

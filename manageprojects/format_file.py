@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 from bx_py_utils.dict_utils import dict_get
+from cli_base.cli_tools.git import Git, GitError, NoGitRepoError
 from cli_base.cli_tools.subprocess_utils import ToolsExecutor
 from editorconfig import EditorConfigError, get_properties
 from packaging.specifiers import SpecifierSet
@@ -12,7 +13,6 @@ from rich.pretty import pprint
 
 from manageprojects.constants import FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH, FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION
 from manageprojects.exceptions import NoPyProjectTomlFound
-from manageprojects.git import Git, GitError, NoGitRepoError
 from manageprojects.utilities.pyproject_toml import TomlDocument, get_pyproject_toml
 
 
