@@ -118,7 +118,7 @@ def update():
     verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip-tools')
 
     extra_env = dict(
-        CUSTOM_COMPILE_COMMAND='./cli.py update',
+        CUSTOM_COMPILE_COMMAND='./dev-cli.py update',
     )
 
     pip_compile_base = [
