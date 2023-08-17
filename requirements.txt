@@ -137,9 +137,9 @@ charset-normalizer==3.2.0 \
     --hash=sha256:f779d3ad205f108d14e99bb3859aa7dd8e9c68874617c72354d7ecaec2a054ac \
     --hash=sha256:f87f746ee241d30d6ed93969de31e5ffd09a2961a051e60ae6bddde9ec3583aa
     # via requests
-cli-base-utilities==0.2.0 \
-    --hash=sha256:4fb89f4980c45eeeae69c7d745ddf7449740d42a072a42dd2c46ae1519ad7128 \
-    --hash=sha256:5edd26c07063ab031e30712c80fd3b8a2b9dffe33143ebd25cb1bc932a55488e
+cli-base-utilities==0.3.0 \
+    --hash=sha256:1a59a0a61d853b4d3f4944e7494af139bccb3cca4e7766e94f452c2f131a1d59 \
+    --hash=sha256:ca73cf149e5fd10312d450d9919a1ed87222c7bdd6479e94ab670ece4d91e8ba
     # via manageprojects (pyproject.toml)
 click==8.1.6 \
     --hash=sha256:48ee849951919527a045bfe3bf7baa8a959c423134e1a5b98c05c20ba75a1cbd \

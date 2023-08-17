@@ -11,6 +11,7 @@ from typing import Optional
 import rich_click as click
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
+from cli_base.cli_tools.version_info import print_version
 from rich import print  # noqa
 from rich_click import RichGroup
 
@@ -30,7 +31,6 @@ from manageprojects.cookiecutter_templates import (
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.format_file import format_one_file
 from manageprojects.utilities.log_utils import log_config
-from manageprojects.utilities.version_info import print_version
 
 
 logger = logging.getLogger(__name__)
