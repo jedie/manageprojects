@@ -11,7 +11,7 @@ class AssertLogs:
     def __init__(
         self,
         test_case: TestCase,
-        loggers: tuple[str] = ('manageprojects', 'cookiecutter'),
+        loggers: tuple[str, ...] = ('manageprojects', 'cookiecutter'),
         level=logging.DEBUG,
     ):
         assertLogs = test_case.assertLogs

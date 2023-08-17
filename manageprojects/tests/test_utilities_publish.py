@@ -5,11 +5,11 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from cli_base.cli_tools import subprocess_utils
+from cli_base.cli_tools.test_utils.git_utils import init_git
 from packaging.version import Version
 
 import manageprojects
 from manageprojects.cli.dev import PACKAGE_ROOT
-from manageprojects.test_utils.git_utils import init_git
 from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.test_utils.subprocess import FakeStdout, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT
@@ -115,7 +115,7 @@ class PublishTestCase(TestCase):
 
     def test_publisher_fast_checks_not_existing_tag(self):
         # https://github.com/jedie/manageprojects/issues/68
-        with AssertLogs(self, loggers=('manageprojects',)), TemporaryDirectory(
+        with AssertLogs(self, loggers=('cli_base',)), TemporaryDirectory(
             prefix='test_publisher_fast_checks_not_existing_tag'
         ) as temp_path:
             Path(temp_path, '1.txt').touch()
@@ -135,9 +135,7 @@ class PublishTestCase(TestCase):
             )
 
     def test_publisher_git(self):
-        with AssertLogs(self, loggers=('manageprojects',)), TemporaryDirectory(
-            prefix='test_publisher_git'
-        ) as temp_path:
+        with AssertLogs(self, loggers=('cli_base',)), TemporaryDirectory(prefix='test_publisher_git') as temp_path:
             Path(temp_path, '1.txt').touch()
             git, first_hash = init_git(temp_path, comment='The initial commit ;)')
 

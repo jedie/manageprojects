@@ -6,11 +6,11 @@ from pathlib import Path
 from typing import Optional
 
 from bx_py_utils.path import assert_is_dir
+from cli_base.cli_tools.git import Git
 from rich import print
 
 from manageprojects.cookiecutter_api import execute_cookiecutter
 from manageprojects.data_classes import OverwriteResult
-from manageprojects.git import Git
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
