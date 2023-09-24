@@ -6,6 +6,7 @@ from typing import Optional
 
 import tomlkit
 from bx_py_utils.path import assert_is_dir, assert_is_file
+from cli_base.cli_tools.rich_utils import human_error
 from tomlkit import TOMLDocument
 from tomlkit.items import Table
 
@@ -118,10 +119,13 @@ class PyProjectToml:
 
     def create_or_update_cookiecutter_context(self, context: dict) -> None:
         cc_context = context['cookiecutter']
-        excluded_keys = {'_output_dir', '_repo_dir'}
+        excluded_keys = {'_output_dir', '_repo_dir', '_checkout'}
         cc_context = {k: v for k, v in cc_context.items() if k not in excluded_keys}
         context = {'cookiecutter': cc_context}
-        self.mp_table[COOKIECUTTER_CONTEXT] = tomlkit.item(context)
+        try:
+            self.mp_table[COOKIECUTTER_CONTEXT] = tomlkit.item(context)
+        except (TypeError, ValueError) as err:
+            human_error(message=f'Unable to load {context=}', exception=err, exit_code=-1)
 
     def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
         if not (applied_migrations := self.mp_table.get(APPLIED_MIGRATIONS)):

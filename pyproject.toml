@@ -9,7 +9,7 @@ authors = [
 ]
 requires-python = ">=3.9,<4"
 dependencies = [
-    "cookiecutter",
+    "cookiecutter",  # https://github.com/cookiecutter/cookiecutter
     "tomlkit",
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
 

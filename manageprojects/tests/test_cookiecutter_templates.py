@@ -71,6 +71,7 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
                 {
                     'dir_name': 'a_dir_name',
                     'file_name': 'a_file_name',
+                    '_checkout': None,
                     '_template': cookiecutter_template,
                     '_repo_dir': str(git_path / directory),
                     '_output_dir': str(cookiecutter_output_dir),
