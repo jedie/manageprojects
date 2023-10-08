@@ -315,6 +315,137 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 ```
 [comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
 
+## History
+
+See also git tags: https://github.com/jedie/manageprojects/tags
+
+[comment]: <> (✂✂✂ auto generated history start ✂✂✂)
+
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.0...main)
+  * 2023-10-08 - Update for CookieCutter v2.4.0 changes
+  * 2023-10-08 - Autogenerate history via https://github.com/jedie/cli-base-utilities
+  * 2023-09-24 - apply migrations
+  * 2023-09-24 - Update requirements
+* [v0.15.0](https://github.com/jedie/manageprojects/compare/v0.14.1...v0.15.0)
+  * 2023-08-17 - Deprecate Git
+  * 2023-08-17 - Deprecate print_version() (moved to cli_base)
+* [v0.14.1](https://github.com/jedie/manageprojects/compare/v0.14.0...v0.14.1)
+  * 2023-08-17 - apply project template updates and update requirements
+  * 2023-08-15 - Update requirements
+* [v0.14.0](https://github.com/jedie/manageprojects/compare/v0.13.0...v0.14.0)
+  * 2023-08-09 - Use https://github.com/jedie/cli-base-utilities
+* [v0.13.0](https://github.com/jedie/manageprojects/compare/v0.12.1...v0.13.0)
+  * 2023-08-05 - publish: Support "dynamic metadata" from setuptools for the version
+  * 2023-08-05 - Split CLI
+* [v0.12.1](https://github.com/jedie/manageprojects/compare/v0.12.0...v0.12.1)
+  * 2023-06-11 - Ehance git.push() by adding `get_output` to method
+* [v0.12.0](https://github.com/jedie/manageprojects/compare/v0.11.0...v0.12.0)
+  * 2023-06-11 - New: git.get_remote_url() and git.get_github_username()
+* [v0.11.0](https://github.com/jedie/manageprojects/compare/v0.10.0...v0.11.0)
+  * 2023-06-11 - Update requirements and relase as v0.11.0
+  * 2023-06-11 - Enhance Git()
+  * 2023-05-12 - Use "--remove-all-unused-imports" as default for autoflake
+* [v0.10.0](https://github.com/jedie/manageprojects/compare/v0.9.10...v0.10.0)
+  * 2023-05-11 - Enhance "format-file" and add "autoflake" to remove unused imports
+  * 2023-04-10 - Update requirements
+  * 2023-04-10 - apply manageprojects updates
+  * 2023-04-08 - Apply project updates
+* [v0.9.10](https://github.com/jedie/manageprojects/compare/v0.9.9...v0.9.10)
+  * 2023-04-08 - Add helper to find and get the "pyproject.toml" file
+* [v0.9.9](https://github.com/jedie/manageprojects/compare/v0.9.8...v0.9.9)
+  * 2023-04-04 - Set --overwrite as default in update-project command
+  * 2023-04-04 - Cleanup requirements
+  * 2023-04-04 - project updates
+* [v0.9.8](https://github.com/jedie/manageprojects/compare/v0.9.7...v0.9.8)
+  * 2023-04-04 - Add `--overwrite` option to `reverse` command
+* [v0.9.7](https://github.com/jedie/manageprojects/compare/v0.9.6...v0.9.7)
+  * 2023-04-03 - Bugfix reverse command: Optimize replacements
+  * 2023-03-17 - apply code migrations
+* [v0.9.6](https://github.com/jedie/manageprojects/compare/v0.9.4...v0.9.6)
+  * 2023-03-12 - Speedup: Install as editable with '--no-deps'
+  * 2023-03-12 - Fix #68 Handle if there are no git tags while publishing
+  * 2023-03-11 - Bugfix reverse command and binary files
+* [v0.9.4](https://github.com/jedie/manageprojects/compare/v0.9.3...v0.9.4)
+  * 2023-03-09 - Support "poerty" in publish_package(), too.
+* [v0.9.3](https://github.com/jedie/manageprojects/compare/v0.9.2...v0.9.3)
+  * 2023-03-07 - Fix publish
+  * 2023-03-07 - Update project
+  * 2023-03-06 - coverage xml report + CLI
+  * 2023-03-06 - Update README.md
+  * 2023-03-06 - Fix CI / coverage run
+  * 2023-03-06 - Remove "python_version < 3.11" for "tomli"
+  * 2023-03-06 - merge cookie cutter template updates
+* [v0.9.2](https://github.com/jedie/manageprojects/compare/v0.9.1...v0.9.2)
+  * 2023-02-26 - Make the Result available on an error
+  * 2023-02-26 - update requirements
+  * 2023-02-26 - invoke_click(): Raise exception if exists
+  * 2023-02-23 - Add: "E301 - expected 1 blank line" to "format-file"
+* [v0.9.1](https://github.com/jedie/manageprojects/compare/v0.9.0...v0.9.1)
+  * 2023-02-22 - Bugfix publish a poetry package and get the version string from pyproject.toml
+* [v0.9.0](https://github.com/jedie/manageprojects/compare/v0.8.3...v0.9.0)
+  * 2023-02-21 - README
+  * 2023-02-21 - Refactor publish command and make is useable for external packages, too.
+  * 2023-02-21 - Enhance verbose_check_output: Display output on errors and exit
+  * 2023-02-20 - Enhance SubprocessCallMock: Mock subprocess.run(), too.
+* [v0.8.3](https://github.com/jedie/manageprojects/compare/v0.8.2...v0.8.3)
+  * 2023-02-20 - Bugfix packaging: remove "tox" from normal, non-dev dependencies
+* [v0.8.2](https://github.com/jedie/manageprojects/compare/v0.8.0...v0.8.2)
+  * 2023-02-20 - Path(sys.executable).parent -> PY_BIN_PATH
+  * 2023-02-20 - Add "E305" to darker prefixes
+  * 2023-02-20 - Add tox config via manageprojects
+  * 2023-02-19 - Add "W391 blank line at end of file" to darker pre fixes
+  * 2023-02-19 - Add check_editor_config()
+  * 2023-02-19 - CLI: Add "version" back as pseudo command.
+  * 2023-02-19 - Better subprocess_utils API
+* [v0.8.0](https://github.com/jedie/manageprojects/compare/v0.7.3...v0.8.0)
+  * 2023-02-19 - Split "test_cli" and add "format-file" into README
+  * 2023-02-18 - Add reuseable helper: print_version()
+  * 2023-02-18 - NEW: "format-file"
+  * 2023-02-18 - add Safety check
+  * 2023-02-18 - apply manageprojects
+* [v0.7.3](https://github.com/jedie/manageprojects/compare/v0.7.1...v0.7.3)
+  * 2023-01-25 - Bugfix "--overwrite" if there are new directories in template
+  * 2023-01-25 - Bugfix "overwrite" if there are new files
+* [v0.7.1](https://github.com/jedie/manageprojects/compare/v0.7.0...v0.7.1)
+  * 2023-01-25 - Add cli help pages into README using helper in bx_py_utils
+* [v0.7.0](https://github.com/jedie/manageprojects/compare/v0.6.0...v0.7.0)
+  * 2023-01-15 - Fix #41 Add "--overwrite" to "update-project" command
+* [v0.6.0](https://github.com/jedie/manageprojects/compare/v0.5.0...v0.6.0)
+  * 2023-01-14 - bugfix publish command
+  * 2023-01-14 - NEW: "update-test-snapshot-files" command
+  * 2023-01-14 - Fix tests
+  * 2023-01-13 - Replace typer with the origin click
+  * 2023-01-12 - apply migration
+  * 2023-01-12 - Enhance CLI argument documentation
+  * 2023-01-11 - update requirements
+  * 2023-01-09 - Better code style test + fix via unittests
+  * 2023-01-09 - Use RedirectOut from bx_py_utils v73
+  * 2023-01-09 - Bugfix "./cli.py install" and wrong path to req. file
+  * 2023-01-09 - reverse command: Use "git ls-files" instead of pathspec
+* [v0.5.0](https://github.com/jedie/manageprojects/compare/v0.4.0...v0.5.0)
+  * 2023-01-08 - NEW: Reverse a project into a Cookiecutter template
+* [v0.4.0](https://github.com/jedie/manageprojects/compare/v0.3.3...v0.4.0)
+  * 2022-12-30 - Refactor "dependencies" definition
+  * 2022-12-30 - Bugfix Git(): Pass environment, but set "en_US" als language
+  * 2022-12-30 - update requirements
+  * 2022-12-30 - include all packages
+  * 2022-12-30 - Capture and check log output in tests
+  * 2022-12-30 - cleanup editorconfig
+  * 2022-12-30 - enhance test run
+  * 2022-12-30 - Bugfix wrong "hint"
+* [v0.3.3](https://github.com/jedie/manageprojects/compare/v0.3.2...v0.3.3)
+  * 2022-12-21 - Update requirements
+  * 2022-12-21 - Use new pip-compile resolver
+  * 2022-12-21 - Bugfix if git output will be translated.
+  * 2022-11-30 - Fix help by adding './cli.py' and add basic CLI tests
+  * 2022-11-30 - Enhance "start-project" and "update-project" CLI help pages
+  * 2022-11-30 - Update README.md
+  * 2022-11-22 - update reqirements
+  * 2022-11-20 - SELF MANAGE !!!
+  * 2022-11-20 - fix typo
+  * 2022-11-20 - rename: "./mp.py" -> "./cli.py"
+
+[comment]: <> (✂✂✂ auto generated history end ✂✂✂)
 
 ## Links
 

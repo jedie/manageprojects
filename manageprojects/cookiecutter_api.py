@@ -5,12 +5,11 @@ from unittest.mock import patch
 
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.git import Git
-from cookiecutter import generate
 from cookiecutter.config import get_user_config
 from cookiecutter.main import cookiecutter
 from cookiecutter.repository import determine_repo_dir
 
-from manageprojects.utilities.cookiecutter_utils import CookieCutterHookHandler
+from manageprojects.utilities.cookiecutter_utils import GenerateFilesWrapper
 from manageprojects.utilities.log_utils import log_func_call
 
 
@@ -87,8 +86,8 @@ def execute_cookiecutter(
         password=password,
         config_file=config_file,
     )
-    run_hook = CookieCutterHookHandler(origin_run_hook=generate.run_hook)
-    with patch.object(generate, 'run_hook', run_hook):
+    generate_files_wrapper = GenerateFilesWrapper()
+    with patch('cookiecutter.main.generate_files', generate_files_wrapper):
         destination = log_func_call(
             logger=logger,
             func=cookiecutter,
@@ -102,7 +101,7 @@ def execute_cookiecutter(
             password=password,
             config_file=config_file,
         )
-    cookiecutter_context = run_hook.context
+    cookiecutter_context = generate_files_wrapper.context
     logger.info('Cookiecutter context: %r', cookiecutter_context)
     destination_path = Path(destination)
     assert_is_dir(destination_path)
