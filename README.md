@@ -322,6 +322,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.0...main)
+  * 2023-10-08 - fix github CI
   * 2023-10-08 - Update for CookieCutter v2.4.0 changes
   * 2023-10-08 - Autogenerate history via https://github.com/jedie/cli-base-utilities
   * 2023-09-24 - apply migrations
