@@ -321,6 +321,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.1...main)
+  * 2023-10-24 - Update requirements
 * [v0.15.1](https://github.com/jedie/manageprojects/compare/v0.15.0...v0.15.1)
   * 2023-10-08 - Update text matrix with Python v3.12
   * 2023-10-08 - fix github CI

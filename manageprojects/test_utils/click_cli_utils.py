@@ -1,10 +1,7 @@
-from unittest.mock import patch
-
 import click
-import rich_click
 from bx_py_utils.path import assert_is_file
-from bx_py_utils.test_utils.context_managers import MassContextManager
 from cli_base.cli_tools.subprocess_utils import verbose_check_output
+from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRichClick
 from click.testing import CliRunner, Result
 
 
@@ -17,15 +14,13 @@ def subprocess_cli(*, cli_bin, args, exit_on_error=True):
         cli_bin,
         *args,
         cwd=cli_bin.parent,
-        extra_env=dict(TERMINAL_WIDTH=str(TERMINAL_WIDTH)),
+        extra_env={
+            'COLUMNS': str(TERMINAL_WIDTH),
+            'NO_COLOR': '1',
+            'PYTHONUNBUFFERED': '1',
+            'TERM': 'dump',
+        },
         exit_on_error=exit_on_error,
-    )
-
-
-class ForceRichTerminalWidth(MassContextManager):
-    mocks = (
-        patch.object(rich_click.rich_click, 'MAX_WIDTH', TERMINAL_WIDTH),
-        patch.object(rich_click.rich_click, 'FORCE_TERMINAL', False),
     )
 
 
@@ -39,7 +34,7 @@ def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=Tru
 
     args = tuple([str(arg) for arg in args])  # e.g.: Path() -> str
 
-    with ForceRichTerminalWidth():
+    with NoColorEnvRichClick(width=TERMINAL_WIDTH):
         runner = CliRunner(mix_stderr=False)
         result: Result = runner.invoke(cli=cli, args=args, **kwargs, color=False)
 
