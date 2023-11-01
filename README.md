@@ -321,8 +321,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.1...main)
-  * 2023-10-24 - Update requirements
+* [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
+  * 2023-11-01 - Update requirements
 * [v0.15.1](https://github.com/jedie/manageprojects/compare/v0.15.0...v0.15.1)
   * 2023-10-08 - Update text matrix with Python v3.12
   * 2023-10-08 - fix github CI
@@ -336,6 +336,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.14.1](https://github.com/jedie/manageprojects/compare/v0.14.0...v0.14.1)
   * 2023-08-17 - apply project template updates and update requirements
   * 2023-08-15 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.14.0](https://github.com/jedie/manageprojects/compare/v0.13.0...v0.14.0)
   * 2023-08-09 - Use https://github.com/jedie/cli-base-utilities
 * [v0.13.0](https://github.com/jedie/manageprojects/compare/v0.12.1...v0.13.0)
@@ -448,6 +451,94 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2022-11-20 - SELF MANAGE !!!
   * 2022-11-20 - fix typo
   * 2022-11-20 - rename: "./mp.py" -> "./cli.py"
+* [v0.3.2](https://github.com/jedie/manageprojects/compare/16ee951...v0.3.2)
+  * 2022-11-19 - git tag on publish
+  * 2022-11-19 - udpate requirements
+  * 2022-11-19 - init_git(): Add a "fake" origin and push the current branch to it
+  * 2022-11-19 - Update README.md
+  * 2022-11-15 - Bugfix packaging: Release as 0.3.1
+  * 2022-11-15 - Move test utilities to normal package
+  * 2022-11-15 - update requirements
+  * 2022-11-15 - code cleanup
+  * 2022-11-10 - remove own templates -> https://github.com/jedie/cookiecutter_templates
+  * 2022-11-10 - Bugfix start project with own templates
+  * 2022-11-10 - NEW: Clone a existing project by replay the cookiecutter template in a new directory.
+  * 2022-11-10 - Display "git apply patch" output
+  * 2022-11-10 - Bugfix reset "pyproject.toml" by overwriting with old content
+  * 2022-11-09 - Use the origin unitest CLI
+  * 2022-11-09 - Catch if git apply failes and add wiggle command to fix .rej files
+  * 2022-11-09 - fix tests and set git user name/email if not exists
+  * 2022-11-08 - Fix tests and more logging/output
+  * 2022-11-07 - Bugfix patch paths
+  * 2022-11-07 - Bugfix extra_context
+  * 2022-11-07 - Generate better git diffs
+  * 2022-11-07 - fix some optional typehints
+  * 2022-11-07 - Better update project output
+  * 2022-11-07 - add "cleanup" to CLI
+  * 2022-11-07 - pass "no_input"
+  * 2022-11-07 - change tomlkit.Container to a normal dict
+  * 2022-11-07 - fix typo
+  * 2022-11-07 - Better log config
+  * 2022-11-06 - Add "update-project" to CLI
+  * 2022-11-06 - +DocString for password
+  * 2022-11-06 - fix double logging output
+  * 2022-11-06 - Don't store "_output_dir" in pyproject.toml
+  * 2022-11-04 - Fix version test if colors are enabled
+  * 2022-11-04 - Bugfix exit tests on failour
+  * 2022-11-03 - Simplify store the context to toml file
+  * 2022-11-03 - refactor and fix tests
+  * 2022-11-03 - Add --help in README
+  * 2022-11-03 - Cookiecutter will only checkout a specific commit, if `template` is a repro url!
+  * 2022-11-03 - Add "%(name)s" to log output
+  * 2022-11-03 - Support optional `--test-path` for "./mp.py test"
+  * 2022-11-03 - Rename "./mp.py unittest" to "./mp.py test"
+  * 2022-11-01 - WIP: Refactor and add more tests
+  * 2022-11-01 - Add cleanup argument in TemporaryDirectory
+  * 2022-11-01 - move code
+  * 2022-11-01 - Add and use log_func_call() helper
+  * 2022-10-30 - Store/use Cookiecutter context untouched
+  * 2022-10-30 - Add helper to convert nested dicts to toml
+  * 2022-10-29 - WIP: enhance tests
+  * 2022-10-29 - Fix typo and log more info
+  * 2022-10-29 - Overwrite existing patch files
+  * 2022-10-29 - fix some typehints
+  * 2022-10-29 - WIP: update the existing project
+  * 2022-10-28 - MOve som ecore parts + start "update project"
+  * 2022-10-28 - Test start project with local template
+  * 2022-10-27 - fix typing errors and activate "mypy" in tests
+  * 2022-10-27 - Coverage: '--fail-under=50'
+  * 2022-10-27 - test_git_apply_patch()
+  * 2022-10-27 - Test git diff
+  * 2022-10-27 - Add init_git() for tests
+  * 2022-10-27 - Add test utils to generate git repositories "on-the-fly"
+  * 2022-10-27 - Use assert_is_dir, assert_is_file from bx_py_utils
+  * 2022-10-26 - Add 3.11 to CI
+  * 2022-10-26 - fix ci coverage
+  * 2022-10-26 - Store information into pyproject.toml
+  * 2022-10-26 - setup coverage
+  * 2022-10-26 - enhance log setup
+  * 2022-10-25 - +requires-python = ">=3.9,<4.0.0"
+  * 2022-10-25 - call "twine check" before upload
+  * 2022-10-25 - +## start hacking
+  * 2022-10-25 - fix badges
+  * 2022-10-25 - fix CI
+  * 2022-10-25 - Add .flak8 because of https://github.com/PyCQA/flake8/issues/234
+  * 2022-10-25 - use unitests, add cookiecuttter helper add/fix tests and code style
+  * 2022-10-24 - change cli+tests
+  * 2022-10-24 - fix mypy call
+  * 2022-10-24 - WIP
+  * 2022-10-23 - chnage minimal template a little bit
+  * 2022-10-23 - add first cookiecutter template
+  * 2022-10-23 - Allow manageprojects CLI to be executable through `python -m manageprojects`.
+  * 2022-10-22 - github actions
+  * 2022-10-22 - dev
+  * 2022-10-22 - bootstarp
+  * 2022-10-22 - add requirements
+  * 2022-10-22 - init Makefile
+  * 2022-10-22 - Initial commit
+
+</details>
+
 
 [comment]: <> (✂✂✂ auto generated history end ✂✂✂)
 
