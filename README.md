@@ -321,8 +321,10 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.2...main)
   * 2023-11-07 - Update requirements
+* [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
+  * 2023-11-01 - Update requirements
 * [v0.15.1](https://github.com/jedie/manageprojects/compare/v0.15.0...v0.15.1)
   * 2023-10-08 - Update text matrix with Python v3.12
   * 2023-10-08 - fix github CI
@@ -333,12 +335,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.15.0](https://github.com/jedie/manageprojects/compare/v0.14.1...v0.15.0)
   * 2023-08-17 - Deprecate Git
   * 2023-08-17 - Deprecate print_version() (moved to cli_base)
-* [v0.14.1](https://github.com/jedie/manageprojects/compare/v0.14.0...v0.14.1)
-  * 2023-08-17 - apply project template updates and update requirements
-  * 2023-08-15 - Update requirements
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.14.1](https://github.com/jedie/manageprojects/compare/v0.14.0...v0.14.1)
+  * 2023-08-17 - apply project template updates and update requirements
+  * 2023-08-15 - Update requirements
 * [v0.14.0](https://github.com/jedie/manageprojects/compare/v0.13.0...v0.14.0)
   * 2023-08-09 - Use https://github.com/jedie/cli-base-utilities
 * [v0.13.0](https://github.com/jedie/manageprojects/compare/v0.12.1...v0.13.0)
