@@ -321,7 +321,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.2...main)
+* [v0.15.3](https://github.com/jedie/manageprojects/compare/v0.15.2...v0.15.3)
+  * 2023-11-09 - Bugfix "reverse" if context contains a list
   * 2023-11-07 - Update requirements
 * [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
   * 2023-11-01 - Update requirements

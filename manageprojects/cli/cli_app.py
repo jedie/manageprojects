@@ -11,6 +11,7 @@ from typing import Optional
 import rich_click as click
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
+from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from cli_base.cli_tools.version_info import print_version
 from rich import print  # noqa
 from rich_click import RichGroup
@@ -281,10 +282,12 @@ cli.add_command(clone_project)
     **OPTION_ARGS_DEFAULT_FALSE,
     help='Overwrite existing files.',
 )
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def reverse(
     project_path: Path,
     destination: Path,
     overwrite: bool,
+    verbosity: int,
 ):
     """
     Create a cookiecutter template from a managed project.
@@ -298,6 +301,7 @@ def reverse(
         project_path=project_path,
         destination=destination,
         overwrite=overwrite,
+        verbosity=verbosity,
     )
 
 

@@ -58,6 +58,7 @@ class CookiecutterGeneratorTestCase(BaseTestCase):
             reverse_info=(
                 ('foo', '{{ package_name }}'),
                 ('bar', '{{ dir_name }}'),
+                (['877e2ec', 'be3f649', 'c1a9d97'], '{{ cookiecutter.applied_migrations }}'),
             ),
         )
         self.assertEqual(path, Path('{{ package_name }}/{{ dir_name }}/baz'))

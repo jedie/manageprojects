@@ -255,6 +255,7 @@ def reverse_managed_project(
     project_path: Path,
     destination: Path,
     overwrite: bool = False,
+    verbosity: int = 0,
 ):
     """
     Create a cookiecutter template from a managed project.
@@ -275,4 +276,5 @@ def reverse_managed_project(
         destination=destination,
         cookiecutter_context=cookiecutter_context,
         overwrite=overwrite,
+        verbosity=verbosity,
     )
