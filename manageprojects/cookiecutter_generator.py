@@ -26,23 +26,47 @@ def generate_reverse_info(*, cookiecutter_context: dict) -> tuple:
     return tuple(reverse_info)
 
 
-def replace_path(*, path: Path, reverse_info: tuple) -> Path:
-    new_parts = []
-    for part in path.parts:
-        for src_str, dst_str in reverse_info:
-            part = part.replace(src_str, dst_str)
-        new_parts.append(part)
+def replace_str(content: str, reverse_info: tuple, verbosity: int = 0) -> str:
+    origin_content = content
+    for src_str, dst_str in reverse_info:
+        if isinstance(src_str, str) and isinstance(dst_str, str):
+            content = content.replace(src_str, dst_str)
+        elif verbosity > 2:
+            if not isinstance(src_str, str):
+                print(f'Ignore {src_str=} for {content=}')
+            if not isinstance(dst_str, str):
+                print(f'Ignore {dst_str=} for {content=}')
+
+    if verbosity > 2 and content != origin_content:
+        print(f'Convert: {origin_content} -> {content}')
+
+    return content
+
+
+def replace_path(*, path: Path, reverse_info: tuple, verbosity: int = 0) -> Path:
+    new_parts = [replace_str(part, reverse_info=reverse_info, verbosity=verbosity) for part in path.parts]
     return Path(*new_parts)
 
 
-def build_dst_path(*, source_path: Path, item: Path, destination: Path, reverse_info: tuple):
+def build_dst_path(
+    *,
+    source_path: Path,
+    item: Path,
+    destination: Path,
+    reverse_info: tuple,
+    verbosity: int = 0,
+):
     rel_path = item.relative_to(source_path)
-    new_path = replace_path(path=rel_path, reverse_info=reverse_info)
+    if verbosity > 1:
+        print(f'Store: {rel_path}', end=' ')
+    new_path = replace_path(path=rel_path, reverse_info=reverse_info, verbosity=verbosity)
+    if verbosity > 1:
+        print(f'-> {new_path}')
     dst_path = destination / new_path
     return dst_path
 
 
-def copy_replaced(src_path, dst_path, reverse_info):
+def copy_replaced(src_path, dst_path, reverse_info: tuple, verbosity: int = 0):
     dst_parent = dst_path.parent
     dst_parent.mkdir(parents=True, exist_ok=True)
 
@@ -54,9 +78,7 @@ def copy_replaced(src_path, dst_path, reverse_info):
         print('copy as binary file')
         shutil.copy2(src_path, dst_path)
     else:
-        for src_str, dst_str in reverse_info:
-            content = content.replace(src_str, dst_str)
-
+        content = replace_str(content, reverse_info=reverse_info, verbosity=verbosity)
         dst_path.write_text(content, encoding='UTF-8')
 
 
@@ -66,6 +88,7 @@ def create_cookiecutter_template(
     destination: Path,
     cookiecutter_context: dict,
     overwrite: bool = False,
+    verbosity: int = 0,
 ):
     source_path = source_path.resolve()
     assert_is_dir(source_path)
@@ -81,16 +104,19 @@ def create_cookiecutter_template(
     file_paths = git.ls_files(verbose=True)
 
     for item in file_paths:
+        if verbosity > 1:
+            print(f'Convert: {item}')
         dst_path = build_dst_path(
             source_path=source_path,
             item=item,
             destination=destination,
             reverse_info=reverse_info,
+            verbosity=verbosity,
         )
         if item.is_dir():
             dst_path.mkdir(parents=True, exist_ok=True)
         elif item.is_file():
             print(item.relative_to(source_path), '->', dst_path)
-            copy_replaced(src_path=item, dst_path=dst_path, reverse_info=reverse_info)
+            copy_replaced(src_path=item, dst_path=dst_path, reverse_info=reverse_info, verbosity=verbosity)
         else:
             print(f'Ignore: {item}')
