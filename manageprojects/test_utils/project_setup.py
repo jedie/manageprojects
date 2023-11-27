@@ -110,6 +110,7 @@ def check_editor_config(package_root: Path, config_defaults=None) -> None:
                 warnings.warn(
                     f'Editor config {key!r} for files like {example_filename} is not defined!',
                     RuntimeWarning,
+                    stacklevel=2,
                 )
             else:
                 current_value = options[key]
@@ -120,6 +121,7 @@ def check_editor_config(package_root: Path, config_defaults=None) -> None:
                             f' should be {value!r} but is: {current_value!r}!'
                         ),
                         RuntimeWarning,
+                        stacklevel=2,
                     )
 
     max_line_length = get_py_max_line_length(package_root)
