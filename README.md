@@ -321,6 +321,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.15.4](https://github.com/jedie/manageprojects/compare/v0.15.3...v0.15.4)
+  * 2023-11-27 - Use "flake8-bugbear", too.
 * [v0.15.3](https://github.com/jedie/manageprojects/compare/v0.15.2...v0.15.3)
   * 2023-11-09 - Bugfix "reverse" if context contains a list
   * 2023-11-07 - Update requirements
@@ -333,12 +335,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-10-08 - Autogenerate history via https://github.com/jedie/cli-base-utilities
   * 2023-09-24 - apply migrations
   * 2023-09-24 - Update requirements
-* [v0.15.0](https://github.com/jedie/manageprojects/compare/v0.14.1...v0.15.0)
-  * 2023-08-17 - Deprecate Git
-  * 2023-08-17 - Deprecate print_version() (moved to cli_base)
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.15.0](https://github.com/jedie/manageprojects/compare/v0.14.1...v0.15.0)
+  * 2023-08-17 - Deprecate Git
+  * 2023-08-17 - Deprecate print_version() (moved to cli_base)
 * [v0.14.1](https://github.com/jedie/manageprojects/compare/v0.14.0...v0.14.1)
   * 2023-08-17 - apply project template updates and update requirements
   * 2023-08-15 - Update requirements
