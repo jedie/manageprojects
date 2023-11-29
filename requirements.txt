@@ -48,9 +48,9 @@ black==23.11.0 \
     --hash=sha256:dbea0bb8575c6b6303cc65017b46351dc5953eea5c0a59d7b7e3a2d2f433a911 \
     --hash=sha256:fc7f6a44d52747e65a02558e1d807c82df1d66ffa80a601862040a43ec2e3142
     # via darker
-bx-py-utils==88 \
-    --hash=sha256:32fbc7e9ff3dfb0a817c80fb1d165ec559643dab59c0be549e646acbf8223b75 \
-    --hash=sha256:3a6f4eeef6abcac834b2c1ea4c5211130fd930a064aa0baabddd7c2bd00e38ac
+bx-py-utils==89 \
+    --hash=sha256:179649df6b2541d241e23e2cf1ac314586717d8e60f57326fe5c9f110f3d602e \
+    --hash=sha256:68215036c448fd04baf989cd51a9523a9edb8239a7520c9177fb874d64914878
     # via cli-base-utilities
 certifi==2023.11.17 \
     --hash=sha256:9b469f3a900bf28dc19b8cfbf8019bf47f7fdd1a65a1d4ffb98fc14166beb4d1 \
@@ -187,9 +187,9 @@ flake8==6.1.0 \
     # via
     #   flake8-bugbear
     #   manageprojects (pyproject.toml)
-flake8-bugbear==23.11.26 \
-    --hash=sha256:55d00c8a3c48c995c1f0ec0df54f8c9cf530c06035ce53975a03517d2e7f53e5 \
-    --hash=sha256:8e36119071bab626b6dab834fadd6d03c06090e9b189e67b4905821df8212fee
+flake8-bugbear==23.11.28 \
+    --hash=sha256:0ba6c44eaa0e4782da94c5c2607159a0e73569369246cd179cc143a0e16b78ba \
+    --hash=sha256:8d0f351d954fd860851710cd8b5b28742b2339c0e58848b103418dd9cddb9aa4
     # via manageprojects (pyproject.toml)
 flynt==0.77 \
     --hash=sha256:2863ac8ec19d6ec8d29e760546e6ced644baf6dff3c7cdc77e03abbd29b80f14 \
