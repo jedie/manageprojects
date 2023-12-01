@@ -131,9 +131,6 @@ commands_pre =
     pip-sync requirements.dev.txt
 commands =
     {envpython} -m coverage run --context='{envname}'
-    {envpython} -m coverage combine --append
-    {envpython} -m coverage xml
-    {envpython} -m coverage report
 """
 
 
@@ -165,6 +162,7 @@ applied_migrations = [
     "8d0ebe1", # 2023-08-17T18:15:10+02:00
     "be3f649", # 2023-08-22T19:36:57+02:00
     "385f654", # 2023-10-08T21:09:24+02:00
+    "d1ed4b1", # 2023-12-01T21:41:29+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]

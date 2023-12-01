@@ -299,7 +299,7 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ check-code-style            Check code style by calling darker + flake8                          │
-│ coverage                    Run and show coverage.                                               │
+│ coverage                    Run tests and show coverage report.                                  │
 │ fix-code-style              Fix code style of all manageprojects source code files via darker    │
 │ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
@@ -322,6 +322,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.4...main)
+  * 2023-12-01 - Apply https://github.com/jedie/cookiecutter_templates updates
   * 2023-12-01 - Use: cli_base.cli_tools.test_utils.logs.AssertLogs
 * [v0.15.4](https://github.com/jedie/manageprojects/compare/v0.15.3...v0.15.4)
   * 2023-11-27 - Use "flake8-bugbear", too.
