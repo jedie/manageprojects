@@ -1,7 +1,7 @@
+import warnings
+
 import click
-from bx_py_utils.path import assert_is_file
-from cli_base.cli_tools.subprocess_utils import verbose_check_output
-from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRichClick
+from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRichClick, NoColorRichClickCli
 from click.testing import CliRunner, Result
 
 
@@ -9,19 +9,14 @@ TERMINAL_WIDTH = 100
 
 
 def subprocess_cli(*, cli_bin, args, exit_on_error=True):
-    assert_is_file(cli_bin)
-    return verbose_check_output(
-        cli_bin,
-        *args,
-        cwd=cli_bin.parent,
-        extra_env={
-            'COLUMNS': str(TERMINAL_WIDTH),
-            'NO_COLOR': '1',
-            'PYTHONUNBUFFERED': '1',
-            'TERM': 'dump',
-        },
-        exit_on_error=exit_on_error,
+    warnings.warn(
+        'Migrate to: cli_base.cli_tools.test_utils.rich_test_utils.NoColorRichClickCli context manager !',
+        DeprecationWarning,
+        stacklevel=2,
     )
+    with NoColorRichClickCli() as cm:
+        stdout = cm.invoke(cli_bin=cli_bin, args=args, exit_on_error=exit_on_error)
+    return stdout
 
 
 class ClickInvokeCliException(Exception):
