@@ -2,9 +2,9 @@ import inspect
 from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
+from cli_base.cli_tools.test_utils.logs import AssertLogs
 
 from manageprojects.cookiecutter_api import get_repo_path
-from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 
 

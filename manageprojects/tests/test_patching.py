@@ -5,10 +5,10 @@ from pathlib import Path
 from bx_py_utils.path import assert_is_dir
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 from cli_base.cli_tools.test_utils.git_utils import init_git
+from cli_base.cli_tools.test_utils.logs import AssertLogs
 
 from manageprojects.data_classes import GenerateTemplatePatchResult
 from manageprojects.patching import generate_template_patch, make_git_diff
-from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.temp_path import TemporaryDirectory
 

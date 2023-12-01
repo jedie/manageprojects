@@ -2,6 +2,7 @@ import inspect
 from pathlib import Path
 from unittest import TestCase
 
+from cli_base.cli_tools.test_utils.logs import AssertLogs
 from packaging.version import Version
 
 from manageprojects.constants import PY_BIN_PATH
@@ -15,7 +16,6 @@ from manageprojects.format_file import (
     get_git_info,
     get_pyproject_info,
 )
-from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.test_utils.subprocess import SimpleRunReturnCallback, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT, PROJECT_PATH
 from manageprojects.utilities.temp_path import TemporaryDirectory
