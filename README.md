@@ -321,7 +321,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.4...main)
+* [v0.16.0](https://github.com/jedie/manageprojects/compare/v0.15.4...v0.16.0)
   * 2023-12-02 - Use code style tooling from cli-base-utilities
   * 2023-12-01 - Apply https://github.com/jedie/cookiecutter_templates updates
   * 2023-12-01 - Use: cli_base.cli_tools.test_utils.logs.AssertLogs

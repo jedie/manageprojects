@@ -3,5 +3,5 @@
     Manage Python / Django projects
 """
 
-__version__ = '0.15.4'
+__version__ = '0.16.0'
 __author__ = 'Jens Diemer <mamageprojects@jensdiemer.de>'
