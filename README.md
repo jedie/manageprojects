@@ -321,6 +321,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.15.4...main)
+  * 2023-12-01 - Use: cli_base.cli_tools.test_utils.logs.AssertLogs
 * [v0.15.4](https://github.com/jedie/manageprojects/compare/v0.15.3...v0.15.4)
   * 2023-11-27 - Use "flake8-bugbear", too.
 * [v0.15.3](https://github.com/jedie/manageprojects/compare/v0.15.2...v0.15.3)
@@ -328,6 +330,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-11-07 - Update requirements
 * [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
   * 2023-11-01 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.15.1](https://github.com/jedie/manageprojects/compare/v0.15.0...v0.15.1)
   * 2023-10-08 - Update text matrix with Python v3.12
   * 2023-10-08 - fix github CI
@@ -335,9 +340,6 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-10-08 - Autogenerate history via https://github.com/jedie/cli-base-utilities
   * 2023-09-24 - apply migrations
   * 2023-09-24 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.15.0](https://github.com/jedie/manageprojects/compare/v0.14.1...v0.15.0)
   * 2023-08-17 - Deprecate Git
   * 2023-08-17 - Deprecate print_version() (moved to cli_base)

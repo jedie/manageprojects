@@ -5,10 +5,10 @@ from pathlib import Path
 from bx_py_utils.path import assert_is_file
 from bx_py_utils.test_utils.redirect import RedirectOut
 from cli_base.cli_tools.test_utils.git_utils import init_git
+from cli_base.cli_tools.test_utils.logs import AssertLogs
 
 from manageprojects.cookiecutter_templates import update_managed_project
 from manageprojects.data_classes import ManageProjectsMeta, OverwriteResult
-from manageprojects.test_utils.logs import AssertLogs
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 from manageprojects.utilities.temp_path import TemporaryDirectory
