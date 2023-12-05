@@ -321,6 +321,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.16.1](https://github.com/jedie/manageprojects/compare/v0.16.0...v0.16.1)
+  * 2023-12-05 - Fix "format file" and very verbose error output
 * [v0.16.0](https://github.com/jedie/manageprojects/compare/v0.15.4...v0.16.0)
   * 2023-12-02 - Use code style tooling from cli-base-utilities
   * 2023-12-01 - Apply https://github.com/jedie/cookiecutter_templates updates
@@ -330,11 +332,11 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.15.3](https://github.com/jedie/manageprojects/compare/v0.15.2...v0.15.3)
   * 2023-11-09 - Bugfix "reverse" if context contains a list
   * 2023-11-07 - Update requirements
-* [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
-  * 2023-11-01 - Update requirements
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.15.2](https://github.com/jedie/manageprojects/compare/v0.15.1...v0.15.2)
+  * 2023-11-01 - Update requirements
 * [v0.15.1](https://github.com/jedie/manageprojects/compare/v0.15.0...v0.15.1)
   * 2023-10-08 - Update text matrix with Python v3.12
   * 2023-10-08 - fix github CI
