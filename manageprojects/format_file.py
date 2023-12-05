@@ -1,10 +1,11 @@
 import dataclasses
+import subprocess
 from pathlib import Path
 from typing import Optional
 
 from bx_py_utils.dict_utils import dict_get
 from cli_base.cli_tools.git import Git, GitError, NoGitRepoError
-from cli_base.cli_tools.subprocess_utils import ToolsExecutor
+from cli_base.cli_tools.subprocess_utils import ToolsExecutor as OriginalToolsExecutor
 from editorconfig import EditorConfigError, get_properties
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
@@ -17,6 +18,14 @@ from manageprojects.utilities.pyproject_toml import TomlDocument, get_pyproject_
 
 
 MAX_PY3_VER = 15
+
+
+class ToolsExecutor(OriginalToolsExecutor):
+    def verbose_check_call(self, *args, **kwargs):
+        try:
+            super().verbose_check_call(*args, **kwargs)
+        except subprocess.CalledProcessError:
+            pass  # Info print is already done
 
 
 @dataclasses.dataclass
@@ -152,7 +161,7 @@ def get_config(
 
 def run_pyupgrade(tools_executor, file_path, config):
     pyver_arg = f'--{config.py_ver_str}-plus'
-    tools_executor.verbose_check_output(
+    tools_executor.verbose_check_call(
         'pyupgrade',
         '--exit-zero-even-if-changed',
         pyver_arg,
@@ -166,7 +175,7 @@ def run_autoflake(tools_executor, file_path, config, remove_all_unused_imports):
     if remove_all_unused_imports:
         args.append('--remove-all-unused-imports')
     args.append(file_path)
-    tools_executor.verbose_check_output(*args)
+    tools_executor.verbose_check_call(*args)
 
 
 def run_darker(tools_executor, file_path, config, darker_prefixes):
@@ -175,7 +184,7 @@ def run_darker(tools_executor, file_path, config, darker_prefixes):
         #   "E302 expected 2 blank lines"
         #   "E303 too many blank lines (4)"
         # work-a-round: run autopep8 only for these fixes ;)
-        tools_executor.verbose_check_output(
+        tools_executor.verbose_check_call(
             'autopep8',
             '--ignore-local-config',
             '--select',
@@ -185,7 +194,7 @@ def run_darker(tools_executor, file_path, config, darker_prefixes):
             str(file_path),
         )
 
-    tools_executor.verbose_check_output(
+    tools_executor.verbose_check_call(
         'darker',
         '--flynt',
         '--isort',
@@ -201,7 +210,7 @@ def run_darker(tools_executor, file_path, config, darker_prefixes):
 
 
 def run_autopep8(tools_executor, file_path, config):
-    tools_executor.verbose_check_output(
+    tools_executor.verbose_check_call(
         'autopep8',
         '--ignore-local-config',
         '--max-line-length',
@@ -214,7 +223,7 @@ def run_autopep8(tools_executor, file_path, config):
 
 
 def run_flake8(tools_executor, file_path, config):
-    tools_executor.verbose_check_output(
+    tools_executor.verbose_check_call(
         'flake8',
         '--max-line-length',
         str(config.max_line_length),
@@ -223,15 +232,15 @@ def run_flake8(tools_executor, file_path, config):
 
 
 def run_pyflakes(tools_executor, file_path, config):
-    tools_executor.verbose_check_output('pyflakes', file_path)
+    tools_executor.verbose_check_call('pyflakes', file_path)
 
 
 def run_codespell(tools_executor, file_path, config):
-    tools_executor.verbose_check_output('codespell', file_path)
+    tools_executor.verbose_check_call('codespell', file_path)
 
 
 def run_mypy(tools_executor, file_path, config):
-    tools_executor.verbose_check_output(
+    tools_executor.verbose_check_call(
         'mypy',
         '--ignore-missing-imports',
         '--follow-imports',
