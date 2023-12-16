@@ -332,7 +332,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.16.1...main)
+* [v0.16.2](https://github.com/jedie/manageprojects/compare/v0.16.1...v0.16.2)
+  * 2023-12-16 - Update pre-commit-config
   * 2023-12-16 - Skip test_readme_history() on CI
   * 2023-12-16 - Add git hook "update-readme-history"
   * 2023-12-16 - Apply cookiecutter updates

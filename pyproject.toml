@@ -69,6 +69,10 @@ include = ["manageprojects*"]
 version = {attr = "manageprojects.__version__"}
 
 
+[tool.cli_base]
+version_module_name = "manageprojects"  # Used by "update-readme-history" git hook
+
+
 [tool.darker]
 src = ['.']
 revision = "origin/main..."
