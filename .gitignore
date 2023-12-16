@@ -9,4 +9,5 @@ __pycache__
 !.editorconfig
 !.flake8
 !.gitignore
+!.pre-commit-config.yaml
 !.gitkeep

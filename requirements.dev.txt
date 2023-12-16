@@ -210,6 +210,10 @@ cffi==1.16.0 \
     --hash=sha256:fa3a0128b152627161ce47201262d3140edb5a5c3da88d73a1b790a959126956 \
     --hash=sha256:fcc8eb6d5902bb1cf6dc4f187ee3ea80a1eba0a89aba40a5cb20a5087d961357
     # via cryptography
+cfgv==3.4.0 \
+    --hash=sha256:b7265b1f29fd3316bfcd2b330d63d024f2bfd8bcb8b0272f8e19a504856c48f9 \
+    --hash=sha256:e52591d4c5f5dead8e0f673fb16db7949d2cfb3f7da4582893288f0ded8fe560
+    # via pre-commit
 chardet==5.2.0 \
     --hash=sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7 \
     --hash=sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970
@@ -535,6 +539,10 @@ frozenlist==1.4.1 \
     # via
     #   aiohttp
     #   aiosignal
+identify==2.5.33 \
+    --hash=sha256:161558f9fe4559e1557e1bff323e8631f6a0e4837f7497767c1782832f16b62d \
+    --hash=sha256:d40ce5fcd762817627670da8a7d8d8e65f24342d14539c59488dc603bf662e34
+    # via pre-commit
 idna==3.6 \
     --hash=sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca \
     --hash=sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f
@@ -778,6 +786,10 @@ nh3==0.2.15 \
     --hash=sha256:d1e30ff2d8d58fb2a14961f7aac1bbb1c51f9bdd7da727be35c63826060b0bf3 \
     --hash=sha256:f3b53ba93bb7725acab1e030bc2ecd012a817040fd7851b332f86e2f9bb98dc6
     # via readme-renderer
+nodeenv==1.8.0 \
+    --hash=sha256:d51e0c37e64fbf47d017feac3145cdbb58836d7eee8c6f6d3b6880c5456227d2 \
+    --hash=sha256:df865724bb3c3adc86b3876fa209771517b0cfe596beff01a92700e0e8be4cec
+    # via pre-commit
 packaging==23.2 \
     --hash=sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5 \
     --hash=sha256:8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7
@@ -812,6 +824,10 @@ pluggy==1.3.0 \
     --hash=sha256:cf61ae8f126ac6f7c451172cf30e3e43d3ca77615509771b3a984a0730651e12 \
     --hash=sha256:d89c696a773f8bd377d18e5ecda92b7a3793cbe66c87060a6fb58c7b6e1061f7
     # via tox
+pre-commit==3.6.0 \
+    --hash=sha256:c255039ef399049a5544b6ce13d135caba8f2c28c3b4033277a788f434308376 \
+    --hash=sha256:d30bad9abf165f7785c15a21a1f46da7d0677cb00ee7ff4c579fd38922efe15d
+    # via manageprojects (pyproject.toml)
 pycodestyle==2.11.1 \
     --hash=sha256:41ba0e7afc9752dfb53ced5489e89f8186be00e599e712660695b7a75ff2663f \
     --hash=sha256:44fe31000b2d866f2e41841b18528a505fbd7fef9017b04eff4e2648a0fadc67
@@ -907,7 +923,9 @@ pyyaml==6.0.1 \
     --hash=sha256:fca0e3a251908a499833aa292323f32437106001d436eca0e6e7833256674585 \
     --hash=sha256:fd1592b3fdf65fff2ad0004b5e363300ef59ced41c2e6b3a99d4089fa8c5435d \
     --hash=sha256:fd66fc5d0da6d9815ba2cebeb4205f95818ff4b79c3ebe268e75d961704af52f
-    # via cookiecutter
+    # via
+    #   cookiecutter
+    #   pre-commit
 readme-renderer==42.0 \
     --hash=sha256:13d039515c1f24de668e2c93f2e877b9dbe6c6c32328b90a40a49d8b2b85f36d \
     --hash=sha256:2d55489f83be4992fe4454939d1a051c33edbab778e82761d060c9fc6b308cd1
@@ -1063,7 +1081,9 @@ urllib3==2.1.0 \
 virtualenv==20.25.0 \
     --hash=sha256:4238949c5ffe6876362d9c0180fc6c3a824a7b12b80604eeb8085f2ed7460de3 \
     --hash=sha256:bf51c0d9c7dd63ea8e44086fa1e4fb1093a31e963b86959257378aef020e1f1b
-    # via tox
+    # via
+    #   pre-commit
+    #   tox
 wheel==0.42.0 \
     --hash=sha256:177f9c9b0d45c47873b619f5b650346d632cdc35fb5e4d25058e09c9e581433d \
     --hash=sha256:c45be39f7882c9d34243236f2d63cbd58039e360f85d0913425fbd7ceea617a8
@@ -1174,5 +1194,6 @@ setuptools==69.0.2 \
     --hash=sha256:1e8fdff6797d3865f37397be788a4e3cba233608e9b509382a2777d25ebde7f2 \
     --hash=sha256:735896e78a4742605974de002ac60562d286fa8051a7e2299445e8e8fbb01aa6
     # via
+    #   nodeenv
     #   pip-tools
     #   safety

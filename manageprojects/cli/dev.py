@@ -6,19 +6,20 @@ import sys
 from pathlib import Path
 
 import rich_click as click
-import manageprojects
 from bx_py_utils.path import assert_is_file
 from cli_base.cli_tools import code_style
 from cli_base.cli_tools.dev_tools import run_coverage, run_tox, run_unittest_cli
-from cli_base.cli_tools.subprocess_utils import verbose_check_call
+from cli_base.cli_tools.subprocess_utils import ToolsExecutor, verbose_check_call
 from cli_base.cli_tools.test_utils.snapshot import UpdateTestSnapshotFiles
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from cli_base.cli_tools.version_info import print_version
-from manageprojects.utilities.publish import publish_package
 from rich.console import Console
 from rich.traceback import install as rich_traceback_install
 from rich_click import RichGroup
+
+import manageprojects
 from manageprojects import constants
+from manageprojects.utilities.publish import publish_package
 
 
 logger = logging.getLogger(__name__)
@@ -59,6 +60,24 @@ class ClickGroup(RichGroup):  # FIXME: How to set the "info_name" easier?
 )
 def cli():
     pass
+
+
+@cli.command()
+def git_hooks():
+    """
+    Setup our "pre-commit" git hooks
+    """
+    executor = ToolsExecutor(cwd=PACKAGE_ROOT)
+    executor.verbose_check_call('pre-commit', 'install')
+
+
+@cli.command()
+def run_git_hooks():
+    """
+    Run the installed "pre-commit" git hooks
+    """
+    executor = ToolsExecutor(cwd=PACKAGE_ROOT)
+    executor.verbose_check_call('pre-commit', 'run', '--verbose', exit_on_error=True)
 
 
 @click.command()
