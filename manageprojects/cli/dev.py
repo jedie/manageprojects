@@ -6,20 +6,19 @@ import sys
 from pathlib import Path
 
 import rich_click as click
+import manageprojects
 from bx_py_utils.path import assert_is_file
+from cli_base.cli_tools import code_style
 from cli_base.cli_tools.dev_tools import run_coverage, run_tox, run_unittest_cli
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.test_utils.snapshot import UpdateTestSnapshotFiles
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from cli_base.cli_tools.version_info import print_version
+from manageprojects.utilities.publish import publish_package
 from rich.console import Console
 from rich.traceback import install as rich_traceback_install
 from rich_click import RichGroup
-
-import manageprojects
 from manageprojects import constants
-from manageprojects.utilities import code_style
-from manageprojects.utilities.publish import publish_package
 
 
 logger = logging.getLogger(__name__)
@@ -170,7 +169,7 @@ def fix_code_style(color: bool, verbosity: int):
     """
     Fix code style of all manageprojects source code files via darker
     """
-    code_style.fix(package_root=PACKAGE_ROOT, color=color, verbose=verbosity > 0)
+    code_style.fix(package_root=PACKAGE_ROOT, darker_color=color, darker_verbose=verbosity > 0)
 
 
 cli.add_command(fix_code_style)
@@ -183,7 +182,7 @@ def check_code_style(color: bool, verbosity: int):
     """
     Check code style by calling darker + flake8
     """
-    code_style.check(package_root=PACKAGE_ROOT, color=color, verbose=verbosity > 0)
+    code_style.check(package_root=PACKAGE_ROOT, darker_color=color, darker_verbose=verbosity > 0)
 
 
 cli.add_command(check_code_style)
