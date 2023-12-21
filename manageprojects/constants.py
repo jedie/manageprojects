@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+import manageprojects
+
 
 INITIAL_REVISION = 'initial_revision'
 INITIAL_DATE = 'initial_date'
@@ -24,7 +26,8 @@ FORMAT_PY_FILE_DARKER_PRE_FIXES = ','.join(
         ]
     )
 )
-FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION = '3.9'
+FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION = '3.10'
 FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH = 119
 
 PY_BIN_PATH = Path(sys.executable).parent
+BASE_PATH = Path(manageprojects.__file__).parent

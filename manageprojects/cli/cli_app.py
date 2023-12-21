@@ -6,10 +6,9 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
 
 import rich_click as click
-from bx_py_utils.path import assert_is_dir, assert_is_file
+from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from cli_base.cli_tools.version_info import print_version
@@ -38,9 +37,6 @@ from manageprojects.utilities.log_utils import log_config
 
 logger = logging.getLogger(__name__)
 
-
-PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
-assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
 
 OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
 OPTION_ARGS_DEFAULT_FALSE = dict(is_flag=True, show_default=True, default=False)
@@ -116,12 +112,12 @@ def cli():
 def start_project(
     template: str,
     output_dir: Path,
-    directory: Optional[str],
-    checkout: Optional[str],
+    directory: str | None,
+    checkout: str | None,
     input: bool,
     replay: bool,
-    password: Optional[str],
-    config_file: Optional[Path],
+    password: str | None,
+    config_file: Path | None,
 ):
     """
     Start a new "managed" project via a CookieCutter Template.
@@ -199,8 +195,8 @@ cli.add_command(start_project)
 def update_project(
     project_path: Path,
     overwrite: bool,
-    password: Optional[str],
-    config_file: Optional[Path],
+    password: str | None,
+    config_file: Path | None,
     input: bool,
     cleanup: bool,
 ):
@@ -250,9 +246,9 @@ def clone_project(
     project_path: Path,
     output_dir: Path,
     input: bool,
-    checkout: Optional[str] = None,
-    password: Optional[str] = None,
-    config_file: Optional[Path] = None,
+    checkout: str | None = None,
+    password: str | None = None,
+    config_file: Path | None = None,
 ):
     """
     Clone existing project by replay the cookiecutter template in a new directory.
