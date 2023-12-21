@@ -163,12 +163,12 @@ def update_managed_project(
                 print(f'./cli.py wiggle {project_path}')
                 print()
 
+        # Important: We *must* read the current "pyproject.toml" here again!
+        # Otherwise, we may overwrite template changed with old content!
+        toml = PyProjectToml(project_path=project_path)
+
     #############################################################################
     # Update "pyproject.toml" with applied patch information
-
-    # Important: We *must* read the current "pyproject.toml" here again!
-    # Otherwise, we may overwrite template changed with old content!
-    toml = PyProjectToml(project_path=project_path)
     toml.add_applied_migrations(git_hash=result.to_rev, dt=result.to_commit_date)
     toml.save()
 

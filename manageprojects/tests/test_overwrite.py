@@ -189,3 +189,5 @@ class UpdateByOverwriteTestCase(BaseTestCase):
             logs.assert_in('Read existing pyproject.toml')
             self.assertEqual(mp_meta.initial_revision, from_rev)
             self.assertEqual(mp_meta.applied_migrations, [to_rev])
+            content = toml.dumps()
+            self.assertIn('[manageprojects] # https://github.com/jedie/manageprojects', content)
