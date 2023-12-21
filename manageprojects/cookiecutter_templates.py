@@ -2,7 +2,6 @@ import logging
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
 
 from cli_base.cli_tools.git import Git
 from rich import print as rprint
@@ -27,13 +26,13 @@ def start_managed_project(
     *,
     template: str,  # CookieCutter Template path or GitHub url
     output_dir: Path,  # Target path where CookieCutter should store the result files
-    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
+    directory: str | None = None,  # Directory name of the CookieCutter Template
     input: bool = True,  # Prompt the user at command line for manual configuration?
-    extra_context: Optional[dict] = None,
-    replay: Optional[bool] = None,
-    checkout: Optional[str] = None,
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    extra_context: dict | None = None,
+    replay: bool | None = None,
+    checkout: str | None = None,
+    password: str | None = None,  # Optional password to use when extracting the repository
+    config_file: Path | None = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> CookiecutterResult:
     """
     Start a new "managed" project by run cookiecutter and create/update "pyproject.toml"
@@ -86,11 +85,11 @@ def start_managed_project(
 def update_managed_project(
     project_path: Path,
     overwrite: bool = False,  # Don't apply git patches -> Just overwrite all template files!
-    password: Optional[str] = None,
-    config_file: Optional[Path] = None,  # CookieCutter config file
+    password: str | None = None,
+    config_file: Path | None = None,  # CookieCutter config file
     cleanup: bool = True,  # Remove temp files if not exceptions happens
     input: bool = False,  # Prompt the user at command line for manual configuration?
-) -> Optional[GenerateTemplatePatchResult]:
+) -> GenerateTemplatePatchResult | None:
     """
     Update a existing project by apply git patch from cookiecutter template changes.
     """
@@ -179,9 +178,9 @@ def update_managed_project(
 def clone_managed_project(
     project_path: Path,
     destination: Path,
-    checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
-    password: Optional[str] = None,
-    config_file: Optional[Path] = None,  # CookieCutter config file
+    checkout: str | None = None,  # Optional branch, tag or commit ID to checkout after clone
+    password: str | None = None,
+    config_file: Path | None = None,  # CookieCutter config file
     input: bool = False,  # Prompt the user at command line for manual configuration?
 ) -> CookiecutterResult:
     """
