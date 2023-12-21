@@ -333,6 +333,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
+  * 2023-12-21 - Bugfix: Don't loose the "[manageprojects]" content on overwrite-update
+  * 2023-12-21 - typing: Optional -> None
   * 2023-12-21 - Unify BASE_PATH / PACKAGE_ROOT etc.
   * 2023-12-21 - Apply manageprojects updates: Skip Python 3.9 support
   * 2023-12-21 - Update requirements
