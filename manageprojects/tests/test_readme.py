@@ -2,7 +2,8 @@ from bx_py_utils.auto_doc import assert_readme_block
 from bx_py_utils.path import assert_is_file
 
 from manageprojects import constants
-from manageprojects.cli.cli_app import PACKAGE_ROOT, cli
+from manageprojects.cli.cli_app import cli
+from manageprojects.cli.dev import PACKAGE_ROOT
 from manageprojects.cli.dev import cli as dev_cli
 from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.tests.base import BaseTestCase

@@ -5,7 +5,7 @@ from bx_py_utils.path import assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 
-import manageprojects
+from manageprojects.constants import BASE_PATH
 from manageprojects.data_classes import ManageProjectsMeta
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.pyproject_toml import PyProjectToml, find_pyproject_toml
@@ -268,7 +268,7 @@ class PyProjectTomlTestCase(BaseTestCase):
         logs.assert_in('Read existing pyproject.toml')
 
     def test_find_pyproject_toml(self):
-        own_pyproject_toml = Path(manageprojects.__file__).parent.parent / 'pyproject.toml'
+        own_pyproject_toml = BASE_PATH.parent / 'pyproject.toml'
         assert_is_file(own_pyproject_toml)
         self.assertEqual(find_pyproject_toml(file_path=Path(__file__)), own_pyproject_toml)
 

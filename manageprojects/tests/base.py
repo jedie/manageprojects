@@ -7,11 +7,9 @@ from unittest import TestCase
 
 from bx_py_utils.path import assert_is_file
 
-import manageprojects
 from manageprojects.utilities.pyproject_toml import TomlDocument, get_toml_document
 
 
-PROJECT_PATH = Path(manageprojects.__file__).parent.parent
 GIT_BIN_PARENT = Path(shutil.which('git')).parent
 
 

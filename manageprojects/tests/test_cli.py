@@ -4,7 +4,8 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 from manageprojects.cli import cli_app
-from manageprojects.cli.cli_app import PACKAGE_ROOT, start_project, update_project
+from manageprojects.cli.cli_app import start_project, update_project
+from manageprojects.cli.dev import PACKAGE_ROOT
 from manageprojects.cli.dev import cli as dev_cli
 from manageprojects.constants import PY_BIN_PATH
 from manageprojects.data_classes import CookiecutterResult

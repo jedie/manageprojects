@@ -5,6 +5,7 @@ from unittest import TestCase
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 from packaging.version import Version
 
+from manageprojects.cli.dev import PACKAGE_ROOT
 from manageprojects.constants import PY_BIN_PATH
 from manageprojects.format_file import (
     Config,
@@ -17,7 +18,7 @@ from manageprojects.format_file import (
     get_pyproject_info,
 )
 from manageprojects.test_utils.subprocess import SimpleRunReturnCallback, SubprocessCallMock
-from manageprojects.tests.base import GIT_BIN_PARENT, PROJECT_PATH
+from manageprojects.tests.base import GIT_BIN_PARENT
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
@@ -111,7 +112,7 @@ class FormatFileTestCase(TestCase):
         self.assertEqual(
             get_pyproject_info(file_path=Path(__file__), default_min_py_version='3.7'),
             PyProjectInfo(
-                pyproject_toml_path=PROJECT_PATH / 'pyproject.toml',
+                pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
                 py_min_ver=Version('3.10'),
                 raw_py_ver_req='>=3.10',
             ),
@@ -129,9 +130,9 @@ class FormatFileTestCase(TestCase):
             self.assertEqual(
                 config,
                 Config(
-                    git_info=GitInfo(cwd=PROJECT_PATH, main_branch_name='main'),
+                    git_info=GitInfo(cwd=PACKAGE_ROOT, main_branch_name='main'),
                     pyproject_info=PyProjectInfo(
-                        pyproject_toml_path=PROJECT_PATH / 'pyproject.toml',
+                        pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
                         py_min_ver=Version('3.10'),
                         raw_py_ver_req='>=3.10',
                     ),

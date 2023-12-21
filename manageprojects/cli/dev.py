@@ -19,13 +19,14 @@ from rich_click import RichGroup
 
 import manageprojects
 from manageprojects import constants
+from manageprojects.constants import BASE_PATH
 from manageprojects.utilities.publish import publish_package
 
 
 logger = logging.getLogger(__name__)
 
 
-PACKAGE_ROOT = Path(manageprojects.__file__).parent.parent
+PACKAGE_ROOT = BASE_PATH.parent
 assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
 
 OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
