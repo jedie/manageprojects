@@ -255,7 +255,7 @@ Usage: ./cli.py format-file [OPTIONS] FILE_PATH
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --py-version                     TEXT     Fallback Python version for darker/pyupgrade, if       │
 │                                           version is not defined in pyproject.toml               │
-│                                           [default: 3.9]                                         │
+│                                           [default: 3.10]                                        │
 │ --max-line-length            -l  INTEGER  Fallback max. line length for darker/isort etc., if    │
 │                                           not defined in .editorconfig                           │
 │                                           [default: 119]                                         │
@@ -332,6 +332,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
+  * 2023-12-21 - Apply manageprojects updates: Skip Python 3.9 support
+  * 2023-12-21 - Update requirements
 * [v0.16.2](https://github.com/jedie/manageprojects/compare/v0.16.1...v0.16.2)
   * 2023-12-16 - Update pre-commit-config
   * 2023-12-16 - Skip test_readme_history() on CI
@@ -344,11 +347,11 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-12-02 - Use code style tooling from cli-base-utilities
   * 2023-12-01 - Apply https://github.com/jedie/cookiecutter_templates updates
   * 2023-12-01 - Use: cli_base.cli_tools.test_utils.logs.AssertLogs
-* [v0.15.4](https://github.com/jedie/manageprojects/compare/v0.15.3...v0.15.4)
-  * 2023-11-27 - Use "flake8-bugbear", too.
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.15.4](https://github.com/jedie/manageprojects/compare/v0.15.3...v0.15.4)
+  * 2023-11-27 - Use "flake8-bugbear", too.
 * [v0.15.3](https://github.com/jedie/manageprojects/compare/v0.15.2...v0.15.3)
   * 2023-11-09 - Bugfix "reverse" if context contains a list
   * 2023-11-07 - Update requirements
