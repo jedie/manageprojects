@@ -27,7 +27,8 @@ logger = logging.getLogger(__name__)
 
 
 PACKAGE_ROOT = BASE_PATH.parent
-assert_is_file(PACKAGE_ROOT / 'pyproject.toml')
+assert_is_file(PACKAGE_ROOT / 'pyproject.toml')  # Exists only in cloned git repo
+
 
 OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
 OPTION_ARGS_DEFAULT_FALSE = dict(is_flag=True, show_default=True, default=False)

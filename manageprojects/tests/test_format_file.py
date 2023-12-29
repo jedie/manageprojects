@@ -113,8 +113,8 @@ class FormatFileTestCase(TestCase):
             get_pyproject_info(file_path=Path(__file__), default_min_py_version='3.7'),
             PyProjectInfo(
                 pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
-                py_min_ver=Version('3.10'),
-                raw_py_ver_req='>=3.10',
+                py_min_ver=Version('3.9'),
+                raw_py_ver_req='>=3.9',
             ),
         )
 
@@ -133,8 +133,8 @@ class FormatFileTestCase(TestCase):
                     git_info=GitInfo(cwd=PACKAGE_ROOT, main_branch_name='main'),
                     pyproject_info=PyProjectInfo(
                         pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
-                        py_min_ver=Version('3.10'),
-                        raw_py_ver_req='>=3.10',
+                        py_min_ver=Version('3.9'),
+                        raw_py_ver_req='>=3.9',
                     ),
                     max_line_length=119,
                 ),
@@ -174,7 +174,7 @@ class FormatFileTestCase(TestCase):
                 [
                     '.../pyupgrade',
                     '--exit-zero-even-if-changed',
-                    '--py310-plus',
+                    '--py39-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 [
@@ -202,7 +202,7 @@ class FormatFileTestCase(TestCase):
                     '--line-length',
                     '119',
                     '--target-version',
-                    'py310',
+                    'py39',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
@@ -239,7 +239,7 @@ class FormatFileTestCase(TestCase):
                 [
                     '.../pyupgrade',
                     '--exit-zero-even-if-changed',
-                    '--py310-plus',
+                    '--py39-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 ['.../autoflake', '--in-place', 'manageprojects/tests/test_format_file.py'],
