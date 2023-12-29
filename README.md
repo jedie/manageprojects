@@ -332,6 +332,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
+  * 2023-12-29 - Still support Python v3.9
 * [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
   * 2023-12-21 - Bugfix: Don't loose the "[manageprojects]" content on overwrite-update
   * 2023-12-21 - typing: Optional -> None
@@ -346,13 +348,13 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-12-16 - Update requirements
 * [v0.16.1](https://github.com/jedie/manageprojects/compare/v0.16.0...v0.16.1)
   * 2023-12-05 - Fix "format file" and very verbose error output
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.16.0](https://github.com/jedie/manageprojects/compare/v0.15.4...v0.16.0)
   * 2023-12-02 - Use code style tooling from cli-base-utilities
   * 2023-12-01 - Apply https://github.com/jedie/cookiecutter_templates updates
   * 2023-12-01 - Use: cli_base.cli_tools.test_utils.logs.AssertLogs
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.15.4](https://github.com/jedie/manageprojects/compare/v0.15.3...v0.15.4)
   * 2023-11-27 - Use "flake8-bugbear", too.
 * [v0.15.3](https://github.com/jedie/manageprojects/compare/v0.15.2...v0.15.3)
