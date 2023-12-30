@@ -219,7 +219,7 @@ A alternative way to update a project:
 1. Just overwrite all files with the current Cookiecutter template output
 2. Merge changes manually via `git`
 
-So you doesn't have trouble with not applyable git patches ;)
+So you doesn't have trouble with not applicable git patches ;)
 
 Just add `--overwrite`, e.g.:
 ```bash
