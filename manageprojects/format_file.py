@@ -12,7 +12,7 @@ from packaging.version import Version
 from rich import print  # noqa
 from rich.pretty import pprint
 
-from manageprojects.constants import FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH, FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION
+from manageprojects.constants import FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH, FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION
 from manageprojects.exceptions import NoPyProjectTomlFound
 from manageprojects.utilities.pyproject_toml import TomlDocument, get_pyproject_toml
 
@@ -147,7 +147,7 @@ def get_editorconfig_max_line_length(file_path) -> Optional[int]:
 
 def get_config(
     file_path,
-    default_min_py_version=FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+    default_min_py_version=FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION,
     default_max_line_length=FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
 ) -> Config:
     config = Config(

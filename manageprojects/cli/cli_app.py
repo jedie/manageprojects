@@ -25,7 +25,7 @@ from manageprojects import constants
 from manageprojects.constants import (
     FORMAT_PY_FILE_DARKER_PRE_FIXES,
     FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
-    FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+    FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION,
 )
 from manageprojects.cookiecutter_templates import (
     clone_managed_project,
@@ -361,7 +361,7 @@ cli.add_command(wiggle)
 @click.command()
 @click.option(
     '--py-version',
-    default=FORMAT_PY_FILE_DEFAULT_MIN_PYTON_VERSION,
+    default=FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION,
     show_default=True,
     help='Fallback Python version for darker/pyupgrade, if version is not defined in pyproject.toml',
 )
