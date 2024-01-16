@@ -41,6 +41,7 @@ dev = [
     "safety",  # https://github.com/pyupio/safety
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
+    "typeguard",  # https://github.com/agronholm/typeguard/
 
     "tomli",  # https://github.com/hukkin/tomli
     #
@@ -170,6 +171,7 @@ applied_migrations = [
     "d1ed4b1", # 2023-12-01T21:41:29+01:00
     "c538ae7", # 2023-12-21T20:21:58+01:00
     "7271d4c", # 2023-12-29T21:57:47+01:00
+    "2f938fc", # 2024-01-16T17:26:31+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
