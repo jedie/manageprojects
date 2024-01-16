@@ -332,6 +332,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.17.1...main)
+  * 2024-01-16 - update requirements
+  * 2023-12-30 - Fix typos
 * [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
   * 2023-12-29 - Still support Python v3.9
 * [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
@@ -346,11 +349,11 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-12-16 - Add git hook "update-readme-history"
   * 2023-12-16 - Apply cookiecutter updates
   * 2023-12-16 - Update requirements
-* [v0.16.1](https://github.com/jedie/manageprojects/compare/v0.16.0...v0.16.1)
-  * 2023-12-05 - Fix "format file" and very verbose error output
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.16.1](https://github.com/jedie/manageprojects/compare/v0.16.0...v0.16.1)
+  * 2023-12-05 - Fix "format file" and very verbose error output
 * [v0.16.0](https://github.com/jedie/manageprojects/compare/v0.15.4...v0.16.0)
   * 2023-12-02 - Use code style tooling from cli-base-utilities
   * 2023-12-01 - Apply https://github.com/jedie/cookiecutter_templates updates
