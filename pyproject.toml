@@ -13,6 +13,15 @@ dependencies = [
     "tomlkit",
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
 
+    "cli-base-utilities",  # https://github.com/jedie/cli-base-utilities
+    "click",  # https://github.com/pallets/click/
+    "rich-click",  # https://github.com/ewels/rich-click
+    "rich",  # https://github.com/Textualize/rich
+]
+[project.optional-dependencies]
+code-style = [  # Needed to use "format-file" command!
+    "ruff",  # https://github.com/astral-sh/ruff
+
     # https://github.com/akaihola/darker
     # https://github.com/ikamensh/flynt
     # https://github.com/pycqa/isort
@@ -27,13 +36,7 @@ dependencies = [
     "pyupgrade",  # https://github.com/asottile/pyupgrade
     "codespell",  # https://github.com/codespell-project/codespell
     "mypy",  # https://github.com/python/mypy
-
-    "cli-base-utilities",  # https://github.com/jedie/cli-base-utilities
-    "click",  # https://github.com/pallets/click/
-    "rich-click",  # https://github.com/ewels/rich-click
-    "rich",  # https://github.com/Textualize/rich
 ]
-[project.optional-dependencies]
 dev = [
     "pip-tools",  # https://github.com/jazzband/pip-tools/
     "tox",  # https://github.com/tox-dev/tox
@@ -73,6 +76,28 @@ version = {attr = "manageprojects.__version__"}
 version_module_name = "manageprojects"  # Used by "update-readme-history" git hook
 
 
+##################################################################################################
+
+
+[tool.ruff.lint]
+select = [
+    "ALL", # enable all rules
+]
+ignore=[
+    "PT", # pytest
+    "ANN", # flake8-annotations
+    #
+    # disable some incompatible combinations:
+    "D211", # no-blank-line-before-class
+    "D213", # multi-line-summary-second-line
+    "COM812", # missing-trailing-comma
+    "ISC001", # single-line-implicit-string-concatenation
+]
+
+[tool.ruff.format]
+quote-style = "single"
+
+
 [tool.darker]
 src = ['.']
 revision = "origin/main..."
@@ -99,6 +124,9 @@ skip_glob=['.*', '*/htmlcov/*']
 known_first_party=['manageprojects']
 line_length=119
 lines_after_imports=2
+
+
+##################################################################################################
 
 
 [tool.coverage.run]

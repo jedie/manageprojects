@@ -264,6 +264,8 @@ Usage: ./cli.py format-file [OPTIONS] FILE_PATH
 │ --remove-all-unused-imports               Remove all unused imports (not just those from the     │
 │                                           standard library) via autoflake                        │
 │                                           [default: True]                                        │
+│ --ruff-format                             Use Ruff "format" instead of the default tools         │
+│ --ruff-check-fix                          Use Ruff "check --fix" instead of the default tools    │
 │ --help                                    Show this message and exit.                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
@@ -333,6 +335,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.17.1...main)
+  * 2024-01-26 - Add ruff to "format-file" command
   * 2024-01-25 - Update requirements
   * 2023-12-30 - Fix typos
 * [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)

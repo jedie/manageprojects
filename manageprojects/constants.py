@@ -1,3 +1,4 @@
+import enum
 import sys
 from pathlib import Path
 
@@ -31,3 +32,7 @@ FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH = 119
 
 PY_BIN_PATH = Path(sys.executable).parent
 BASE_PATH = Path(manageprojects.__file__).parent
+
+
+CLI_RUFF_FORMAT = 'format'
+CLI_RUFF_CHECK_FIX = 'check-fix'

@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 import tomlkit
+from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from cli_base.cli_tools.rich_utils import human_error
 from tomlkit import TOMLDocument
@@ -78,6 +79,11 @@ def get_pyproject_toml(*, file_path: Optional[Path] = None) -> TomlDocument:
     toml_document: TomlDocument = get_toml_document(pyproject_toml_path)
     return toml_document
 
+
+def get_pyproject_toml_values(*keys):
+    toml_document: TomlDocument = get_pyproject_toml()
+    doc: TOMLDocument = toml_document.doc
+    return dict_get(doc, *keys)
 
 class PyProjectToml:
     """

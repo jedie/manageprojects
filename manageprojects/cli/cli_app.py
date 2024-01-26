@@ -384,6 +384,16 @@ cli.add_command(wiggle)
     help='Remove all unused imports (not just those from the standard library) via autoflake',
     **OPTION_ARGS_DEFAULT_TRUE,
 )
+@click.option(
+    '--ruff-format',
+    help='Use Ruff "format" instead of the default tools',
+    **OPTION_ARGS_DEFAULT_FALSE,
+)
+@click.option(
+    '--ruff-check-fix',
+    help='Use Ruff "check --fix" instead of the default tools',
+    **OPTION_ARGS_DEFAULT_FALSE,
+)
 @click.argument('file_path', **ARGUMENT_EXISTING_FILE)
 def format_file(
     *,
@@ -392,6 +402,8 @@ def format_file(
     darker_prefixes: str,
     remove_all_unused_imports: bool,
     file_path: Path,
+    ruff_format: bool,
+    ruff_check_fix: bool,
 ):
     """
     Format and check the given python source code file with darker/autoflake/isort/pyupgrade/autopep8/mypy etc.
@@ -405,6 +417,8 @@ def format_file(
         darker_prefixes=darker_prefixes,
         remove_all_unused_imports=remove_all_unused_imports,
         file_path=file_path,
+        ruff_format=ruff_format,
+        ruff_check_fix=ruff_check_fix,
     )
 
 

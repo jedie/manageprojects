@@ -138,10 +138,11 @@ def update():
         '--generate-hashes',
     ]
 
-    # Only "prod" dependencies:
+    # dependencies + "code-style"-optional-dependencies:
     verbose_check_call(
         *pip_compile_base,
         'pyproject.toml',
+        '--extra=code-style',
         '--output-file',
         'requirements.txt',
         extra_env=extra_env,
@@ -151,6 +152,7 @@ def update():
     verbose_check_call(
         *pip_compile_base,
         'pyproject.toml',
+        '--extra=code-style',
         '--extra=dev',
         '--output-file',
         'requirements.dev.txt',
@@ -161,6 +163,8 @@ def update():
 
     # Install new dependencies in current .venv:
     verbose_check_call(bin_path / 'pip-sync', 'requirements.dev.txt')
+
+    print('\nUpdate packages, done.')
 
 
 cli.add_command(update)

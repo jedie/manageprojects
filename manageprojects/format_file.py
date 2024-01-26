@@ -1,5 +1,6 @@
 import dataclasses
 import subprocess
+from importlib.metadata import version as importlib_version
 from pathlib import Path
 from typing import Optional
 
@@ -48,9 +49,14 @@ class Config:
     max_line_length: int
 
     @property
-    def py_ver_str(self) -> Optional[str]:
+    def python_ver_number_str(self) -> Optional[str]:
         if pyproject_info := self.pyproject_info:
-            return f'py{pyproject_info.py_min_ver.major}{pyproject_info.py_min_ver.minor}'
+            return f'{pyproject_info.py_min_ver.major}{pyproject_info.py_min_ver.minor}'
+
+    @property
+    def py_ver_str(self) -> Optional[str]:
+        if python_ver_number_str := self.python_ver_number_str:
+            return f'py{python_ver_number_str}'
 
     @property
     def project_root_path(self) -> Optional[Path]:
@@ -159,6 +165,46 @@ def get_config(
     return config
 
 
+def run_isort(tools_executor, file_path, config):
+    args = [
+        'isort',
+        '--overwrite-in-place',
+        '--line-length',
+        config.max_line_length,
+    ]
+    if python_ver_number_str := config.python_ver_number_str:
+        args.extend(['--python-version', python_ver_number_str])
+
+    tools_executor.verbose_check_call(
+        *args,
+        file_path,
+    )
+    tools_executor.verbose_check_call('isort', '--version', verbose=False)
+
+
+def run_ruff(tools_executor, file_path, config, *, ruff_format: bool, ruff_check_fix: bool):
+    if ruff_format and ruff_check_fix:
+        raise ValueError('ruff_format and ruff_check_fix can not be used at the same time!')
+
+    if ruff_format:
+        ruff_args = ('format',)
+    else:
+        ruff_args = ('check', '--fix')
+
+    tools_executor.verbose_check_call(
+        'ruff',
+        *ruff_args,
+        '--verbose',
+        '--preview',
+        '--target-version',
+        config.py_ver_str,
+        '--line-length',
+        config.max_line_length,
+        file_path,
+    )
+    tools_executor.verbose_check_call('ruff', '--version', verbose=False)
+
+
 def run_pyupgrade(tools_executor, file_path, config):
     pyver_arg = f'--{config.py_ver_str}-plus'
     tools_executor.verbose_check_call(
@@ -167,6 +213,9 @@ def run_pyupgrade(tools_executor, file_path, config):
         pyver_arg,
         file_path,
     )
+    # There is no: "pyupgrade --version" and no __version__ info in the package!
+    pyupgrade_version = importlib_version('pyupgrade')
+    print(f'pyupgrade: {pyupgrade_version}')
 
 
 def run_autoflake(tools_executor, file_path, config, remove_all_unused_imports):
@@ -176,6 +225,7 @@ def run_autoflake(tools_executor, file_path, config, remove_all_unused_imports):
         args.append('--remove-all-unused-imports')
     args.append(file_path)
     tools_executor.verbose_check_call(*args)
+    tools_executor.verbose_check_call('autoflake', '--version', verbose=False)
 
 
 def run_darker(tools_executor, file_path, config, darker_prefixes):
@@ -207,6 +257,7 @@ def run_darker(tools_executor, file_path, config, darker_prefixes):
         config.py_ver_str,
         file_path,
     )
+    tools_executor.verbose_check_call('darker', '--version', verbose=False)
 
 
 def run_autopep8(tools_executor, file_path, config):
@@ -220,6 +271,7 @@ def run_autopep8(tools_executor, file_path, config):
         '--in-place',
         file_path,
     )
+    tools_executor.verbose_check_call('autopep8', '--version', verbose=False)
 
 
 def run_flake8(tools_executor, file_path, config):
@@ -229,14 +281,18 @@ def run_flake8(tools_executor, file_path, config):
         str(config.max_line_length),
         file_path,
     )
+    tools_executor.verbose_check_call('flake8', '--version', verbose=False)
 
 
 def run_pyflakes(tools_executor, file_path, config):
     tools_executor.verbose_check_call('pyflakes', file_path)
+    tools_executor.verbose_check_call('pyflakes', '--version', verbose=False)
 
 
 def run_codespell(tools_executor, file_path, config):
     tools_executor.verbose_check_call('codespell', file_path)
+    print('codespell', end=' ')
+    tools_executor.verbose_check_call('codespell', '--version', verbose=False)
 
 
 def run_mypy(tools_executor, file_path, config):
@@ -248,6 +304,7 @@ def run_mypy(tools_executor, file_path, config):
         '--allow-redefinition',  # https://github.com/python/mypy/issues/7165
         str(file_path),
     )
+    tools_executor.verbose_check_call('mypy', '--version', verbose=False)
 
 
 def format_one_file(
@@ -257,6 +314,8 @@ def format_one_file(
     darker_prefixes: str,
     remove_all_unused_imports: bool,
     file_path: Path,
+    ruff_format: bool = False,
+    ruff_check_fix: bool = True,
 ) -> None:
     file_path = file_path.resolve()
     print(f'\nApply code formatter to: {file_path}')
@@ -280,21 +339,36 @@ def format_one_file(
 
     print('\n')
 
-    run_pyupgrade(tools_executor, file_path, config)
-    run_autoflake(
-        tools_executor,
-        file_path,
-        config,
-        remove_all_unused_imports=remove_all_unused_imports,
-    )
+    if ruff_format or ruff_check_fix:
+        # Use "only" ruff to format the file...
+        # But it has some troubles:
+        #  * Will not remove unused import correctly
+        #  * Will not ordered import correctly
+        run_autoflake(
+            tools_executor,
+            file_path,
+            config,
+            remove_all_unused_imports=remove_all_unused_imports,
+        )
+        run_isort(tools_executor, file_path, config)
+        run_ruff(tools_executor, file_path, config, ruff_format=ruff_format, ruff_check_fix=ruff_check_fix)
 
-    if config.main_branch_name:
-        run_darker(tools_executor, file_path, config, darker_prefixes)
     else:
-        run_autopep8(tools_executor, file_path, config)
+        run_pyupgrade(tools_executor, file_path, config)
+        run_autoflake(
+            tools_executor,
+            file_path,
+            config,
+            remove_all_unused_imports=remove_all_unused_imports,
+        )
 
-    run_flake8(tools_executor, file_path, config)
-    run_pyflakes(tools_executor, file_path, config)
+        if config.main_branch_name:
+            run_darker(tools_executor, file_path, config, darker_prefixes)
+        else:
+            run_autopep8(tools_executor, file_path, config)
+
+        run_flake8(tools_executor, file_path, config)
+        run_pyflakes(tools_executor, file_path, config)
     run_codespell(tools_executor, file_path, config)
     run_mypy(tools_executor, file_path, config)
 
