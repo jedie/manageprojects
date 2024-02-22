@@ -333,7 +333,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.17.1...main)
-  * 2024-01-25 - Update requirements
+  * 2024-02-22 - Update requirements
   * 2023-12-30 - Fix typos
 * [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
   * 2023-12-29 - Still support Python v3.9
