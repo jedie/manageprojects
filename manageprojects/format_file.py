@@ -250,6 +250,15 @@ def run_mypy(tools_executor, file_path, config):
     )
 
 
+def run_refurb(tools_executor, file_path, config):
+    tools_executor.verbose_check_call(
+        'refurb',
+        '--python-version',
+        f'{config.pyproject_info.py_min_ver.major}.{config.pyproject_info.py_min_ver.minor}',
+        file_path,
+    )
+
+
 def format_one_file(
     *,
     default_min_py_version: str,
@@ -281,6 +290,7 @@ def format_one_file(
     print('\n')
 
     run_pyupgrade(tools_executor, file_path, config)
+
     run_autoflake(
         tools_executor,
         file_path,
@@ -297,6 +307,7 @@ def format_one_file(
     run_pyflakes(tools_executor, file_path, config)
     run_codespell(tools_executor, file_path, config)
     run_mypy(tools_executor, file_path, config)
+    run_refurb(tools_executor, file_path, config)
 
     print('\n')
 
