@@ -25,6 +25,7 @@ dependencies = [
     "flake8",  # https://github.com/pycqa/flake8
     "flake8-bugbear",  # https://github.com/PyCQA/flake8-bugbear
     "pyupgrade",  # https://github.com/asottile/pyupgrade
+    "refurb",  # https://github.com/dosisod/refurb
     "codespell",  # https://github.com/codespell-project/codespell
     "mypy",  # https://github.com/python/mypy
 
