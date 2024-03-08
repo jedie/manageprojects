@@ -216,6 +216,7 @@ class FormatFileTestCase(TestCase):
                     '--allow-redefinition',
                     'manageprojects/tests/test_format_file.py',
                 ],
+                ['.../refurb', '--python-version', '3.9', 'manageprojects/tests/test_format_file.py'],
             ],
         )
 
@@ -264,5 +265,6 @@ class FormatFileTestCase(TestCase):
                     '--allow-redefinition',
                     'manageprojects/tests/test_format_file.py',
                 ],
+                ['.../refurb', '--python-version', '3.9', 'manageprojects/tests/test_format_file.py'],
             ],
         )
