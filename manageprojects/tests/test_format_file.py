@@ -5,7 +5,7 @@ from unittest import TestCase
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 from packaging.version import Version
 
-from manageprojects.cli.dev import PACKAGE_ROOT
+from manageprojects.cli_dev import PACKAGE_ROOT
 from manageprojects.constants import PY_BIN_PATH
 from manageprojects.format_file import (
     Config,

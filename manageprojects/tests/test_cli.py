@@ -3,10 +3,10 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import MagicMock
 
-from manageprojects.cli import cli_app
-from manageprojects.cli.cli_app import start_project, update_project
-from manageprojects.cli.dev import PACKAGE_ROOT
-from manageprojects.cli.dev import cli as dev_cli
+from manageprojects.cli_app import manage
+from manageprojects.cli_app.manage import start_project, update_project
+from manageprojects.cli_dev import PACKAGE_ROOT
+from manageprojects.cli_dev import cli as dev_cli
 from manageprojects.constants import PY_BIN_PATH
 from manageprojects.data_classes import CookiecutterResult
 from manageprojects.test_utils.click_cli_utils import invoke_click
@@ -24,7 +24,7 @@ class CliTestCase(BaseTestCase):
             commit_date=None,
             cookiecutter_context=dict(foo=1, bar=2),
         )
-        with mock.patch.object(cli_app, 'start_managed_project', MagicMock(return_value=result)) as m:
+        with mock.patch.object(manage, 'start_managed_project', MagicMock(return_value=result)) as m:
             stdout = invoke_click(
                 start_project,
                 'https://github.com/jedie/cookiecutter_templates/',
@@ -54,7 +54,7 @@ class CliTestCase(BaseTestCase):
     def test_update_project_cli(self):
         tempdir = tempfile.gettempdir()
 
-        with mock.patch.object(cli_app, 'update_managed_project') as m:
+        with mock.patch.object(manage, 'update_managed_project') as m:
             stdout = invoke_click(update_project, tempdir)
 
         m.assert_called_once_with(

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import dataclasses
 import subprocess
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Sequence, Union
 from unittest.mock import patch
 
 from bx_py_utils.test_utils.context_managers import MassContextManager
@@ -56,7 +58,7 @@ class SubprocessCallMock(MassContextManager):
             patch.object(subprocess, 'run', CallHelper(self.calls, return_callback)),
         ]
 
-    def get_popenargs(self, rstrip_paths: Optional[tuple] = None) -> list:
+    def get_popenargs(self, rstrip_paths: Sequence | None = None) -> list:
         if rstrip_paths:
             rstrip_paths = [str(item) for item in rstrip_paths if item]  # e.g.: Path -> str
 

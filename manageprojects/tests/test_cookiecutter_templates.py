@@ -8,7 +8,7 @@ from bx_py_utils.test_utils.datetime import parse_dt
 from cli_base.cli_tools.test_utils.git_utils import init_git
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 
-from manageprojects.cli.cli_app import clone_project
+from manageprojects.cli_app.manage import clone_project
 from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import CookiecutterResult, GenerateTemplatePatchResult, ManageProjectsMeta
 from manageprojects.test_utils.click_cli_utils import invoke_click
