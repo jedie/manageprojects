@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import shutil
 from pathlib import Path
 
@@ -7,7 +9,7 @@ from rich import print  # noqa
 from rich.pretty import pprint
 
 
-def iter_context(*, context: dict, prefix='') -> tuple:
+def iter_context(*, context: dict, prefix='') -> tuple | None:
     for key, value in context.items():
         if key.startswith('_'):
             continue
