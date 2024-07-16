@@ -10,7 +10,7 @@ from cli_base.cli_tools.test_utils.logs import AssertLogs
 from packaging.version import Version
 
 import manageprojects
-from manageprojects.cli.dev import PACKAGE_ROOT
+from manageprojects.cli_dev import PACKAGE_ROOT
 from manageprojects.test_utils.subprocess import FakeStdout, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT
 from manageprojects.utilities.publish import (

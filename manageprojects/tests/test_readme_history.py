@@ -5,7 +5,7 @@ from bx_py_utils.auto_doc import assert_readme_block
 from cli_base.cli_tools.git_history import get_git_history
 
 import manageprojects
-from manageprojects.cli.dev import PACKAGE_ROOT
+from manageprojects.cli_dev import PACKAGE_ROOT
 
 
 class ReadmeHistoryTestCase(TestCase):

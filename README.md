@@ -310,6 +310,7 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 │ test                        Run unittests                                                        │
 │ tox                         Run tox                                                              │
 │ update                      Update "requirements*.txt" dependencies files                        │
+│ update-readme-history       Update project history base on git commits/tags in README.md         │
 │ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
 │                             files)                                                               │
 │ version                     Print version and exit                                               │
@@ -332,7 +333,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.17.1...main)
+* [v0.17.2](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.17.2)
+  * 2024-07-09 - Split CLI
   * 2024-02-22 - Update requirements
   * 2023-12-30 - Fix typos
 * [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)

@@ -6,7 +6,7 @@ from cli_base.cli_tools.code_style import assert_code_style
 from packaging.version import Version
 
 from manageprojects import __version__
-from manageprojects.cli.dev import PACKAGE_ROOT
+from manageprojects.cli_dev import PACKAGE_ROOT
 from manageprojects.test_utils.project_setup import check_editor_config, get_py_max_line_length
 
 

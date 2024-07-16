@@ -15,13 +15,19 @@ from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from cli_base.cli_tools.version_info import print_version
+from cli_base.click_defaults import (
+    ARGUMENT_EXISTING_DIR,
+    ARGUMENT_EXISTING_FILE,
+    ARGUMENT_NOT_EXISTING_DIR,
+    OPTION_ARGS_DEFAULT_FALSE,
+    OPTION_ARGS_DEFAULT_TRUE,
+)
 from rich import print  # noqa
 from rich.console import Console
 from rich.traceback import install as rich_traceback_install
-from rich_click import RichGroup
 
 import manageprojects
-from manageprojects import constants
+from manageprojects.cli_app import cli
 from manageprojects.constants import (
     FORMAT_PY_FILE_DARKER_PRE_FIXES,
     FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
@@ -41,41 +47,7 @@ from manageprojects.utilities.log_utils import log_config
 logger = logging.getLogger(__name__)
 
 
-OPTION_ARGS_DEFAULT_TRUE = dict(is_flag=True, show_default=True, default=True)
-OPTION_ARGS_DEFAULT_FALSE = dict(is_flag=True, show_default=True, default=False)
-ARGUMENT_EXISTING_DIR = dict(
-    type=click.Path(exists=True, file_okay=False, dir_okay=True, readable=True, path_type=Path)
-)
-ARGUMENT_NOT_EXISTING_DIR = dict(
-    type=click.Path(
-        exists=False,
-        file_okay=False,
-        dir_okay=True,
-        readable=False,
-        writable=True,
-        path_type=Path,
-    )
-)
-ARGUMENT_EXISTING_FILE = dict(
-    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path)
-)
-
-
-class ClickGroup(RichGroup):  # FIXME: How to set the "info_name" easier?
-    def make_context(self, info_name, *args, **kwargs):
-        info_name = './cli.py'
-        return super().make_context(info_name, *args, **kwargs)
-
-
-@click.group(
-    cls=ClickGroup,
-    epilog=constants.CLI_EPILOG,
-)
-def cli():
-    pass
-
-
-@click.command()
+@cli.command()
 @click.argument('template')
 @click.argument('output_dir', **ARGUMENT_NOT_EXISTING_DIR)
 @click.option(
@@ -151,18 +123,14 @@ def start_project(
         config_file=config_file,
     )
 
-    print(
-        f'CookieCutter template {template!r}'
-        f' with git hash {result.git_hash}'
-        f' was created here: {output_dir}'
-    )
+    print(f'CookieCutter template {template!r}' f' with git hash {result.git_hash}' f' was created here: {output_dir}')
     return result
 
 
 cli.add_command(start_project)
 
 
-@click.command()
+@cli.command()
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.option(
     '--overwrite/--no-overwrite',
@@ -226,7 +194,7 @@ def update_project(
 cli.add_command(update_project)
 
 
-@click.command()
+@cli.command()
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.argument('output_dir', **ARGUMENT_NOT_EXISTING_DIR)
 @click.option(
@@ -275,7 +243,7 @@ def clone_project(
 cli.add_command(clone_project)
 
 
-@click.command()
+@cli.command()
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.argument('destination', **ARGUMENT_NOT_EXISTING_DIR)
 @click.option(
@@ -309,7 +277,7 @@ def reverse(
 cli.add_command(reverse)
 
 
-@click.command()
+@cli.command()
 @click.argument('project_path', **ARGUMENT_EXISTING_DIR)
 @click.option(
     '--words/--no-words',
@@ -358,7 +326,7 @@ def wiggle(project_path: Path, words: bool):
 cli.add_command(wiggle)
 
 
-@click.command()
+@cli.command()
 @click.option(
     '--py-version',
     default=FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION,
@@ -411,7 +379,7 @@ def format_file(
 cli.add_command(format_file)
 
 
-@click.command()
+@cli.command()
 def version():
     """Print version and exit"""
     # Pseudo command, because the version always printed on every CLI call ;)
