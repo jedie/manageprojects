@@ -334,6 +334,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.17.2](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.17.2)
+  * 2024-03-08 - Run "refurb", too.
   * 2024-01-16 - add and use typeguard in tests
   * 2024-07-09 - Split CLI
   * 2024-02-22 - Update requirements
