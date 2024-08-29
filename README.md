@@ -336,6 +336,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.17.2](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.17.2)
+  * 2024-08-29 - Update tox envlist to github action matrix
   * 2024-08-29 - Bugfix update pyproject_toml.py via cookiecutter template
   * 2024-08-29 - Update requirements + apply template updates
   * 2024-03-08 - Run "refurb", too.
