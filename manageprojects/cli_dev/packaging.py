@@ -88,5 +88,5 @@ def publish():
     publish_package(
         module=cli_base,
         package_path=PACKAGE_ROOT,
-        distribution_name='cli-base-utilities',
+        distribution_name='manageprojects',
     )
