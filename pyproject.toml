@@ -156,7 +156,7 @@ commands_pre =
     pip install -U pip-tools
     pip-sync requirements.dev.txt
 commands =
-    {envpython} -m coverage run --context='{envname}'
+    python3 -m coverage run --context='{envname}'
 """
 
 
