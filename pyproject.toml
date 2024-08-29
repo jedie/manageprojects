@@ -36,6 +36,8 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
+    "python-gnupg",  # https://github.com/vsajip/python-gnupg
+    "bx_py_utils",   # https://github.com/boxine/bx_py_utils
     "urllib3", # for deny_requests.deny_any_real_request() in tests
     "pip-tools",  # https://github.com/jazzband/pip-tools/
     "tox",  # https://github.com/tox-dev/tox
@@ -94,6 +96,14 @@ ignore-vuln=[]
 
 [tool.cli_base]
 version_module_name = "manageprojects"  # Used by "update-readme-history" git hook
+
+
+[tool.bx_py_utils.doc_write]
+docstring_prefix = 'DocWrite:'
+macro_prefix = 'DocWriteMacro:'
+output_base_path = './docs/'
+search_paths = ['./manageprojects/']
+delete_obsolete_files = true
 
 
 [tool.darker]

@@ -15,9 +15,11 @@ Besides this, `manageprojects` also includes other generic helper for Python pac
 
  * `publish_package()` - Build and upload a new release to PyPi, but with many pre-checks.
  * `format-file` - Format/Check a Python source file with Darker & Co., useful as IDE action.
+ * `install_python.py` - Install Python interpreter, if needed, from official Python FTP server, verified.
 
 Read below the `Helper` section.
 
+Documentation: [docs/](https://github.com/jedie/manageprojects/blob/main/docs/) (WIP)
 
 ## install
 
@@ -233,6 +235,15 @@ Just add `--overwrite`, e.g.:
 
 Below are some generic tools helpful for Python packages.
 
+
+### install_python.py
+
+A script to download, build and install a Python interpreter, but only if the system Python is not the required major version.
+It's a standalone script with no dependencies. Works with Python 3.9+.
+
+More information: [docs/install_python.md](https://github.com/jedie/manageprojects/blob/main/docs/install_python.md)
+
+
 ### "reverse" - Reverse a project into a Cookiecutter template
 
 A existing managed project can be converted back to a Cookiecutter template, e.g.:
@@ -335,7 +346,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [v0.17.2](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.17.2)
+* [v0.18.0](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.18.0)
+  * 2024-08-29 - NEW: install_python.py
   * 2024-08-29 - Fix CI + tox
   * 2024-08-29 - Update tox envlist to github action matrix
   * 2024-08-29 - Bugfix update pyproject_toml.py via cookiecutter template

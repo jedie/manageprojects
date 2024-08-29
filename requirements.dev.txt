@@ -71,7 +71,9 @@ build==1.2.1 \
 bx-py-utils==98 \
     --hash=sha256:30fb49b0f0b21c9fbd544895480a1aa9da63f410572e4b46afbca792e64cec98 \
     --hash=sha256:ac8b193ff117420b77b43c043e50b195d6aa9ee7e72e22265ca699730b61f71f
-    # via cli-base-utilities
+    # via
+    #   cli-base-utilities
+    #   manageprojects (pyproject.toml)
 cachecontrol[filecache]==0.14.0 \
     --hash=sha256:7db1195b41c81f8274a7bbd97c956f44e8348265a1bc7641c37dfebc39f0c938 \
     --hash=sha256:f5bf3f0620c38db2e5122c0726bdebb0d16869de966ea6a2befe92470b740ea0
@@ -789,6 +791,10 @@ python-dateutil==2.9.0.post0 \
     # via
     #   arrow
     #   cli-base-utilities
+python-gnupg==0.5.2 \
+    --hash=sha256:01d8013931c9fa3f45824bbea7054c03d6e11f258a72e7e086e168dbcb91854c \
+    --hash=sha256:72ce142af6da7f07e433fef148b445fb3e07854acd2f88739008838745c0e9f5
+    # via manageprojects (pyproject.toml)
 python-slugify==8.0.4 \
     --hash=sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8 \
     --hash=sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856
