@@ -1,7 +1,6 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Optional
 
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.git import Git
@@ -20,7 +19,7 @@ def verbose_copy(src, dst):
     shutil.copy2(src, dst)
 
 
-def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True) -> Optional[str]:
+def make_git_diff(temp_path: Path, from_path: Path, to_path: Path, verbose=True) -> str | None:
     """
     Create git diff between from_path and to_path
     """
@@ -81,12 +80,12 @@ def generate_template_patch(
     template: str,  # CookieCutter Template path or GitHub url
     from_rev: str,
     replay_context: dict,
-    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
-    password: Optional[str] = None,
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    directory: str | None = None,  # Directory name of the CookieCutter Template
+    password: str | None = None,
+    config_file: Path | None = None,  # Optional path to 'cookiecutter_config.yaml'
     cleanup: bool = True,  # Remove temp files if not exceptions happens
     no_input: bool = False,  # Prompt the user at command line for manual configuration?
-) -> Optional[GenerateTemplatePatchResult]:
+) -> GenerateTemplatePatchResult | None:
     """
     Create git diff/patch from cookiecutter template changes.
     """

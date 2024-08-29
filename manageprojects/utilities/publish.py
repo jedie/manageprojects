@@ -3,7 +3,6 @@ import tempfile
 from collections.abc import Iterable
 from importlib.metadata import version
 from pathlib import Path
-from typing import Optional
 
 from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_file
@@ -138,7 +137,7 @@ def clean_version(version: str) -> Version:
     return Version(version)
 
 
-def setuptools_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Path) -> Optional[Version]:
+def setuptools_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Path) -> Version | None:
     dynamic = dict_get(pyproject_toml, 'project', 'dynamic')
     if dynamic and 'version' in dynamic:
         if dict_get(pyproject_toml, 'tool', 'setuptools', 'dynamic', 'version'):
@@ -150,7 +149,7 @@ def setuptools_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Pat
                 return clean_version(ver_str)
 
 
-def get_pyproject_toml_version(package_path: Path) -> Optional[Version]:
+def get_pyproject_toml_version(package_path: Path) -> Version | None:
     pyproject_toml_path = Path(package_path, 'pyproject.toml')
     assert_is_file(pyproject_toml_path)
 
@@ -166,7 +165,7 @@ def get_pyproject_toml_version(package_path: Path) -> Optional[Version]:
     return setuptools_dynamic_version(pyproject_toml=pyproject_toml, pyproject_toml_path=pyproject_toml_path)
 
 
-def check_version(*, module, package_path: Path, distribution_name: Optional[str] = None) -> Version:
+def check_version(*, module, package_path: Path, distribution_name: str | None = None) -> Version:
     if not distribution_name:
         distribution_name = module.__name__
 
@@ -225,7 +224,7 @@ def publish_package(
     package_path: Path,
     possible_branch_names: tuple[str, ...] = ('main', 'master'),
     tag_msg_log_format: str = '%h %as %s',
-    distribution_name: Optional[str] = None,  # Must be given, if it's not == module.__name__
+    distribution_name: str | None = None,  # Must be given, if it's not == module.__name__
 ) -> None:
     """
     Build and upload (with twine) a project to PyPi with many pre-checks:

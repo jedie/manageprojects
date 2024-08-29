@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from typing import Optional
 from unittest.mock import patch
 
 from bx_py_utils.path import assert_is_dir
@@ -19,10 +18,10 @@ logger = logging.getLogger(__name__)
 def get_repo_path(
     *,
     template: str,  # CookieCutter Template path or GitHub url
-    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
-    checkout: Optional[str] = None,  # The branch, tag or commit ID to checkout after clone
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    directory: str | None = None,  # Directory name of the CookieCutter Template
+    checkout: str | None = None,  # The branch, tag or commit ID to checkout after clone
+    password: str | None = None,  # Optional password to use when extracting the repository
+    config_file: Path | None = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> Path:
     """
     Checkout the cookiecutter template and reset it to `checkout` if needed.
@@ -67,14 +66,14 @@ def get_repo_path(
 def execute_cookiecutter(
     *,
     template: str,  # CookieCutter Template path or GitHub url
-    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
+    directory: str | None = None,  # Directory name of the CookieCutter Template
     output_dir: Path,  # Target path where CookieCutter should store the result files
     no_input: bool = False,  # Prompt the user at command line for manual configuration?
-    extra_context: Optional[dict] = None,
-    replay: Optional[bool] = None,
-    checkout: Optional[str] = None,  # Optional branch, tag or commit ID to checkout after clone
-    password: Optional[str] = None,  # Optional password to use when extracting the repository
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    extra_context: dict | None = None,
+    replay: bool | None = None,
+    checkout: str | None = None,  # Optional branch, tag or commit ID to checkout after clone
+    password: str | None = None,  # Optional password to use when extracting the repository
+    config_file: Path | None = None,  # Optional path to 'cookiecutter_config.yaml'
 ) -> tuple[dict, Path, Path]:
     """
     "Just" run cookiecutter

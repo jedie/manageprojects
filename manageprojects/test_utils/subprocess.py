@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import subprocess
-from typing import Callable, Optional, Sequence, Union
+from collections.abc import Callable, Sequence
 from unittest.mock import patch
 
 from bx_py_utils.test_utils.context_managers import MassContextManager
@@ -10,9 +10,9 @@ from bx_py_utils.test_utils.context_managers import MassContextManager
 
 @dataclasses.dataclass
 class Call:
-    popenargs: Union[tuple, list]
+    popenargs: tuple | list
     args: tuple
-    kwargs: Optional[dict]
+    kwargs: dict | None
 
 
 class FakeStdout:
@@ -38,7 +38,7 @@ class MissingSubprocessCallMockCallback:
 
 
 class SubprocessCallMock(MassContextManager):
-    def __init__(self, return_callback: Optional[Callable] = None):
+    def __init__(self, return_callback: Callable | None = None):
         if return_callback is None:
             return_callback = MissingSubprocessCallMockCallback()
 

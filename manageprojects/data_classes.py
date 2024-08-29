@@ -1,7 +1,6 @@
 import dataclasses
 import datetime
 from pathlib import Path
-from typing import Optional
 
 
 @dataclasses.dataclass
@@ -13,7 +12,7 @@ class CookiecutterResult:
     destination_path: Path
     git_path: Path
     git_hash: str
-    commit_date: Optional[datetime.datetime]
+    commit_date: datetime.datetime | None
     cookiecutter_context: dict
 
     def get_comment(self):
@@ -31,9 +30,9 @@ class ManageProjectsMeta:
     initial_revision: str
     initial_date: datetime.datetime
     applied_migrations: list[str]
-    cookiecutter_template: Optional[str]  # CookieCutter Template path or GitHub url
-    cookiecutter_directory: Optional[str]  # Directory name of the CookieCutter Template
-    cookiecutter_context: Optional[dict]
+    cookiecutter_template: str | None  # CookieCutter Template path or GitHub url
+    cookiecutter_directory: str | None  # Directory name of the CookieCutter Template
+    cookiecutter_context: dict | None
 
     def get_last_git_hash(self) -> str:
         """

@@ -3,7 +3,6 @@ import logging
 import shutil
 import sys
 from pathlib import Path
-from typing import Optional
 
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.git import Git
@@ -24,9 +23,9 @@ def overwrite_project(
     template: str,  # CookieCutter Template path or GitHub url
     from_rev: str,
     replay_context: dict,
-    directory: Optional[str] = None,  # Directory name of the CookieCutter Template
-    password: Optional[str] = None,
-    config_file: Optional[Path] = None,  # Optional path to 'cookiecutter_config.yaml'
+    directory: str | None = None,  # Directory name of the CookieCutter Template
+    password: str | None = None,
+    config_file: Path | None = None,  # Optional path to 'cookiecutter_config.yaml'
     cleanup: bool = True,  # Remove temp files if not exceptions happens
     no_input: bool = False,  # Prompt the user at command line for manual configuration?
 ) -> OverwriteResult:

@@ -347,6 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.18.0](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.18.0)
+  * 2024-08-29 - Update typeannotations
+  * 2024-08-29 - Fix wrong typeannotation
   * 2024-08-29 - Add IncludeInstallPythonBaseTestCase to auto update 'install_python.py'
   * 2024-08-29 - Add: .pre-commit-hooks.yaml
   * 2024-08-29 - NEW: install_python.py
