@@ -1,13 +1,13 @@
 import sys
 from pathlib import Path
 
-import cli_base
 import click
 from cli_base.cli_tools.dev_tools import run_unittest_cli
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from cli_base.run_pip_audit import run_pip_audit
 
+import manageprojects
 from manageprojects.cli_dev import PACKAGE_ROOT, cli
 from manageprojects.utilities.publish import publish_package
 
@@ -85,8 +85,4 @@ def publish():
     """
     run_unittest_cli(verbose=False, exit_after_run=False)  # Don't publish a broken state
 
-    publish_package(
-        module=cli_base,
-        package_path=PACKAGE_ROOT,
-        distribution_name='manageprojects',
-    )
+    publish_package(module=manageprojects, package_path=PACKAGE_ROOT)
