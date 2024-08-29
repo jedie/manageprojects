@@ -40,16 +40,18 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ clone-project   Clone existing project by replay the cookiecutter template in a new directory.   │
-│ format-file     Format and check the given python source code file with                          │
-│                 darker/autoflake/isort/pyupgrade/autopep8/mypy etc.                              │
-│ reverse         Create a cookiecutter template from a managed project.                           │
-│ start-project   Start a new "managed" project via a CookieCutter Template. Note: The             │
-│                 CookieCutter Template *must* be use git!                                         │
-│ update-project  Update a existing project.                                                       │
-│ version         Print version and exit                                                           │
-│ wiggle          Run wiggle to merge *.rej in given directory.                                    │
-│                 https://github.com/neilbrown/wiggle                                              │
+│ clone-project          Clone existing project by replay the cookiecutter template in a new       │
+│                        directory.                                                                │
+│ format-file            Format and check the given python source code file with                   │
+│                        darker/autoflake/isort/pyupgrade/autopep8/mypy etc.                       │
+│ reverse                Create a cookiecutter template from a managed project.                    │
+│ start-project          Start a new "managed" project via a CookieCutter Template. Note: The      │
+│                        CookieCutter Template *must* be use git!                                  │
+│ update-project         Update a existing project.                                                │
+│ update-readme-history  Update project history base on git commits/tags in README.md              │
+│ version                Print version and exit                                                    │
+│ wiggle                 Run wiggle to merge *.rej in given directory.                             │
+│                        https://github.com/neilbrown/wiggle                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
@@ -304,9 +306,9 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 │ git-hooks                   Setup our "pre-commit" git hooks                                     │
 │ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ pip-audit                   Run pip-audit check against current requirements files               │
 │ publish                     Build and upload this project to PyPi                                │
 │ run-git-hooks               Run the installed "pre-commit" git hooks                             │
-│ safety                      Run safety check against current requirements files                  │
 │ test                        Run unittests                                                        │
 │ tox                         Run tox                                                              │
 │ update                      Update "requirements*.txt" dependencies files                        │
@@ -334,6 +336,10 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.17.2](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.17.2)
+  * 2024-08-29 - Fix CI + tox
+  * 2024-08-29 - Update tox envlist to github action matrix
+  * 2024-08-29 - Bugfix update pyproject_toml.py via cookiecutter template
+  * 2024-08-29 - Update requirements + apply template updates
   * 2024-03-08 - Run "refurb", too.
   * 2024-01-16 - add and use typeguard in tests
   * 2024-07-09 - Split CLI

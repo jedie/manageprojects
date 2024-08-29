@@ -40,7 +40,7 @@ class PublishTestCase(TestCase):
         self.assertEqual(
             call_mock.get_popenargs(rstrip_paths=(str(Path(sys.executable).parent),)),
             [
-                ['.../python', '-m', 'build'],
+                ['.../python3', '-m', 'build'],
             ],
         )
 

@@ -23,6 +23,8 @@ from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
 class FormatFileTestCase(TestCase):
+    maxDiff = None
+
     def test_get_git_info(self):
         with AssertLogs(self, loggers=('cli_base',)):
             git_info = get_git_info(file_path=Path(__file__))
@@ -113,8 +115,8 @@ class FormatFileTestCase(TestCase):
             get_pyproject_info(file_path=Path(__file__), default_min_py_version='3.7'),
             PyProjectInfo(
                 pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
-                py_min_ver=Version('3.9'),
-                raw_py_ver_req='>=3.9',
+                py_min_ver=Version('3.11'),
+                raw_py_ver_req='>=3.11',
             ),
         )
 
@@ -133,8 +135,8 @@ class FormatFileTestCase(TestCase):
                     git_info=GitInfo(cwd=PACKAGE_ROOT, main_branch_name='main'),
                     pyproject_info=PyProjectInfo(
                         pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
-                        py_min_ver=Version('3.9'),
-                        raw_py_ver_req='>=3.9',
+                        py_min_ver=Version('3.11'),
+                        raw_py_ver_req='>=3.11',
                     ),
                     max_line_length=119,
                 ),
@@ -174,7 +176,7 @@ class FormatFileTestCase(TestCase):
                 [
                     '.../pyupgrade',
                     '--exit-zero-even-if-changed',
-                    '--py39-plus',
+                    '--py311-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 [
@@ -202,7 +204,7 @@ class FormatFileTestCase(TestCase):
                     '--line-length',
                     '119',
                     '--target-version',
-                    'py39',
+                    'py311',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
@@ -216,7 +218,7 @@ class FormatFileTestCase(TestCase):
                     '--allow-redefinition',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../refurb', '--python-version', '3.9', 'manageprojects/tests/test_format_file.py'],
+                ['.../refurb', '--python-version', '3.11', 'manageprojects/tests/test_format_file.py'],
             ],
         )
 
@@ -240,7 +242,7 @@ class FormatFileTestCase(TestCase):
                 [
                     '.../pyupgrade',
                     '--exit-zero-even-if-changed',
-                    '--py39-plus',
+                    '--py311-plus',
                     'manageprojects/tests/test_format_file.py',
                 ],
                 ['.../autoflake', '--in-place', 'manageprojects/tests/test_format_file.py'],
@@ -265,6 +267,6 @@ class FormatFileTestCase(TestCase):
                     '--allow-redefinition',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../refurb', '--python-version', '3.9', 'manageprojects/tests/test_format_file.py'],
+                ['.../refurb', '--python-version', '3.11', 'manageprojects/tests/test_format_file.py'],
             ],
         )
