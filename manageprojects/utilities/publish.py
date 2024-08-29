@@ -223,7 +223,7 @@ def publish_package(
     *,
     module,
     package_path: Path,
-    possible_branch_names: tuple[str] = ('main', 'master'),
+    possible_branch_names: tuple[str, ...] = ('main', 'master'),
     tag_msg_log_format: str = '%h %as %s',
     distribution_name: Optional[str] = None,  # Must be given, if it's not == module.__name__
 ) -> None:
