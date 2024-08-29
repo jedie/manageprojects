@@ -1,3 +1,4 @@
+import filecmp
 import inspect
 import subprocess
 import sys
@@ -11,6 +12,7 @@ from rich.rule import Rule
 
 from manageprojects.install_python import extract_versions, get_latest_versions
 from manageprojects.tests.docwrite_macros import EXAMPLE_SCRIPT_PATH
+from manageprojects.utilities.include_install_python import SOURCE_PATH, IncludeInstallPythonBaseTestCase
 
 
 PYTHON_ORG_FTP_HTML = """
@@ -121,3 +123,32 @@ class TestGetLatestPythonVersion(TestCase):
                 "A fake Python 3.12.99\n"
             ),
         )
+
+
+class IncludeInstallPythonTestCase(IncludeInstallPythonBaseTestCase):
+    maxDiff = None
+
+    def test_auto_update_install_python(self):
+        self.assertIsNone(self.DESTINATION_PATH)
+        self.assertEqual(SOURCE_PATH.name, 'install_python.py')
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.DESTINATION_PATH = Path(temp_dir) / 'test.py'
+
+            with self.assertRaises(AssertionError) as cm:
+                self.auto_update_install_python()
+
+            self.assertIn('File does not exists', str(cm.exception))
+
+            self.DESTINATION_PATH.write_text('OLD')
+            self.assertFalse(filecmp.cmp(SOURCE_PATH, self.DESTINATION_PATH))
+
+            with self.assertRaises(AssertionError) as cm:
+                self.auto_update_install_python()
+            self.assertIn(' updated, please commit ', str(cm.exception))
+
+            self.assertTrue(filecmp.cmp(SOURCE_PATH, self.DESTINATION_PATH))
+
+            result = self.auto_update_install_python()
+            self.assertIsNone(result)
+            self.assertTrue(filecmp.cmp(SOURCE_PATH, self.DESTINATION_PATH))
