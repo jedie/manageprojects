@@ -40,6 +40,27 @@ options:
 
 ```
 
+## Include in own projects
+
+There is a unittest base class to include `install_python.py` script in your project.
+If will check if the file is up2date and if not, it will update it.
+
+Just include `manageprojects` as a dev dependency in your project.
+And add a test like this:
+
+```python
+class IncludeInstallPythonTestCase(IncludeInstallPythonBaseTestCase):
+
+    # Set the path where the `install_python.py` should be copied to:
+    DESTINATION_PATH = Path(your_package.__file__).parent) / 'install_python.py'
+
+    # Just call the method in a test, it will pass, if the file is up2date:
+    def test_install_python_is_up2date(self):
+        self.auto_update_install_python()
+```
+
+Feel free to do it in a completely different way, this is just a suggestion ;)
+
 ## Supported Python Versions
 
 The following major Python versions are supported and verified with GPG keys:
