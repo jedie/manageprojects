@@ -18,7 +18,7 @@ from manageprojects.data_classes import (
 )
 from manageprojects.overwrite import overwrite_project
 from manageprojects.patching import generate_template_patch
-from manageprojects.utilities.pyproject_toml import PyProjectToml
+from manageprojects.utilities.pyproject_toml import PyProjectToml, update_pyproject_toml
 
 
 logger = logging.getLogger(__name__)
@@ -101,6 +101,7 @@ def update_managed_project(
     # Get information from project's pyproject.toml
 
     toml = PyProjectToml(project_path=project_path)
+    old_mp_table = toml.mp_table  # Save the origin manageprojects data
     meta: ManageProjectsMeta = toml.get_mp_meta()
 
     from_rev = meta.get_last_git_hash()
@@ -165,14 +166,14 @@ def update_managed_project(
                 print(f'./cli.py wiggle {project_path}')
                 print()
 
-        # Important: We *must* read the current "pyproject.toml" here again!
-        # Otherwise, we may overwrite template changed with old content!
-        toml = PyProjectToml(project_path=project_path)
-
     #############################################################################
     # Update "pyproject.toml" with applied patch information
-    toml.add_applied_migrations(git_hash=result.to_rev, dt=result.to_commit_date)
-    toml.save()
+    update_pyproject_toml(
+        old_mp_table=old_mp_table,
+        project_path=project_path,
+        git_hash=result.to_rev,
+        dt=result.to_commit_date,
+    )
 
     return result
 

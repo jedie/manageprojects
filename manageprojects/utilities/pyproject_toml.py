@@ -2,7 +2,6 @@ import dataclasses
 import datetime
 import logging
 from pathlib import Path
-from typing import Optional
 
 import tomlkit
 from bx_py_utils.path import assert_is_dir, assert_is_file
@@ -46,7 +45,7 @@ def get_toml_document(path: Path) -> TomlDocument:
     return TomlDocument(file_path=path, doc=doc)
 
 
-def find_pyproject_toml(file_path: Path) -> Optional[Path]:
+def find_pyproject_toml(file_path: Path) -> Path | None:
     """
     Go back down the directory tree to find the "pyproject.toml" file.
     """
@@ -64,7 +63,7 @@ def find_pyproject_toml(file_path: Path) -> Optional[Path]:
     return None
 
 
-def get_pyproject_toml(*, file_path: Optional[Path] = None) -> TomlDocument:
+def get_pyproject_toml(*, file_path: Path | None = None) -> TomlDocument:
     """
     Find the "pyproject.toml" and return it.
     """
@@ -105,9 +104,7 @@ class PyProjectToml:
             self.mp_table.comment('https://github.com/jedie/manageprojects')
             self.doc.append('manageprojects', self.mp_table)
 
-    def init(
-        self, revision, dt: datetime.datetime, template: str, directory: Optional[str]
-    ) -> None:
+    def init(self, revision, dt: datetime.datetime, template: str, directory: str | None) -> None:
         assert INITIAL_REVISION not in self.mp_table
         assert INITIAL_DATE not in self.mp_table
         assert COOKIECUTTER_TEMPLATE not in self.mp_table
@@ -126,16 +123,6 @@ class PyProjectToml:
             self.mp_table[COOKIECUTTER_CONTEXT] = tomlkit.item(context)
         except (TypeError, ValueError) as err:
             human_error(message=f'Unable to load {context=}', exception=err, exit_code=-1)
-
-    def add_applied_migrations(self, git_hash: str, dt: datetime.datetime) -> None:
-        if not (applied_migrations := self.mp_table.get(APPLIED_MIGRATIONS)):
-            # Add: applied_migrations = []
-            applied_migrations = tomlkit.array()
-            applied_migrations.multiline(multiline=True)
-            self.mp_table.add(APPLIED_MIGRATIONS, applied_migrations)
-
-        # Append git_hash to applied_migrations:
-        applied_migrations.add_line(git_hash, comment=dt.isoformat())
 
     ###############################################################################################
 
@@ -161,3 +148,23 @@ class PyProjectToml:
             cookiecutter_context=data.get(COOKIECUTTER_CONTEXT),
         )
         return result
+
+
+def update_pyproject_toml(*, old_mp_table: Table, project_path, git_hash: str, dt: datetime.datetime) -> None:
+    # Important: We *must* read the current "pyproject.toml" here again!
+    # Otherwise, we may overwrite template changed with old content!
+    toml = PyProjectToml(project_path=project_path)
+
+    if not (applied_migrations := old_mp_table.get(APPLIED_MIGRATIONS)):
+        # Add: applied_migrations = []
+        applied_migrations = tomlkit.array()
+        applied_migrations.multiline(multiline=True)
+        old_mp_table.add(APPLIED_MIGRATIONS, applied_migrations)
+
+    # Append git_hash to applied_migrations:
+    applied_migrations.add_line(git_hash, comment=dt.isoformat())
+
+    # "Overwrite" the old manageprojects table with the new one:
+    toml.doc['manageprojects'] = old_mp_table
+
+    toml.save()

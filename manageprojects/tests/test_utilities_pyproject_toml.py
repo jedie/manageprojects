@@ -8,7 +8,7 @@ from cli_base.cli_tools.test_utils.logs import AssertLogs
 from manageprojects.constants import BASE_PATH
 from manageprojects.data_classes import ManageProjectsMeta
 from manageprojects.tests.base import BaseTestCase
-from manageprojects.utilities.pyproject_toml import PyProjectToml, find_pyproject_toml
+from manageprojects.utilities.pyproject_toml import PyProjectToml, find_pyproject_toml, update_pyproject_toml
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
@@ -121,8 +121,12 @@ class PyProjectTomlTestCase(BaseTestCase):
             )
 
             # add migration info
-            toml.add_applied_migrations(git_hash='abc0002', dt=parse_dt('2000-02-02T00:00:00+0000'))
-            toml.save()
+            update_pyproject_toml(
+                old_mp_table=toml.mp_table,
+                project_path=temp_path,
+                git_hash='abc0002',
+                dt=parse_dt('2000-02-02T00:00:00+0000'),
+            )
             self.assert_file_content(
                 toml.path,
                 inspect.cleandoc(
@@ -146,7 +150,7 @@ class PyProjectTomlTestCase(BaseTestCase):
                 ),
             )
 
-            toml.add_applied_migrations(git_hash='abc0003', dt=parse_dt('2000-03-03T00:00:00+0000'))
+            toml = PyProjectToml(project_path=temp_path)
             toml.create_or_update_cookiecutter_context(
                 context={
                     'cookiecutter': {
@@ -157,7 +161,12 @@ class PyProjectTomlTestCase(BaseTestCase):
                     }
                 }
             )
-            toml.save()
+            update_pyproject_toml(
+                old_mp_table=toml.mp_table,
+                project_path=temp_path,
+                git_hash='abc0003',
+                dt=parse_dt('2000-03-03T00:00:00+0000'),
+            )
             self.assert_file_content(
                 toml.path,
                 inspect.cleandoc(
@@ -182,6 +191,7 @@ class PyProjectTomlTestCase(BaseTestCase):
                     '''
                 ),
             )
+            toml = PyProjectToml(project_path=temp_path)
             data = toml.get_mp_meta()
             self.assertEqual(
                 data,
