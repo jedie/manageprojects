@@ -7,26 +7,26 @@ from bx_py_utils.path import assert_is_dir, assert_is_file
 import manageprojects
 
 
-SOURCE_PATH = Path(manageprojects.__file__).parent / 'install_python.py'
+SOURCE_PATH = Path(manageprojects.__file__).parent / 'setup_python.py'
 
 
-class IncludeInstallPythonBaseTestCase(TestCase):
-    """DocWrite: install_python.md ## Include in own projects
-    There is a unittest base class to include `install_python.py` script in your project.
+class IncludeSetupPythonBaseTestCase(TestCase):
+    """DocWrite: setup_python.md ## Include in own projects
+    There is a unittest base class to include `setup_python.py` script in your project.
     If will check if the file is up2date and if not, it will update it.
 
     Just include `manageprojects` as a dev dependency in your project.
     And add a test like this:
 
     ```python
-    class IncludeInstallPythonTestCase(IncludeInstallPythonBaseTestCase):
+    class IncludeSetupPythonTestCase(IncludeSetupPythonBaseTestCase):
 
-        # Set the path where the `install_python.py` should be copied to:
-        DESTINATION_PATH = Path(your_package.__file__).parent) / 'install_python.py'
+        # Set the path where the `setup_python.py` should be copied to:
+        DESTINATION_PATH = Path(your_package.__file__).parent) / 'setup_python.py'
 
         # The test will pass, if the file is up2date, if it's update the script!
-        def test_install_python_is_up2date(self):
-            self.auto_update_install_python()
+        def test_setup_python_is_up2date(self):
+            self.auto_update_setup_python()
     ```
 
     Feel free to do it in a completely different way, this is just a suggestion ;)
@@ -34,7 +34,7 @@ class IncludeInstallPythonBaseTestCase(TestCase):
 
     DESTINATION_PATH: Path = None  # must be set in the subclass
 
-    def auto_update_install_python(self):
+    def auto_update_setup_python(self):
         assert_is_file(SOURCE_PATH)
 
         self.assertIsInstance(

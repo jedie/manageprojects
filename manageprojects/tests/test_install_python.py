@@ -11,7 +11,7 @@ from rich import print
 from rich.rule import Rule
 
 from manageprojects.install_python import extract_versions, get_latest_versions
-from manageprojects.tests.docwrite_macros import EXAMPLE_SCRIPT_PATH
+from manageprojects.tests.docwrite_macros_install_python import EXAMPLE_SCRIPT_PATH
 from manageprojects.utilities.include_install_python import SOURCE_PATH, IncludeInstallPythonBaseTestCase
 
 

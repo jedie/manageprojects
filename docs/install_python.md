@@ -54,7 +54,7 @@ class IncludeInstallPythonTestCase(IncludeInstallPythonBaseTestCase):
     # Set the path where the `install_python.py` should be copied to:
     DESTINATION_PATH = Path(your_package.__file__).parent) / 'install_python.py'
 
-    # Just call the method in a test, it will pass, if the file is up2date:
+    # The test will pass, if the file is up2date, if it's update the script!
     def test_install_python_is_up2date(self):
         self.auto_update_install_python()
 ```

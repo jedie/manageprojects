@@ -15,7 +15,8 @@ Besides this, `manageprojects` also includes other generic helper for Python pac
 
  * `publish_package()` - Build and upload a new release to PyPi, but with many pre-checks.
  * `format-file` - Format/Check a Python source file with Darker & Co., useful as IDE action.
- * `install_python.py` - Install Python interpreter, if needed, from official Python FTP server, verified.
+ * `install_python.py` - [Install Python interpreter, if needed, from official Python FTP server, verified.](https://github.com/jedie/manageprojects/blob/main/docs/install_python.md)
+ * `setup_python.py` - [Download and setup redistributable Python Interpreter, if needed.](https://github.com/jedie/manageprojects/blob/main/docs/setup_python.md)
 
 Read below the `Helper` section.
 
@@ -346,7 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.18.0...main)
+* [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
+  * 2024-09-15 - NEW: setup_python.py
   * 2024-09-15 - Update requirements
 * [v0.18.0](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.18.0)
   * 2024-08-29 - Fix wrong "module" in publish call :(
