@@ -7,7 +7,7 @@ from bx_py_utils.doc_write.data_structures import MacroContext
 from bx_py_utils.path import assert_is_file
 
 from manageprojects import setup_python
-from manageprojects.setup_python import ARCHIVE_EXTENSION, ARCHIVE_HASH_EXTENSION, LASTEST_RELEASE_URL
+from manageprojects.setup_python import LASTEST_RELEASE_URL
 
 
 PROG = Path(setup_python.__file__).name
@@ -47,9 +47,3 @@ def optimization_priority(macro_context: MacroContext):
     yield ''
     for number, optimization in enumerate(setup_python.OPTIMIZATION_PRIORITY, 1):
         yield f'{number}. `{optimization}`'
-
-
-def extension_info(macro_context: MacroContext):
-    yield ''
-    yield f'* Archive extension: `{ARCHIVE_EXTENSION}`'
-    yield f'* Hash extension: `{ARCHIVE_HASH_EXTENSION}`'
