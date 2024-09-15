@@ -15,8 +15,8 @@ Besides this, `manageprojects` also includes other generic helper for Python pac
 
  * `publish_package()` - Build and upload a new release to PyPi, but with many pre-checks.
  * `format-file` - Format/Check a Python source file with Darker & Co., useful as IDE action.
- * `install_python.py` - [Install Python interpreter, if needed, from official Python FTP server, verified.](https://github.com/jedie/manageprojects/blob/main/docs/install_python.md)
- * `setup_python.py` - [Download and setup redistributable Python Interpreter, if needed.](https://github.com/jedie/manageprojects/blob/main/docs/setup_python.md)
+ * `install_python.py` - [One file and no dependencies to install Python, if needed, from official Python FTP server, verified.](https://github.com/jedie/manageprojects/blob/main/docs/install_python.md)
+ * `setup_python.py` - [One file and no dependencies to download and setup redistributable Python, if needed.](https://github.com/jedie/manageprojects/blob/main/docs/setup_python.md)
 
 Read below the `Helper` section.
 
@@ -347,6 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
+  * 2024-09-15 - Bugfix and enhance "setup_python.py"
 * [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
   * 2024-09-15 - NEW: setup_python.py
   * 2024-09-15 - Update requirements
@@ -369,15 +371,15 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2023-12-30 - Fix typos
 * [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
   * 2023-12-29 - Still support Python v3.9
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
   * 2023-12-21 - Bugfix: Don't loose the "[manageprojects]" content on overwrite-update
   * 2023-12-21 - typing: Optional -> None
   * 2023-12-21 - Unify BASE_PATH / PACKAGE_ROOT etc.
   * 2023-12-21 - Apply manageprojects updates: Skip Python 3.9 support
   * 2023-12-21 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.16.2](https://github.com/jedie/manageprojects/compare/v0.16.1...v0.16.2)
   * 2023-12-16 - Update pre-commit-config
   * 2023-12-16 - Skip test_readme_history() on CI

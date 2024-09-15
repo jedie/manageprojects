@@ -1,7 +1,7 @@
 # Boot Redistributable Python
 
-This is a standalone script (no dependencies) to download and setup
-https://github.com/indygreg/python-build-standalone/ redistributable Python interpreter.
+This is a standalone script (one file and no dependencies) to download and setup
+https://github.com/indygreg/python-build-standalone/ redistributable Python.
 But only if it's needed!
 
 Minimal version to used this script is Python v3.9.
@@ -90,14 +90,11 @@ If the latest Python version is already installed, we skip the download.
 
 All downloads will be done with a secure connection (SSL) and server authentication.
 
+We check if we have "zstd" or "gzip" installed for decompression and prefer "zstd" over "gzip".
+
 If the latest Python version is already installed, we skip the download.
 
 Download will be done in a temporary directory.
-
-We download the archive file and the hash file for verification:
-
-* Archive extension: `.tar.zst`
-* Hash extension: `.tar.zst.sha256`
 
 We check the file hash after downloading the archive.
 
@@ -110,6 +107,13 @@ We add the file `info.json` with all relevant information.
 We add a shell script to `~/.local/bin/pythonX.XX` to start the Python interpreter.
 
 We display version information from Python and pip on `stderr`.
+
+There exists two different directory structures:
+
+* `./python/install/bin/python3`
+* `./python/bin/python3`
+
+We handle both cases and move all contents to the final destination.
 
 The extracted Python will be moved to the final destination in `~/.local/pythonX.XX/`.
 

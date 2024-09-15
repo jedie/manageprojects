@@ -3,8 +3,8 @@
 """
     DocWrite: setup_python.md # Boot Redistributable Python
 
-    This is a standalone script (no dependencies) to download and setup
-    https://github.com/indygreg/python-build-standalone/ redistributable Python interpreter.
+    This is a standalone script (one file and no dependencies) to download and setup
+    https://github.com/indygreg/python-build-standalone/ redistributable Python.
     But only if it's needed!
 """
 from __future__ import annotations
@@ -37,8 +37,7 @@ DEFAULT_MAJOR_VERSION = '3.12'
 GUTHUB_PROJECT = 'indygreg/python-build-standalone'
 LASTEST_RELEASE_URL = f'https://raw.githubusercontent.com/{GUTHUB_PROJECT}/latest-release/latest-release.json'
 HASH_NAME = 'sha256'
-ARCHIVE_EXTENSION = '.tar.zst'
-ARCHIVE_HASH_EXTENSION = f'.tar.zst.{HASH_NAME}'
+
 
 OPTIMIZATION_PRIORITY = ['pgo+lto', 'pgo', 'lto']
 TEMP_PREFIX = 'redist_python_'
@@ -221,7 +220,7 @@ def get_best_variant(names):
             if optimization in name:
                 return name
     logger.warning('No optimization found in names: %r', names)
-    return names[0]
+    return sorted(names)[0]
 
 
 def get_python_version(python_bin: str | Path) -> str | None:
@@ -230,6 +229,13 @@ def get_python_version(python_bin: str | Path) -> str | None:
         full_version = output[-1]
         logger.info('Version of "%s" is: %r', python_bin, full_version)
         return full_version
+
+
+def check_file_in_path(file_name: str):
+    if not shutil.which(file_name):
+        logger.error('Executable %r not found in PATH! (Hint: Add ~/.local/bin to PATH)', file_name)
+    else:
+        logger.info('Executable %r found in PATH, ok.', file_name)
 
 
 @dataclasses.dataclass
@@ -248,8 +254,9 @@ def setup_python(
     The download will be only done, if the system Python is not the same major version as requested
     and if the local Python is not up-to-date.
     """
-
     logger.info('Requested major Python version: %s', major_version)
+
+    final_file_name = f'python{major_version}'
 
     existing_version = None
     existing_python_bin = None
@@ -271,13 +278,39 @@ def setup_python(
                     continue
 
                 logger.info('System Python v%s already installed: Return path %r of it.', existing_version, python3bin)
+                check_file_in_path(final_file_name)
                 return Path(python3bin)
         else:
             logger.debug('%s not found, ok.', filename)
 
+    local_bin_path = Path.home() / '.local' / 'bin' / final_file_name
+    # Maybe ~/.local/bin/pythonX.XX is already installed, but ~/.local/bin/ is not in PATH:
+    if not existing_python_bin and local_bin_path.is_file():
+        if existing_version := get_python_version(local_bin_path):
+            assert existing_version.startswith(
+                major_version
+            ), f'{existing_version=} does not start with {major_version=}'
+            existing_python_bin = local_bin_path
+
     logger.debug('Existing Python version: %s', existing_version)
 
-    filters = [ARCHIVE_EXTENSION, *get_platform_parts()]
+    """DocWrite: setup_python.md ## Workflow - 4. Download and verify Archive
+    We check if we have "zstd" or "gzip" installed for decompression and prefer "zstd" over "gzip"."""
+    if shutil.which('zstd'):
+        logger.debug('zstd found, ok.')
+        compress_program = 'zstd'
+        compress_extension = 'zst'
+    elif shutil.which('gzip'):
+        logger.debug('gzip found, ok.')
+        compress_program = 'gzip'
+        compress_extension = 'gz'
+    else:
+        raise FileNotFoundError('"zstd" or "gzip" compress program not found!')
+
+    archive_extension = f'.tar.{compress_extension}'
+    archive_hash_extension = f'.tar.{compress_extension}.{HASH_NAME}'
+
+    filters = [archive_extension, *get_platform_parts()]
     logger.debug('Use filters: %s', filters)
 
     """DocWrite: setup_python.md ## Workflow - 2. Collect latest release data
@@ -308,19 +341,15 @@ def setup_python(
             # Ignore incompatible assets
             continue
 
-        """DocWrite: setup_python.md ## Workflow - 4. Download and verify Archive
-        We download the archive file and the hash file for verification:
-        DocWriteMacro: manageprojects.tests.docwrite_macros_setup_python.extension_info
-        """
-        if full_name.endswith(ARCHIVE_EXTENSION):
-            name = removesuffix(full_name, ARCHIVE_EXTENSION)
+        if full_name.endswith(archive_extension):
+            name = removesuffix(full_name, archive_extension)
             archive_infos[name] = DownloadInfo(url=asset['browser_download_url'], size=asset['size'])
-        elif full_name.endswith(ARCHIVE_HASH_EXTENSION):
-            name = removesuffix(full_name, ARCHIVE_HASH_EXTENSION)
+        elif full_name.endswith(archive_hash_extension):
+            name = removesuffix(full_name, archive_hash_extension)
             hash_urls[name] = asset['browser_download_url']
 
-    assert archive_infos, f'No "{ARCHIVE_EXTENSION}" found in {assets=}'
-    assert hash_urls, f'No "{ARCHIVE_HASH_EXTENSION}" found in {assets=}'
+    assert archive_infos, f'No "{archive_extension}" found in {assets=}'
+    assert hash_urls, f'No "{archive_hash_extension}" found in {assets=}'
 
     assert archive_infos.keys() == hash_urls.keys(), f'{archive_infos.keys()=} != {hash_urls.keys()=}'
 
@@ -342,6 +371,7 @@ def setup_python(
                 if force_update:
                     logger.info('Force update requested: Continue with download ...')
                 else:
+                    check_file_in_path(final_file_name)
                     return Path(existing_python_bin)
         else:
             logger.warning('No version found in %r', best_variant)
@@ -378,14 +408,34 @@ def setup_python(
         # Extract .tar.zstd archive file into temporary directory:
         logger.debug('Extract %s into %s ...', archive_temp_path, temp_path)
         run(
-            ['tar', '--use-compress-program=zstd', '--extract', '--file', archive_temp_path, '--directory', temp_path],
+            [
+                'tar',
+                f'--use-compress-program={compress_program}',
+                '--extract',
+                '--file',
+                archive_temp_path,
+                '--directory',
+                temp_path,
+            ],
             check=True,
         )
 
         src_path = temp_path / 'python'
         assert_is_dir(src_path)
 
-        temp_python_path = src_path / 'install' / 'bin' / 'python3'
+        """DocWrite: setup_python.md ## Workflow - 6. Setup Python
+        There exists two different directory structures:
+
+        * `./python/install/bin/python3`
+        * `./python/bin/python3`
+
+        We handle both cases and move all contents to the final destination.
+        """
+        has_install_dir = (src_path / 'install').is_dir()
+        if has_install_dir:
+            temp_python_path = src_path / 'install' / 'bin' / 'python3'
+        else:
+            temp_python_path = src_path / 'bin' / 'python3'
         assert_is_file(temp_python_path)
 
         python_version_info = verbose_check_output([str(temp_python_path), '-VV']).strip()
@@ -411,21 +461,23 @@ def setup_python(
 
         """DocWrite: setup_python.md ## Workflow - 6. Setup Python
         The extracted Python will be moved to the final destination in `~/.local/pythonX.XX/`."""
-        dest_path = Path.home() / '.local' / f'python{major_version}'
+        dest_path = Path.home() / '.local' / final_file_name
         logger.debug('Move %s to %s ...', src_path, dest_path)
         if dest_path.exists():
             logger.info('Remove existing %r ...', dest_path)
             shutil.rmtree(dest_path)
         shutil.move(src_path, dest_path)
 
-    python_home_path = dest_path / 'install'
+    if has_install_dir:
+        python_home_path = dest_path / 'install'
+    else:
+        python_home_path = dest_path
 
     """DocWrite: setup_python.md ## Workflow - 6. Setup Python
     We add a shell script to `~/.local/bin/pythonX.XX` to start the Python interpreter."""
-    bin_path = python_home_path / 'bin' / f'python{major_version}'
+    bin_path = python_home_path / 'bin' / final_file_name
     assert_is_file(bin_path)
 
-    local_bin_path = Path.home() / '.local' / 'bin' / f'python{major_version}'
     logger.debug('Create %s ...', local_bin_path)
     local_bin_path.parent.mkdir(parents=True, exist_ok=True)
     with local_bin_path.open('w') as f:
@@ -446,6 +498,7 @@ def setup_python(
     print('Pip info:', verbose_check_output([str(local_bin_path), '-m', 'pip', '-VV']), file=sys.stderr)
 
     logger.info('Python v%s installed: Return path %r of it.', major_version, local_bin_path)
+    check_file_in_path(final_file_name)
     return local_bin_path
 
 
