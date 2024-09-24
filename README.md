@@ -347,6 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.19.1...main)
+  * 2024-09-24 - Update requirements
 * [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
   * 2024-09-15 - Bugfix and enhance "setup_python.py"
 * [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
@@ -369,11 +371,11 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2024-07-09 - Split CLI
   * 2024-02-22 - Update requirements
   * 2023-12-30 - Fix typos
-* [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
-  * 2023-12-29 - Still support Python v3.9
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
+  * 2023-12-29 - Still support Python v3.9
 * [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
   * 2023-12-21 - Bugfix: Don't loose the "[manageprojects]" content on overwrite-update
   * 2023-12-21 - typing: Optional -> None
