@@ -347,7 +347,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.19.1...main)
+* [v0.19.2](https://github.com/jedie/manageprojects/compare/v0.19.1...v0.19.2)
+  * 2024-09-24 - Add piwheels hashes, too.
+  * 2024-09-24 - Apply update from cookiecutter templates
   * 2024-09-24 - Update requirements
 * [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
   * 2024-09-15 - Bugfix and enhance "setup_python.py"

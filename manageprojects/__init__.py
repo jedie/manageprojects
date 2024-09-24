@@ -3,5 +3,6 @@
     Manage Python / Django projects
 """
 
-__version__ = '0.19.1'
+# See https://packaging.python.org/en/latest/specifications/version-specifiers/
+__version__ = '0.19.2'
 __author__ = 'Jens Diemer <mamageprojects@jensdiemer.de>'
