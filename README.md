@@ -348,6 +348,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.19.2...main)
+  * 2024-09-25 - Add: test_pre_commit_hooks()
   * 2024-09-25 - Move git pre-commit hook from dev-cli.py to update command
 * [v0.19.2](https://github.com/jedie/manageprojects/compare/v0.19.1...v0.19.2)
   * 2024-09-24 - Add piwheels hashes, too.
