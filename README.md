@@ -347,6 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.19.2...main)
+  * 2024-09-25 - Move git pre-commit hook from dev-cli.py to update command
 * [v0.19.2](https://github.com/jedie/manageprojects/compare/v0.19.1...v0.19.2)
   * 2024-09-24 - Add piwheels hashes, too.
   * 2024-09-24 - Apply update from cookiecutter templates
@@ -356,6 +358,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
   * 2024-09-15 - NEW: setup_python.py
   * 2024-09-15 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.18.0](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.18.0)
   * 2024-08-29 - Fix wrong "module" in publish call :(
   * 2024-08-29 - Fix wrong "distribution_name" in publish command
@@ -373,9 +378,6 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2024-07-09 - Split CLI
   * 2024-02-22 - Update requirements
   * 2023-12-30 - Fix typos
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.17.1](https://github.com/jedie/manageprojects/compare/v0.17.0...v0.17.1)
   * 2023-12-29 - Still support Python v3.9
 * [v0.17.0](https://github.com/jedie/manageprojects/compare/v0.16.2...v0.17.0)
