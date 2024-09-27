@@ -8,7 +8,7 @@ from rich import print  # noqa
 from manageprojects.cli_app import cli
 
 
-@cli.command()
+@cli.register
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def update_readme_history(verbosity: int):
     """

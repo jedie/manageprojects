@@ -12,7 +12,7 @@ from manageprojects.cli_dev import PACKAGE_ROOT, cli
 from manageprojects.utilities.publish import publish_package
 
 
-@cli.command()
+@cli.register
 def install():
     """
     Run pip-sync and install 'manageprojects' via pip as editable.
@@ -21,7 +21,7 @@ def install():
     verbose_check_call('pip', 'install', '--no-deps', '-e', '.')
 
 
-@cli.command()
+@cli.register
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def pip_audit(verbosity: int):
     """
@@ -30,7 +30,7 @@ def pip_audit(verbosity: int):
     run_pip_audit(base_path=PACKAGE_ROOT, verbosity=verbosity)
 
 
-@cli.command()
+@cli.register
 def update():
     """
     Update "requirements*.txt" dependencies files
@@ -71,10 +71,10 @@ def update():
     verbose_check_call(bin_path / 'pip-sync', 'requirements.dev.txt')
 
     # Update git pre-commit hooks:
-    verbose_check_call(bin_path / 'pre_commit', 'autoupdate')
+    verbose_check_call(bin_path / 'pre-commit', 'autoupdate')
 
 
-@cli.command()
+@cli.register
 def publish():
     """
     Build and upload this project to PyPi

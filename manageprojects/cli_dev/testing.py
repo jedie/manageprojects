@@ -7,14 +7,14 @@ from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
 from manageprojects.cli_dev import PACKAGE_ROOT, cli
 
 
-@cli.command()
+@cli.register
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def mypy(verbosity: int):
     """Run Mypy (configured in pyproject.toml)"""
     verbose_check_call('mypy', '.', cwd=PACKAGE_ROOT, verbose=verbosity > 0, exit_on_error=True)
 
 
-@cli.command()
+@cli.register
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def update_test_snapshot_files(verbosity: int):
     """
@@ -32,7 +32,7 @@ def update_test_snapshot_files(verbosity: int):
         )
 
 
-@cli.command()  # Dummy command
+@cli.register  # Dummy command
 def test():
     """
     Run unittests
@@ -40,7 +40,7 @@ def test():
     run_unittest_cli()
 
 
-@cli.command()  # Dummy command
+@cli.register  # Dummy command
 def coverage():
     """
     Run tests and show coverage report.
@@ -48,7 +48,7 @@ def coverage():
     run_coverage()
 
 
-@cli.command()  # Dummy "tox" command
+@cli.register  # Dummy "tox" command
 def tox():
     """
     Run tox
