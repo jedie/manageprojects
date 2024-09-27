@@ -6,7 +6,7 @@ from cli_base.click_defaults import OPTION_ARGS_DEFAULT_TRUE
 from manageprojects.cli_dev import PACKAGE_ROOT, cli
 
 
-@cli.command()
+@cli.register
 @click.option('--color/--no-color', **OPTION_ARGS_DEFAULT_TRUE)
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def fix_code_style(color: bool, verbosity: int):
@@ -16,7 +16,7 @@ def fix_code_style(color: bool, verbosity: int):
     code_style.fix(package_root=PACKAGE_ROOT, darker_color=color, darker_verbose=verbosity > 0)
 
 
-@cli.command()
+@cli.register
 @click.option('--color/--no-color', **OPTION_ARGS_DEFAULT_TRUE)
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def check_code_style(color: bool, verbosity: int):

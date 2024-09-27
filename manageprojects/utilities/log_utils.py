@@ -27,7 +27,7 @@ def print_log_info(filename):
     print(f'\nLog file created here: {filename}\n')
 
 
-def log_config(
+def log_config(  # TODO: Merge with cli_base.cli_tools.verbosity.setup_logging
     level=logging.DEBUG,
     format='%(asctime)s %(levelname)s %(name)s.%(funcName)s %(lineno)d | %(message)s',
     log_in_file=True,

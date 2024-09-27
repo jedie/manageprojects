@@ -14,11 +14,6 @@ astor==0.8.1 \
     --hash=sha256:070a54e890cefb5b3739d19f30f5a5ec840ffc9c50ffa7d23cc9fc1a38ebbfc5 \
     --hash=sha256:6a6effda93f4e1ce9f618779b2dd1d9d84f1e32812c23a29b3fff6fd7f63fa5e
     # via flynt
-async-timeout==4.0.3 \
-    --hash=sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f \
-    --hash=sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028 \
-    --hash=sha256:fd893e4cb1d9dff66d0e0576cc6376a23eacbbcd43b6607e4d3ecfae1ab15367
-    # via cli-base-utilities
 attrs==24.2.0 \
     --hash=sha256:09df292052496e45c3edea6e1046968c7e5231b5fee8106a49f950b42dd5eeef \
     --hash=sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346 \
@@ -151,6 +146,7 @@ cffi==1.17.1 \
     --hash=sha256:d016c76bdd850f3c626af19b0542c9677ba156e4ee4fccfdd7848803533ef662 \
     --hash=sha256:d01b12eeeb4427d3110de311e1774046ad344f5b1a7403101878976ecd7a10f3 \
     --hash=sha256:d63afe322132c194cf832bfec0dc69a99fb9bb6bbd550f161a49e9e855cc78ff \
+    --hash=sha256:da2e6428aa89f81b9a97c5818e7e5875f2c40bef6abbbe17e0d768199aa943f1 \
     --hash=sha256:da95af8214998d77a98cc14e3a3bd00aa191526343078b530ceb0bd710fb48a5 \
     --hash=sha256:dd398dbc6773384a17fe0d3e7eeb8d1a21c2200473ee6806bb5e6a8e62bb73dd \
     --hash=sha256:de2ea4b5833625383e464549fec1bc395c1bdeeb5f25c4a3a82b5a8c756ec22f \
@@ -274,10 +270,10 @@ charset-normalizer==3.3.2 \
     --hash=sha256:fd1abc0d89e30cc4e02e4064dc67fcc51bd941eb395c502aac3ec19fab46b519 \
     --hash=sha256:ff8fa367d09b717b2a17a052544193ad76cd49979c805768879cb63d9ca50561
     # via requests
-cli-base-utilities==0.11.0 \
-    --hash=sha256:22c01bffece11781db0cba2110e9bf721361d50fb8a877bd251422ebaf3daee9 \
-    --hash=sha256:2c674f3af4898f97d101f6687fb45e85a4b996b93fb9a155a29b4daaf302dc43 \
-    --hash=sha256:fc503f8df7e19653167ebd12551718aa0c114114b959f177be2092eab1ce1b11
+cli-base-utilities==0.13.1 \
+    --hash=sha256:1b5774764e6fea194b5fd36fee1325dba22abf37e8634cdba548d7ebc8a28627 \
+    --hash=sha256:a0142b46ced685fda8e7393c90d2cb1a709ea7ae37469249e3f519bd8c7844e2 \
+    --hash=sha256:abb265fee788af0e347395bd9c863370df04ddc6b8aff97e77841c994f5daee6
     # via manageprojects (pyproject.toml)
 click==8.1.7 \
     --hash=sha256:8e38806544348fdafedd47e92e90aca882377a0680918dec4c80c225a0e5ed13 \
@@ -435,6 +431,10 @@ distlib==0.3.8 \
     --hash=sha256:0444bad8dcf71ec6c3281939ed79fe8a3a278dd0745b8e6d1374d038dd5d64c7 \
     --hash=sha256:1530ea13e350031b6312d8580ddb6b27a104275a31106523b8f123787f494f64
     # via virtualenv
+docstring-parser==0.16 \
+    --hash=sha256:538beabd0af1e2db0146b6bd3caa526c35a34d61af9fd2887f3a8a27a739aa6e \
+    --hash=sha256:bf0a1387354d3691d102edef7ec124f219ef639982d096e26e3b60aeffa90637
+    # via tyro
 docutils==0.21.2 \
     --hash=sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f \
     --hash=sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2 \
@@ -980,18 +980,22 @@ rich==13.8.1 \
     #   pip-audit
     #   rich-click
     #   twine
+    #   tyro
 rich-click==1.8.3 \
     --hash=sha256:636d9c040d31c5eee242201b5bf4f2d358bfae4db14bb22ec1cafa717cfd02cd \
     --hash=sha256:6d75bdfa7aa9ed2c467789a0688bc6da23fbe3a143e19aa6ad3f8bac113d2ab3 \
     --hash=sha256:ef50d4087a5a4f1e7fcee7972f78775e9b33c0709a86dc10f9f5b929ba4d51b8
-    # via
-    #   cli-base-utilities
-    #   manageprojects (pyproject.toml)
+    # via manageprojects (pyproject.toml)
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:cd7ed5cdeb3e5d7f18a7651500e0fec895205ae9c0abf7e5e63f6768d69418a2 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
     # via keyring
+shtab==1.7.1 \
+    --hash=sha256:32d3d2ff9022d4c77a62492b6ec875527883891e33c6b479ba4d41a51e259983 \
+    --hash=sha256:4e4bcb02eeb82ec45920a5d0add92eac9c9b63b2804c9196c1f1fdc2d039243c \
+    --hash=sha256:60d06a16bf25f675d374b87fb0c020aaa13bc01f0e2f279541feeb7155db5141
+    # via tyro
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -1018,10 +1022,6 @@ toml==0.10.2 \
     #   darker
     #   darkgraylib
     #   pip-audit
-tomli==2.0.1 \
-    --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
-    --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
-    # via cli-base-utilities
 tomlkit==0.13.2 \
     --hash=sha256:7a974427f6e119197f670fbbbeae7bef749a6c14e793db934baefc1b5f03efde \
     --hash=sha256:fff5fe59a87295b278abd31bec92c15d9bc4a06885ab12bcea52c71119392e79
@@ -1054,6 +1054,12 @@ typing-extensions==4.12.2 \
     #   mypy
     #   rich-click
     #   typeguard
+    #   tyro
+tyro==0.8.11 \
+    --hash=sha256:0a8dd180e6afcd5df9d9f940b7e6225f67ceb348678d49df9df00a59576174fb \
+    --hash=sha256:241d95789733107829e7ea7c24727863db2e61aa74cf9b2251c85f4e7abccd4c \
+    --hash=sha256:486e6ed6672df2222303877a39a498e8f0fc762cdb9deacac67320c44a8eba45
+    # via cli-base-utilities
 urllib3==2.2.3 \
     --hash=sha256:53042b594bc77c4b5d43f598b9eca1333bf4f884c300473192f4d4f47bab1d2d \
     --hash=sha256:ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac \

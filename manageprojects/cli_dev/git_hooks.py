@@ -2,7 +2,7 @@ from manageprojects.cli_dev import PACKAGE_ROOT, cli
 from manageprojects.format_file import ToolsExecutor
 
 
-@cli.command()
+@cli.register
 def git_hooks():
     """
     Setup our "pre-commit" git hooks
@@ -11,7 +11,7 @@ def git_hooks():
     executor.verbose_check_call('pre-commit', 'install')
 
 
-@cli.command()
+@cli.register
 def run_git_hooks():
     """
     Run the installed "pre-commit" git hooks
