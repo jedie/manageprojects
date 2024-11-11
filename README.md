@@ -348,6 +348,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
+  * 2024-11-11 - Bugfix publish: Add "build" dep.
   * 2024-11-11 - Bugfix publish command: Add missing "setuptools" dep.
   * 2024-11-11 - Switch to uv
   * 2024-09-25 - Add: test_pre_commit_hooks()

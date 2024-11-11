@@ -42,6 +42,7 @@ dev = [
     "urllib3", # for deny_requests.deny_any_real_request() in tests
     "uv",  # https://github.com/astral-sh/uv
     "setuptools",  # https://github.com/pypa/setuptools
+    "build",  # https://github.com/pypa/build
     "tox",  # https://github.com/tox-dev/tox
     "tox-uv",  # https://github.com/tox-dev/tox-uv
     "coverage",  # https://github.com/nedbat/coveragepy
