@@ -34,13 +34,15 @@ dependencies = [
     "rich-click",  # https://github.com/ewels/rich-click
     "rich",  # https://github.com/Textualize/rich
 ]
-[project.optional-dependencies]
+
+[dependency-groups]
 dev = [
     "python-gnupg",  # https://github.com/vsajip/python-gnupg
     "bx_py_utils",   # https://github.com/boxine/bx_py_utils
     "urllib3", # for deny_requests.deny_any_real_request() in tests
-    "pip-tools",  # https://github.com/jazzband/pip-tools/
+    "uv",  # https://github.com/astral-sh/uv
     "tox",  # https://github.com/tox-dev/tox
+    "tox-uv",  # https://github.com/tox-dev/tox-uv
     "coverage",  # https://github.com/nedbat/coveragepy
     "autopep8",  # https://github.com/hhatto/autopep8
     "pyupgrade",  # https://github.com/asottile/pyupgrade
@@ -66,15 +68,6 @@ dev = [
     # backports.tarfile is needed for python <3.12
     'backports.tarfile', # via jaraco-context -> keyring -> twine
 ]
-
-[tool.pip-tools.compile]
-index-url="https://pypi.org/simple"
-extra-index-url=["https://www.piwheels.org/simple"] # Add hashes of piwheels packages, too!
-generate-hashes = true
-# https://pip-tools.readthedocs.io/en/stable/#deprecations
-allow-unsafe = true
-resolver="backtracking"
-strip-extras = true
 
 [project.urls]
 Documentation = "https://github.com/jedie/manageprojects"
@@ -163,21 +156,16 @@ exclude_lines = [
 
 
 [tool.tox]  # https://tox.wiki/en/latest/config.html#pyproject-toml
-legacy_tox_ini = """
-[tox]
-isolated_build = True
-envlist = py{313,312,311}
-skip_missing_interpreters = True
+isolated_build = true
+env_list = ["3.13", "3.12", "3.11"]
+skip_missing_interpreters = true
 
-[testenv]
-passenv = *
-skip_install = true
-commands_pre =
-    pip install -U pip-tools
-    pip-sync requirements.dev.txt
-commands =
-    python3 -m coverage run --context='{envname}'
-"""
+[tool.tox.env_run_base]
+runner = "uv-venv-lock-runner"
+with_dev = true
+commands = [
+    ["python3", "-m", "coverage", "run", "--context", "'{envname}'"]
+]
 
 
 [tool.mypy]
@@ -193,7 +181,7 @@ exclude = ['.venv', 'tests']
 initial_revision = "8438598"
 initial_date = 2022-11-20T20:01:37+01:00
 cookiecutter_template = "https://github.com/jedie/cookiecutter_templates"
-cookiecutter_directory = "piptools-python"
+cookiecutter_directory = "uv-python"
 applied_migrations = [
     "cf44769", # 2023-01-11T08:15:06+01:00
     "cd164cd", # 2023-02-18T11:55:57+01:00
@@ -214,6 +202,7 @@ applied_migrations = [
     "f8be3e0", # 2024-07-16T19:35:26+02:00
     "2cdc1d8", # 2024-08-25T19:00:41+02:00
     "56c3caa", # 2024-09-22T16:52:30+02:00
+    "ff48b81", # 2024-11-09T19:08:01+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
