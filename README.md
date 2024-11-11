@@ -316,7 +316,7 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 │ coverage                    Run tests and show coverage report.                                  │
 │ fix-code-style              Fix code style of all manageprojects source code files via darker    │
 │ git-hooks                   Setup our "pre-commit" git hooks                                     │
-│ install                     Run pip-sync and install 'manageprojects' via pip as editable.       │
+│ install                     Install requirements and 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
 │ pip-audit                   Run pip-audit check against current requirements files               │
 │ publish                     Build and upload this project to PyPi                                │
@@ -347,7 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.19.2...main)
+* [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
+  * 2024-11-11 - Switch to uv
   * 2024-09-25 - Add: test_pre_commit_hooks()
   * 2024-09-25 - Move git pre-commit hook from dev-cli.py to update command
 * [v0.19.2](https://github.com/jedie/manageprojects/compare/v0.19.1...v0.19.2)

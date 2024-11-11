@@ -5,7 +5,6 @@ from unittest.mock import MagicMock
 
 from manageprojects.cli_app import manage
 from manageprojects.cli_app.manage import start_project, update_project
-from manageprojects.cli_dev import PACKAGE_ROOT
 from manageprojects.cli_dev import cli as dev_cli
 from manageprojects.constants import PY_BIN_PATH
 from manageprojects.data_classes import CookiecutterResult
@@ -80,7 +79,7 @@ class CliTestCase(BaseTestCase):
         self.assertEqual(
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH,)),
             [
-                ['.../pip-sync', f'{PACKAGE_ROOT}/requirements.dev.txt'],
+                ['.../uv', 'sync'],
                 ['.../pip', 'install', '--no-deps', '-e', '.'],
             ],
         )

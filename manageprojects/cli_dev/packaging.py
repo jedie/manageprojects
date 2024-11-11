@@ -1,24 +1,64 @@
-import sys
-from pathlib import Path
+import logging
+import tempfile
 
 import click
+from bx_py_utils.pyproject_toml import get_pyproject_config
 from cli_base.cli_tools.dev_tools import run_unittest_cli
-from cli_base.cli_tools.subprocess_utils import verbose_check_call
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
-from cli_base.run_pip_audit import run_pip_audit
+from cli_base.cli_tools.subprocess_utils import ToolsExecutor
+from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
 
 import manageprojects
 from manageprojects.cli_dev import PACKAGE_ROOT, cli
 from manageprojects.utilities.publish import publish_package
 
 
+logger = logging.getLogger(__name__)
+
+
 @cli.command()
 def install():
     """
-    Run pip-sync and install 'manageprojects' via pip as editable.
+    Install requirements and 'manageprojects' via pip as editable.
     """
-    verbose_check_call('pip-sync', PACKAGE_ROOT / 'requirements.dev.txt')
-    verbose_check_call('pip', 'install', '--no-deps', '-e', '.')
+    tools_executor = ToolsExecutor(cwd=PACKAGE_ROOT)
+    tools_executor.verbose_check_call('uv', 'sync')
+    tools_executor.verbose_check_call('pip', 'install', '--no-deps', '-e', '.')
+
+
+def run_pip_audit(verbosity: int):
+    tools_executor = ToolsExecutor(cwd=PACKAGE_ROOT)
+
+    with tempfile.NamedTemporaryFile(prefix='requirements', suffix='.txt') as temp_file:
+        tools_executor.verbose_check_call(
+            'uv',
+            'export',
+            '--no-header',
+            '--frozen',
+            '--no-editable',
+            '--no-emit-project',
+            '-o',
+            temp_file.name,
+        )
+
+        config: dict = get_pyproject_config(
+            section=('tool', 'cli_base', 'pip_audit'),
+            base_path=PACKAGE_ROOT,
+        )
+        logger.debug('pip_audit config: %r', config)
+        assert isinstance(config, dict), f'Expected a dict: {config=}'
+
+        popenargs = ['pip-audit', '--strict', '--require-hashes']
+
+        if verbosity:
+            popenargs.append(f'-{"v" * verbosity}')
+
+        for vulnerability_id in config.get('ignore-vuln', []):
+            popenargs.extend(['--ignore-vuln', vulnerability_id])
+
+        popenargs.extend(['-r', temp_file.name])
+
+        logger.debug('pip_audit args: %s', popenargs)
+        tools_executor.verbose_check_call(*popenargs)
 
 
 @cli.command()
@@ -27,51 +67,31 @@ def pip_audit(verbosity: int):
     """
     Run pip-audit check against current requirements files
     """
-    run_pip_audit(base_path=PACKAGE_ROOT, verbosity=verbosity)
+    setup_logging(verbosity=verbosity)
+    run_pip_audit(verbosity=verbosity)
 
 
 @cli.command()
-def update():
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
+def update(verbosity: int):
     """
     Update "requirements*.txt" dependencies files
     """
-    bin_path = Path(sys.executable).parent
+    setup_logging(verbosity=verbosity)
 
-    verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip')
-    verbose_check_call(bin_path / 'pip', 'install', '-U', 'pip-tools')
+    tools_executor = ToolsExecutor(cwd=PACKAGE_ROOT)
 
-    extra_env = dict(
-        CUSTOM_COMPILE_COMMAND='./dev-cli.py update',
-    )
+    tools_executor.verbose_check_call('pip', 'install', '-U', 'pip')
+    tools_executor.verbose_check_call('pip', 'install', '-U', 'uv')
+    tools_executor.verbose_check_call('uv', 'lock', '--upgrade')
 
-    pip_compile_base = [bin_path / 'pip-compile', '--verbose', '--upgrade']
-
-    # Only "prod" dependencies:
-    verbose_check_call(
-        *pip_compile_base,
-        'pyproject.toml',
-        '--output-file',
-        'requirements.txt',
-        extra_env=extra_env,
-    )
-
-    # dependencies + "dev"-optional-dependencies:
-    verbose_check_call(
-        *pip_compile_base,
-        'pyproject.toml',
-        '--extra=dev',
-        '--output-file',
-        'requirements.dev.txt',
-        extra_env=extra_env,
-    )
-
-    run_pip_audit(base_path=PACKAGE_ROOT)
+    run_pip_audit(verbosity=verbosity)
 
     # Install new dependencies in current .venv:
-    verbose_check_call(bin_path / 'pip-sync', 'requirements.dev.txt')
+    tools_executor.verbose_check_call('uv', 'sync')
 
     # Update git pre-commit hooks:
-    verbose_check_call(bin_path / 'pre_commit', 'autoupdate')
+    tools_executor.verbose_check_call('pre-commit', 'autoupdate')
 
 
 @cli.command()
