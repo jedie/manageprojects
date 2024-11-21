@@ -4,14 +4,14 @@ from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
+from bx_py_utils.test_utils.redirect import RedirectOut
 from cli_base.cli_tools.test_utils.git_utils import init_git
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 import yaml
 
-from manageprojects.cli_app.manage import clone_project
+from manageprojects import cli_app
 from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project
 from manageprojects.data_classes import CookiecutterResult, GenerateTemplatePatchResult, ManageProjectsMeta
-from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.tests.base import BaseTestCase
 from manageprojects.utilities.pyproject_toml import PyProjectToml
 from manageprojects.utilities.temp_path import TemporaryDirectory
@@ -111,15 +111,16 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             # Test clone a existing project
 
             cloned_path = main_temp_path / 'cloned_project'
-            with AssertLogs(self) as logs:
-                output = invoke_click(clone_project, project_path, cloned_path)
-                logs.assert_in(
-                    'Read existing pyproject.toml',
-                    "Call 'cookiecutter'",
-                    'Create new pyproject.toml',
-                )
+            with AssertLogs(self) as logs, RedirectOut() as buffer:
+                cli_app.main(args=('clone-project', str(project_path), str(cloned_path)))
+            logs.assert_in(
+                'Read existing pyproject.toml',
+                "Call 'cookiecutter'",
+                'Create new pyproject.toml',
+            )
+            self.assertEqual(buffer.stderr, '')
             end_path = cloned_path / 'a_dir_name'
-            self.assert_in_content(got=output, parts=(f'{project_path} successfully cloned to {end_path}',))
+            self.assert_in_content(got=buffer.stdout, parts=(f'{project_path} successfully cloned to {end_path}',))
 
             # pyproject.toml created?
             with AssertLogs(self, loggers=('manageprojects',)) as logs:

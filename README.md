@@ -37,25 +37,49 @@ The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
-Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
+usage: ./cli.py [-h] {clone-project,format-file,reverse,start-project,update-project,version,wiggle}
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ clone-project          Clone existing project by replay the cookiecutter template in a new       │
-│                        directory.                                                                │
-│ format-file            Format and check the given python source code file with                   │
-│                        darker/autoflake/isort/pyupgrade/autopep8/mypy etc.                       │
-│ reverse                Create a cookiecutter template from a managed project.                    │
-│ start-project          Start a new "managed" project via a CookieCutter Template. Note: The      │
-│                        CookieCutter Template *must* be use git!                                  │
-│ update-project         Update a existing project.                                                │
-│ update-readme-history  Update project history base on git commits/tags in README.md              │
-│ version                Print version and exit                                                    │
-│ wiggle                 Run wiggle to merge *.rej in given directory.                             │
-│                        https://github.com/neilbrown/wiggle                                       │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ {clone-project,format-file,reverse,start-project,update-project,version,wiggle}                                    │
+│     clone-project                                                                                                  │
+│                   Clone existing project by replay the cookiecutter template in a new directory. e.g.:             │
+│                                                                                                                    │
+│                                                                                                                    │
+│                   ./cli.py clone-project ~/foo/bar ~/cloned/                                                       │
+│     format-file   Format and check the given python source code file with ruff, codespell and mypy. The optional   │
+│                   fallback values will be only used, if we can't get them from the project meta files like         │
+│                   ".editorconfig" and "pyproject.toml"                                                             │
+│     reverse       Create a cookiecutter template from a managed project. e.g.:                                     │
+│                                                                                                                    │
+│                                                                                                                    │
+│                   ./cli.py reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/                           │
+│     start-project                                                                                                  │
+│                   Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template       │
+│                   *must* be use git!                                                                               │
+│                                                                                                                    │
+│                   e.g.:                                                                                            │
+│                                                                                                                    │
+│                                                                                                                    │
+│                   ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory              │
+│                   piptools-python ~/foobar/                                                                        │
+│     update-project                                                                                                 │
+│                   Update a existing project. e.g. update by overwrite (and merge changes manually via git):        │
+│                                                                                                                    │
+│                                                                                                                    │
+│                   ./cli.py update-project ~/foo/bar/                                                               │
+│     version       Print version and exit                                                                           │
+│     wiggle        Run wiggle to merge *.rej in given directory. https://github.com/neilbrown/wiggle                │
+│                                                                                                                    │
+│                   e.g.:                                                                                            │
+│                                                                                                                    │
+│                                                                                                                    │
+│                   ./cli.py wiggle ~/my_managed_project/                                                            │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
 
@@ -67,31 +91,33 @@ Help from `./cli.py start-project --help` Looks like:
 
 [comment]: <> (✂✂✂ auto generated start-project help start ✂✂✂)
 ```
-Usage: ./cli.py start-project [OPTIONS] TEMPLATE OUTPUT_DIR
+usage: ./cli.py start-project [-h] [START-PROJECT OPTIONS] STR PATH
 
- Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template *must*
- be use git!
- e.g.:
- ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory
- piptools-python ~/foobar/
+Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template *must* be use git!
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --directory             TEXT  Cookiecutter Option: Directory within repo that holds              │
-│                               cookiecutter.json file for advanced repositories with multi        │
-│                               templates in it                                                    │
-│ --checkout              TEXT  Cookiecutter Option: branch, tag or commit to checkout after git   │
-│                               clone                                                              │
-│ --input/--no-input            Cookiecutter Option: Do not prompt for parameters and only use     │
-│                               cookiecutter.json file content                                     │
-│                               [default: input]                                                   │
-│ --replay/--no-replay          Cookiecutter Option: Do not prompt for parameters and only use     │
-│                               information entered previously                                     │
-│                               [default: no-replay]                                               │
-│ --password              TEXT  Cookiecutter Option: Password to use when extracting the           │
-│                               repository                                                         │
-│ --config-file           FILE  Cookiecutter Option: Optional path to "cookiecutter_config.yaml"   │
-│ --help                        Show this message and exit.                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+e.g.:
+
+./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/foobar/
+
+╭─ positional arguments ─────────────────────────────────────────────────────────────────────────────────────────────╮
+│ STR                     The name of the CookieCutter Template. (required)                                          │
+│ PATH                    Target path for the new project. Must not exist yet! (required)                            │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help              show this help message and exit                                                            │
+│ -v, --verbosity         Verbosity level; e.g.: -v, -vv, -vvv, etc. (repeatable)                                    │
+│ --directory {None}|STR  Cookiecutter Option: Directory within repo that holds cookiecutter.json file for advanced  │
+│                         repositories with multi templates in it (default: None)                                    │
+│ --replay, --no-replay   Cookiecutter Option: Do not prompt for parameters and only use information entered         │
+│                         previously (default: False)                                                                │
+│ --input, --no-input     Cookiecutter Option: Do not prompt for parameters and only use cookiecutter.json file      │
+│                         content (default: False)                                                                   │
+│ --checkout {None}|STR   Cookiecutter Option: Optional branch, tag or commit ID to checkout after clone (default:   │
+│                         None)                                                                                      │
+│ --password {None}|STR   Cookiecutter Option: Password to use when extracting the repository (default: None)        │
+│ --config-file {None}|PATH                                                                                          │
+│                         Cookiecutter Option: Optional path to "cookiecutter_config.yaml" (default: None)           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated start-project help end ✂✂✂)
 
@@ -102,29 +128,30 @@ Help from `./cli.py update-project --help` Looks like:
 
 [comment]: <> (✂✂✂ auto generated update-project help start ✂✂✂)
 ```
-Usage: ./cli.py update-project [OPTIONS] PROJECT_PATH
+usage: ./cli.py update-project [-h] [UPDATE-PROJECT OPTIONS] PATH
 
- Update a existing project.
- e.g. update by overwrite (and merge changes manually via git):
- ./cli.py update-project ~/foo/bar/
+Update a existing project. e.g. update by overwrite (and merge changes manually via git):
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --overwrite/--no-overwrite          Overwrite all Cookiecutter template files to the last        │
-│                                     template state and do not apply the changes via git patches. │
-│                                     The developer is supposed to apply the differences manually  │
-│                                     via git. Will be aborted if the project git repro is not in  │
-│                                     a clean state.                                               │
-│                                     [default: overwrite]                                         │
-│ --password                    TEXT  Cookiecutter Option: Password to use when extracting the     │
-│                                     repository                                                   │
-│ --config-file                 FILE  Cookiecutter Option: Optional path to                        │
-│                                     "cookiecutter_config.yaml"                                   │
-│ --input/--no-input                  Cookiecutter Option: Do not prompt for parameters and only   │
-│                                     use cookiecutter.json file content                           │
-│                                     [default: no-input]                                          │
-│ --cleanup/--no-cleanup              Cleanup created temporary files [default: cleanup]           │
-│ --help                              Show this message and exit.                                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+./cli.py update-project ~/foo/bar/
+
+╭─ positional arguments ─────────────────────────────────────────────────────────────────────────────────────────────╮
+│ PATH                    project-path (required)                                                                    │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help              show this help message and exit                                                            │
+│ -v, --verbosity         Verbosity level; e.g.: -v, -vv, -vvv, etc. (repeatable)                                    │
+│ --overwrite, --no-overwrite                                                                                        │
+│                         Overwrite all Cookiecutter template files to the last template state and do not apply the  │
+│                         changes via git patches. The developer is supposed to apply the differences manually via   │
+│                         git. Will be aborted if the project git repro is not in a clean state. (default: True)     │
+│ --cleanup, --no-cleanup                                                                                            │
+│                         Cleanup created temporary files (default: True)                                            │
+│ --input, --no-input     Cookiecutter Option: Do not prompt for parameters and only use cookiecutter.json file      │
+│                         content (default: False)                                                                   │
+│ --password {None}|STR   Cookiecutter Option: Password to use when extracting the repository (default: None)        │
+│ --config-file {None}|PATH                                                                                          │
+│                         Cookiecutter Option: Optional path to "cookiecutter_config.yaml" (default: None)           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated update-project help end ✂✂✂)
 
@@ -259,22 +286,22 @@ You can use `format-file` as "Action on save" or manual action in your IDE to fi
 
 [comment]: <> (✂✂✂ auto generated format-file help start ✂✂✂)
 ```
-Usage: ./cli.py format-file [OPTIONS] FILE_PATH
+usage: ./cli.py format-file [-h] [FORMAT-FILE OPTIONS] PATH
 
- Format and check the given python source code file with
- darker/autoflake/isort/pyupgrade/autopep8/mypy etc.
- The optional fallback values will be only used, if we can't get them from the project meta files
- like ".editorconfig" and "pyproject.toml"
+Format and check the given python source code file with ruff, codespell and mypy. The optional fallback values will be
+only used, if we can't get them from the project meta files like ".editorconfig" and "pyproject.toml"
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --py-version           TEXT     Fallback Python version for darker/pyupgrade, if version is not  │
-│                                 defined in pyproject.toml                                        │
-│                                 [default: 3.10]                                                  │
-│ --max-line-length  -l  INTEGER  Fallback max. line length for darker/isort etc., if not defined  │
-│                                 in .editorconfig                                                 │
-│                                 [default: 119]                                                   │
-│ --help                          Show this message and exit.                                      │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ positional arguments ─────────────────────────────────────────────────────────────────────────────────────────────╮
+│ PATH                    file-path (required)                                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help              show this help message and exit                                                            │
+│ -v, --verbosity         Verbosity level; e.g.: -v, -vv, -vvv, etc. (repeatable)                                    │
+│ --py-version STR        Fallback Python version for darker/pyupgrade, if version is not defined in pyproject.toml  │
+│                         (default: 3.10)                                                                            │
+│ --max-line-length INT   Fallback max. line length for darker/isort etc., if not defined in .editorconfig (default: │
+│                         119)                                                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated format-file help end ✂✂✂)
 
@@ -301,30 +328,40 @@ The output of `./dev-cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
 ```
-Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
+usage: ./dev-cli.py [-h]
+                    {coverage,git-hooks,install,lint,mypy,nox,pip-audit,publish,run-git-hooks,test,update,update-readm
+e-history,update-test-snapshot-files,version}
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ build                       Build the manageproject (More a test of                              │
-│                             manageprojects.utilities.publish.build)                              │
-│ coverage                    Run tests and show coverage report.                                  │
-│ git-hooks                   Setup our "pre-commit" git hooks                                     │
-│ install                     Install requirements and 'manageprojects' via pip as editable.       │
-│ lint                        Check/fix code style by run: "ruff check --fix"                      │
-│ mypy                        Run Mypy (configured in pyproject.toml)                              │
-│ nox                         Run nox                                                              │
-│ pip-audit                   Run pip-audit check against current requirements files               │
-│ publish                     Build and upload this project to PyPi                                │
-│ run-git-hooks               Run the installed "pre-commit" git hooks                             │
-│ test                        Run unittests                                                        │
-│ update                      Update dependencies (uv.lock) and git pre-commit hooks               │
-│ update-readme-history       Update project history base on git commits/tags in README.md         │
-│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
-│                             files)                                                               │
-│ version                     Print version and exit                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+╭─ options ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ {coverage,git-hooks,install,lint,mypy,nox,pip-audit,publish,run-git-hooks,test,update,update-readme-history,update │
+│ -test-snapshot-files,version}                                                                                      │
+│     coverage      Run tests and show coverage report.                                                              │
+│     git-hooks     Setup our "pre-commit" git hooks                                                                 │
+│     install       Install requirements and 'manageprojects' via pip as editable.                                   │
+│     lint          Check/fix code style by run: "ruff check --fix"                                                  │
+│     mypy          Run Mypy (configured in pyproject.toml)                                                          │
+│     nox           Run nox                                                                                          │
+│     pip-audit     Run pip-audit check against current requirements files                                           │
+│     publish       Build and upload this project to PyPi                                                            │
+│     run-git-hooks                                                                                                  │
+│                   Run the installed "pre-commit" git hooks                                                         │
+│     test          Run unittests                                                                                    │
+│     update        Update dependencies (uv.lock) and git pre-commit hooks                                           │
+│     update-readme-history                                                                                          │
+│                   Update project history base on git commits/tags in README.md Will be exited with 1 if the        │
+│                   README.md was updated otherwise with 0.                                                          │
+│                                                                                                                    │
+│                   Also, callable via e.g.:                                                                         │
+│                       python -m cli_base update-readme-history -v                                                  │
+│     update-test-snapshot-files                                                                                     │
+│                   Update all test snapshot files (by remove and recreate all snapshot files)                       │
+│     version       Print version and exit                                                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
 
@@ -343,6 +380,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
+  * 2024-11-21 - Switch from click to tyro
 * [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)
   * 2025-09-03 - Make install/setup python script executeable after renew the code
   * 2025-09-03 - Update code style stuff to ruff
@@ -353,12 +392,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
   * 2025-04-22 - Support getting the current version from hatchling
   * 2025-04-22 - replace setuptools with hatchling
-* [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
-  * 2025-03-11 - Fix nox CLI call
-  * 2025-03-11 - Update requirements and replace tox with nox
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
+  * 2025-03-11 - Fix nox CLI call
+  * 2025-03-11 - Update requirements and replace tox with nox
 * [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
   * 2025-01-31 - Use cli_tools.path_utils.which
 * [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)

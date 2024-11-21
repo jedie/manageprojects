@@ -3,6 +3,8 @@ import logging
 import tempfile
 
 from bx_py_utils.test_utils.log_utils import RaiseLogUsage
+from cli_base.tyro_commands import TyroVerbosityArgType
+from rich import get_console
 
 
 def logger_setup(*, logger_name, level, format, log_filename, raise_log_output):
@@ -28,11 +30,22 @@ def print_log_info(filename):
 
 
 def log_config(
-    level=logging.DEBUG,
-    format='%(asctime)s %(levelname)s %(name)s.%(funcName)s %(lineno)d | %(message)s',
-    log_in_file=True,
+    verbosity: TyroVerbosityArgType,
+    log_in_file=False,
     raise_log_output=False,
 ):
+    log_format = '%(message)s'
+    if verbosity == 0:
+        level = logging.ERROR
+    elif verbosity == 1:
+        level = logging.WARNING
+    elif verbosity == 2:
+        level = logging.INFO
+        log_format = '(%(name)s) %(message)s'
+    else:
+        level = logging.DEBUG
+        log_format = '%(asctime)s %(levelname)s %(name)s.%(funcName)s %(lineno)d | %(message)s'
+
     if log_in_file:
         log_file = tempfile.NamedTemporaryFile(
             prefix='manageprojects_', suffix='.log', delete=False
@@ -41,17 +54,20 @@ def log_config(
     else:
         log_filename = None
 
+    console = get_console()
+    console.print(f'(Set log level {verbosity}: {logging.getLevelName(level)})', justify='right')
+
     logger_setup(
         logger_name='manageprojects',
         level=level,
-        format=format,
+        format=log_format,
         log_filename=log_filename,
         raise_log_output=raise_log_output,
     )
     logger_setup(
         logger_name='cookiecutter',
         level=level,
-        format=format,
+        format=log_format,
         log_filename=log_filename,
         raise_log_output=raise_log_output,
     )
