@@ -347,6 +347,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.21.0rc1](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0rc1)
+  * 2025-01-17 - Update requirements
 * [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
   * 2024-11-11 - Bugfix publish: Add "build" dep.
   * 2024-11-11 - Bugfix publish command: Add missing "setuptools" dep.
@@ -359,12 +361,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2024-09-24 - Update requirements
 * [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
   * 2024-09-15 - Bugfix and enhance "setup_python.py"
-* [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
-  * 2024-09-15 - NEW: setup_python.py
-  * 2024-09-15 - Update requirements
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
+  * 2024-09-15 - NEW: setup_python.py
+  * 2024-09-15 - Update requirements
 * [v0.18.0](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.18.0)
   * 2024-08-29 - Fix wrong "module" in publish call :(
   * 2024-08-29 - Fix wrong "distribution_name" in publish command
