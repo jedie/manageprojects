@@ -1,3 +1,5 @@
+import logging
+import os
 import shutil
 import tempfile
 from collections.abc import Iterable
@@ -6,6 +8,8 @@ from pathlib import Path
 
 from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_file
+
+from manageprojects.constants import PY_BIN_PATH
 
 
 try:
@@ -19,6 +23,29 @@ from cli_base.cli_tools.git import Git, GitError
 from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
 from packaging.version import Version
 from rich import print  # noqa
+
+
+logger = logging.getLogger(__name__)
+
+
+def lookup_python_tool(tool_name: str) -> Path | None:  # TODO: Move into cli_base
+    bin_path_str = str(PY_BIN_PATH)
+    if bin_path_str not in os.environ['PATH']:
+        # The PATH doesn't contain the python bin path! So shutil.which() will not search in ".venv" ?
+        # Check first there:
+        if tool_path := Path(PY_BIN_PATH, tool_name):
+            logger.debug('%r found in: %s', tool_name, tool_path)
+            return tool_path
+
+    if tool_path := shutil.which(tool_name):
+        logger.debug('%r found in PATH: %s', tool_name, tool_path)
+        return Path(tool_path)
+
+    logger.debug('%r not found!', tool_name)
+
+
+def get_uv_path() -> Path | None:
+    return lookup_python_tool('uv')
 
 
 def exit_with_error(txt, hint=None):
@@ -205,10 +232,13 @@ def build(package_path) -> None:
     print('OK')
 
     if Path(package_path / 'poetry.lock').is_file():
-        # Poetry used -> build with it
+        logger.info('Poetry lock file found: build with poetry')
         output = verbose_check_output('poetry', 'build', verbose=True, exit_on_error=True)
+    elif uv_path := get_uv_path():
+        logger.info('uv found: build with uv')
+        output = verbose_check_output(uv_path, 'build', verbose=True, exit_on_error=True)
     else:
-        # use normal build
+        logger.info('use normal build')
         output = verbose_check_output(sys.executable, '-m', 'build', verbose=True, exit_on_error=True)
 
     with tempfile.NamedTemporaryFile(

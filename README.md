@@ -312,6 +312,8 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+│ build                       Build the manageproject (More a test of                              │
+│                             manageprojects.utilities.publish.build)                              │
 │ check-code-style            Check code style by calling darker + flake8                          │
 │ coverage                    Run tests and show coverage report.                                  │
 │ fix-code-style              Fix code style of all manageprojects source code files via darker    │
@@ -347,6 +349,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.21.0rc1](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0rc1)
+  * 2025-01-17 - Prefere to build with "uv build"
+  * 2025-01-17 - Update requirements
 * [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
   * 2024-11-11 - Bugfix publish: Add "build" dep.
   * 2024-11-11 - Bugfix publish command: Add missing "setuptools" dep.
@@ -359,12 +364,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2024-09-24 - Update requirements
 * [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
   * 2024-09-15 - Bugfix and enhance "setup_python.py"
-* [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
-  * 2024-09-15 - NEW: setup_python.py
-  * 2024-09-15 - Update requirements
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
+  * 2024-09-15 - NEW: setup_python.py
+  * 2024-09-15 - Update requirements
 * [v0.18.0](https://github.com/jedie/manageprojects/compare/v0.17.1...v0.18.0)
   * 2024-08-29 - Fix wrong "module" in publish call :(
   * 2024-08-29 - Fix wrong "distribution_name" in publish command
