@@ -349,7 +349,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [v0.21.0rc1](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0rc1)
+* [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
   * 2025-01-17 - Prefere to build with "uv build"
   * 2025-01-17 - Update requirements
 * [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
