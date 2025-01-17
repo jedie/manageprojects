@@ -9,6 +9,7 @@ from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
 
 import manageprojects
 from manageprojects.cli_dev import PACKAGE_ROOT, cli
+from manageprojects.utilities.publish import build as publish_build
 from manageprojects.utilities.publish import publish_package
 
 
@@ -23,6 +24,16 @@ def install():
     tools_executor = ToolsExecutor(cwd=PACKAGE_ROOT)
     tools_executor.verbose_check_call('uv', 'sync')
     tools_executor.verbose_check_call('pip', 'install', '--no-deps', '-e', '.')
+
+
+@cli.command()
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
+def build(verbosity: int):
+    """
+    Build the manageproject (More a test of manageprojects.utilities.publish.build)
+    """
+    setup_logging(verbosity=verbosity)
+    publish_build(PACKAGE_ROOT)
 
 
 def run_pip_audit(verbosity: int):
