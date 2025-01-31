@@ -1,15 +1,13 @@
 import logging
-import os
 import shutil
+import sys
 import tempfile
 from collections.abc import Iterable
 from importlib.metadata import version
 from pathlib import Path
 
-from bx_py_utils.dict_utils import dict_get
-from bx_py_utils.path import assert_is_file
-
-from manageprojects.constants import PY_BIN_PATH
+from packaging.version import Version
+from rich import print  # noqa
 
 
 try:
@@ -17,35 +15,21 @@ try:
 except ImportError:
     import tomli as tomllib
 
-import sys
-
+from bx_py_utils.dict_utils import dict_get
+from bx_py_utils.path import assert_is_file
 from cli_base.cli_tools.git import Git, GitError
+from cli_base.cli_tools.path_utils import which
 from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
-from packaging.version import Version
-from rich import print  # noqa
 
 
 logger = logging.getLogger(__name__)
 
 
-def lookup_python_tool(tool_name: str) -> Path | None:  # TODO: Move into cli_base
-    bin_path_str = str(PY_BIN_PATH)
-    if bin_path_str not in os.environ['PATH']:
-        # The PATH doesn't contain the python bin path! So shutil.which() will not search in ".venv" ?
-        # Check first there:
-        if tool_path := Path(PY_BIN_PATH, tool_name):
-            logger.debug('%r found in: %s', tool_name, tool_path)
-            return tool_path
-
-    if tool_path := shutil.which(tool_name):
-        logger.debug('%r found in PATH: %s', tool_name, tool_path)
-        return Path(tool_path)
-
-    logger.debug('%r not found!', tool_name)
-
-
 def get_uv_path() -> Path | None:
-    return lookup_python_tool('uv')
+    """
+    Look for the 'uv' executable first in venv bin and then in the PATH.
+    """
+    return which('uv')
 
 
 def exit_with_error(txt, hint=None):

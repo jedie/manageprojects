@@ -349,6 +349,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
+  * 2025-01-31 - Use cli_tools.path_utils.which
 * [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
   * 2025-01-17 - Prefere to build with "uv build"
   * 2025-01-17 - Update requirements
@@ -362,11 +364,11 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2024-09-24 - Add piwheels hashes, too.
   * 2024-09-24 - Apply update from cookiecutter templates
   * 2024-09-24 - Update requirements
-* [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
-  * 2024-09-15 - Bugfix and enhance "setup_python.py"
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
+  * 2024-09-15 - Bugfix and enhance "setup_python.py"
 * [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
   * 2024-09-15 - NEW: setup_python.py
   * 2024-09-15 - Update requirements
