@@ -350,6 +350,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
+  * 2025-03-11 - Fix nox CLI call
   * 2025-03-11 - Update requirements and replace tox with nox
 * [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
   * 2025-01-31 - Use cli_tools.path_utils.which
