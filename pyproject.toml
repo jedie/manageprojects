@@ -42,8 +42,7 @@ dev = [
     "urllib3", # for deny_requests.deny_any_real_request() in tests
     "uv",  # https://github.com/astral-sh/uv
     "setuptools",  # https://github.com/pypa/setuptools
-    "tox",  # https://github.com/tox-dev/tox
-    "tox-uv",  # https://github.com/tox-dev/tox-uv
+    "nox",  # https://github.com/wntrblm/nox
     "coverage",  # https://github.com/nedbat/coveragepy
     "autopep8",  # https://github.com/hhatto/autopep8
     "pyupgrade",  # https://github.com/asottile/pyupgrade
@@ -115,9 +114,6 @@ diff = false
 check = false
 stdout = false
 isort = true
-lint = [
-    "flake8",
-]
 log_level = "INFO"
 
 
@@ -148,19 +144,6 @@ exclude_lines = [
     'pragma: no cover',
     'raise NotImplementedError',
     'if __name__ == .__main__.:',
-]
-
-
-[tool.tox]  # https://tox.wiki/en/latest/config.html#pyproject-toml
-isolated_build = true
-env_list = ["3.13", "3.12", "3.11"]
-skip_missing_interpreters = true
-
-[tool.tox.env_run_base]
-runner = "uv-venv-lock-runner"
-with_dev = true
-commands = [
-    ["python3", "-m", "coverage", "run", "--context", "'{envname}'"]
 ]
 
 
@@ -199,6 +182,7 @@ applied_migrations = [
     "2cdc1d8", # 2024-08-25T19:00:41+02:00
     "56c3caa", # 2024-09-22T16:52:30+02:00
     "ff48b81", # 2024-11-09T19:08:01+01:00
+    "38129ec", # 2025-02-12T17:41:38+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]

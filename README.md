@@ -320,11 +320,11 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 │ git-hooks                   Setup our "pre-commit" git hooks                                     │
 │ install                     Install requirements and 'manageprojects' via pip as editable.       │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ nox                         Run nox                                                              │
 │ pip-audit                   Run pip-audit check against current requirements files               │
 │ publish                     Build and upload this project to PyPi                                │
 │ run-git-hooks               Run the installed "pre-commit" git hooks                             │
 │ test                        Run unittests                                                        │
-│ tox                         Run tox                                                              │
 │ update                      Update "requirements*.txt" dependencies files                        │
 │ update-readme-history       Update project history base on git commits/tags in README.md         │
 │ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
@@ -349,6 +349,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
+  * 2025-03-11 - Update requirements and replace tox with nox
 * [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
   * 2025-01-31 - Use cli_tools.path_utils.which
 * [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
@@ -360,13 +362,13 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2024-11-11 - Switch to uv
   * 2024-09-25 - Add: test_pre_commit_hooks()
   * 2024-09-25 - Move git pre-commit hook from dev-cli.py to update command
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.19.2](https://github.com/jedie/manageprojects/compare/v0.19.1...v0.19.2)
   * 2024-09-24 - Add piwheels hashes, too.
   * 2024-09-24 - Apply update from cookiecutter templates
   * 2024-09-24 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.19.1](https://github.com/jedie/manageprojects/compare/v0.19.0...v0.19.1)
   * 2024-09-15 - Bugfix and enhance "setup_python.py"
 * [v0.19.0](https://github.com/jedie/manageprojects/compare/v0.18.0...v0.19.0)
