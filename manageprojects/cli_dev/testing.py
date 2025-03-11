@@ -1,5 +1,5 @@
 import rich_click as click
-from cli_base.cli_tools.dev_tools import run_coverage, run_tox, run_unittest_cli
+from cli_base.cli_tools.dev_tools import run_coverage, run_nox, run_unittest_cli
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.test_utils.snapshot import UpdateTestSnapshotFiles
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
@@ -48,9 +48,9 @@ def coverage():
     run_coverage()
 
 
-@cli.command()  # Dummy "tox" command
-def tox():
+@cli.command()  # Dummy "nox" command
+def nox():
     """
-    Run tox
+    Run nox
     """
-    run_tox()
+    run_nox()

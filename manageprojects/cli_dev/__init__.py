@@ -2,6 +2,7 @@
     CLI for development
 """
 
+import importlib
 import logging
 import sys
 
@@ -22,6 +23,9 @@ from manageprojects import constants
 # Check type annotations via typeguard in all tests.
 # Sadly we must activate this here and can't do this in ./tests/__init__.py
 install_import_hook(packages=('manageprojects',))
+
+# reload the module, after the typeguard import hook is activated:
+importlib.reload(manageprojects)
 
 
 logger = logging.getLogger(__name__)
