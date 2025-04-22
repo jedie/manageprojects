@@ -41,7 +41,7 @@ dev = [
     "bx_py_utils",   # https://github.com/boxine/bx_py_utils
     "urllib3", # for deny_requests.deny_any_real_request() in tests
     "uv",  # https://github.com/astral-sh/uv
-    "setuptools",  # https://github.com/pypa/setuptools
+    "hatchling",  # https://github.com/pypa/hatch/tree/master/backend
     "nox",  # https://github.com/wntrblm/nox
     "coverage",  # https://github.com/nedbat/coveragepy
     "autopep8",  # https://github.com/hhatto/autopep8
@@ -72,16 +72,16 @@ Source = "https://github.com/jedie/manageprojects"
 manageprojects_app = "manageprojects.__main__:main"
 manageprojects_dev = "manageprojects.cli_dev:main"
 
+
 [build-system]
-requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["manageprojects*"]
+[tool.hatch.build.targets.wheel]
+packages = ["manageprojects"]
 
-[tool.setuptools.dynamic]
-version = {attr = "manageprojects.__version__"}
+[tool.hatch.version]
+path = "manageprojects/__init__.py"
 
 
 [tool.cli_base.pip_audit]
