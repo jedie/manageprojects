@@ -160,6 +160,24 @@ def setuptools_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Pat
                 return clean_version(ver_str)
 
 
+def hatchling_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Path) -> Version | None:
+    dynamic = dict_get(pyproject_toml, 'project', 'dynamic')
+    if dynamic and 'version' in dynamic:
+        if dict_get(pyproject_toml, 'tool', 'hatch', 'version', 'path'):
+            # Project used "dynamic metadata" from hatchling for the version
+
+            from hatchling.metadata.core import ProjectMetadata
+            from hatchling.plugin.manager import PluginManager
+
+            plugin_manager = PluginManager()
+            metadata = ProjectMetadata(root=pyproject_toml_path.parent, plugin_manager=plugin_manager)
+            version = metadata.hatch.version
+            source = version.source
+            version_data = source.get_version_data()
+            if ver_str := version_data.get('version'):
+                return clean_version(ver_str)
+
+
 def get_pyproject_toml_version(package_path: Path) -> Version | None:
     pyproject_toml_path = Path(package_path, 'pyproject.toml')
     assert_is_file(pyproject_toml_path)
@@ -173,7 +191,13 @@ def get_pyproject_toml_version(package_path: Path) -> Version | None:
     if ver_str:
         return clean_version(ver_str)
 
-    return setuptools_dynamic_version(pyproject_toml=pyproject_toml, pyproject_toml_path=pyproject_toml_path)
+    if version := hatchling_dynamic_version(pyproject_toml=pyproject_toml, pyproject_toml_path=pyproject_toml_path):
+        return version
+
+    if version := setuptools_dynamic_version(pyproject_toml=pyproject_toml, pyproject_toml_path=pyproject_toml_path):
+        return version
+
+    return None
 
 
 def check_version(*, module, package_path: Path, distribution_name: str | None = None) -> Version:

@@ -1,5 +1,6 @@
 import inspect
 import sys
+import tomllib
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
@@ -18,15 +19,10 @@ from manageprojects.utilities.publish import (
     build,
     clean_version,
     get_pyproject_toml_version,
+    hatchling_dynamic_version,
     setuptools_dynamic_version,
 )
 from manageprojects.utilities.temp_path import TemporaryDirectory
-
-
-try:
-    import tomllib  # New in Python 3.11
-except ImportError:
-    import tomli as tomllib
 
 
 class PublishTestCase(TestCase):
@@ -209,3 +205,14 @@ class PublishTestCase(TestCase):
                     ['.../git', 'push', '--tags'],
                 ],
             )
+
+    def test_hatchling_dynamic_version(self):
+        pyproject_toml_path = PACKAGE_ROOT / 'pyproject.toml'
+        pyproject_toml = tomllib.loads(pyproject_toml_path.read_text())
+
+        version = hatchling_dynamic_version(
+            pyproject_toml=pyproject_toml,
+            pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
+        )
+        self.assertIsInstance(version, Version)
+        self.assertEqual(version, Version(manageprojects.__version__))
