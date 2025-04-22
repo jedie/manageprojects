@@ -350,6 +350,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
+  * 2025-04-22 - Support getting the current version from hatchling
   * 2025-04-22 - replace setuptools with hatchling
 * [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
   * 2025-03-11 - Fix nox CLI call
