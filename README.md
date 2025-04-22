@@ -349,6 +349,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
+  * 2025-04-22 - replace setuptools with hatchling
 * [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
   * 2025-03-11 - Fix nox CLI call
   * 2025-03-11 - Update requirements and replace tox with nox
@@ -357,15 +359,15 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
   * 2025-01-17 - Prefere to build with "uv build"
   * 2025-01-17 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
   * 2024-11-11 - Bugfix publish: Add "build" dep.
   * 2024-11-11 - Bugfix publish command: Add missing "setuptools" dep.
   * 2024-11-11 - Switch to uv
   * 2024-09-25 - Add: test_pre_commit_hooks()
   * 2024-09-25 - Move git pre-commit hook from dev-cli.py to update command
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.19.2](https://github.com/jedie/manageprojects/compare/v0.19.1...v0.19.2)
   * 2024-09-24 - Add piwheels hashes, too.
   * 2024-09-24 - Apply update from cookiecutter templates
