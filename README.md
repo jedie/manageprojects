@@ -349,6 +349,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.21.3...main)
+  * 2025-04-23 - Update requirements
 * [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
   * 2025-04-22 - Support getting the current version from hatchling
   * 2025-04-22 - replace setuptools with hatchling
@@ -357,12 +359,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2025-03-11 - Update requirements and replace tox with nox
 * [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
   * 2025-01-31 - Use cli_tools.path_utils.which
-* [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
-  * 2025-01-17 - Prefere to build with "uv build"
-  * 2025-01-17 - Update requirements
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
+  * 2025-01-17 - Prefere to build with "uv build"
+  * 2025-01-17 - Update requirements
 * [v0.20.0](https://github.com/jedie/manageprojects/compare/v0.19.2...v0.20.0)
   * 2024-11-11 - Bugfix publish: Add "build" dep.
   * 2024-11-11 - Bugfix publish command: Add missing "setuptools" dep.
