@@ -30,7 +30,7 @@ def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=Tru
     args = tuple([str(arg) for arg in args])  # e.g.: Path() -> str
 
     with NoColorEnvRichClick(width=TERMINAL_WIDTH):
-        runner = CliRunner(mix_stderr=False)
+        runner = CliRunner()
         result: Result = runner.invoke(cli=cli, args=args, **kwargs, color=False)
 
     if result.exception:
