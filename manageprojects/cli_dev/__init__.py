@@ -63,14 +63,6 @@ def version():
 def main():
     print_version(manageprojects)
 
-    console = Console()
-    rich_traceback_install(
-        width=console.size.width,  # full terminal width
-        show_locals=True,
-        suppress=[click],
-        max_frames=2,
-    )
-
     if len(sys.argv) >= 2:
         # Check if we can just pass a command call to origin CLI:
         command = sys.argv[1]

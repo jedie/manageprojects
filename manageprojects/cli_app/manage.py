@@ -391,13 +391,6 @@ cli.add_command(version)
 
 def main():
     print_version(manageprojects)
-    console = Console()
-    rich_traceback_install(
-        width=console.size.width,  # full terminal width
-        show_locals=True,
-        suppress=[click],
-        max_frames=2,
-    )
 
     # Execute Click CLI:
     cli.name = './cli.py'
