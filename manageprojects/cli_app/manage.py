@@ -5,12 +5,11 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 import shutil
 import subprocess
 import sys
-from pathlib import Path
 
-import rich_click as click
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
@@ -23,13 +22,11 @@ from cli_base.click_defaults import (
     OPTION_ARGS_DEFAULT_TRUE,
 )
 from rich import print  # noqa
-from rich.console import Console
-from rich.traceback import install as rich_traceback_install
+import rich_click as click
 
 import manageprojects
 from manageprojects.cli_app import cli
 from manageprojects.constants import (
-    FORMAT_PY_FILE_DARKER_PRE_FIXES,
     FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
     FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION,
 )
@@ -341,24 +338,11 @@ cli.add_command(wiggle)
     show_default=True,
     help='Fallback max. line length for darker/isort etc., if not defined in .editorconfig',
 )
-@click.option(
-    '--darker-prefixes',
-    default=FORMAT_PY_FILE_DARKER_PRE_FIXES,
-    show_default=True,
-    help='Apply prefixes via autopep8 before calling darker.',
-)
-@click.option(
-    '--remove-all-unused-imports',
-    help='Remove all unused imports (not just those from the standard library) via autoflake',
-    **OPTION_ARGS_DEFAULT_TRUE,
-)
 @click.argument('file_path', **ARGUMENT_EXISTING_FILE)
 def format_file(
     *,
     py_version: str,
     max_line_length: int,
-    darker_prefixes: str,
-    remove_all_unused_imports: bool,
     file_path: Path,
 ):
     """
@@ -370,8 +354,6 @@ def format_file(
     format_one_file(
         default_min_py_version=py_version,
         default_max_line_length=max_line_length,
-        darker_prefixes=darker_prefixes,
-        remove_all_unused_imports=remove_all_unused_imports,
         file_path=file_path,
     )
 

@@ -14,18 +14,9 @@ dependencies = [
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
 
     # https://github.com/akaihola/darker
-    # https://github.com/ikamensh/flynt
-    # https://github.com/pycqa/isort
-    # https://github.com/pygments/pygments
-    "darker[flynt, isort, color]",
-
-    "autoflake",  # https://github.com/PyCQA/autoflake
-    "pyflakes",  # https://github.com/PyCQA/pyflakes
-    "autopep8",  # https://github.com/hhatto/autopep8
-    "flake8",  # https://github.com/pycqa/flake8
-    "flake8-bugbear",  # https://github.com/PyCQA/flake8-bugbear
-    "pyupgrade",  # https://github.com/asottile/pyupgrade
-    "refurb",  # https://github.com/dosisod/refurb
+#    "darker", # Use darker after v3 release, see: https://github.com/akaihola/darker/milestones
+    # https://github.com/astral-sh/ruff
+    "ruff",
     "codespell",  # https://github.com/codespell-project/codespell
     "mypy",  # https://github.com/python/mypy
 
@@ -44,24 +35,12 @@ dev = [
     "hatchling",  # https://github.com/pypa/hatch/tree/master/backend
     "nox",  # https://github.com/wntrblm/nox
     "coverage",  # https://github.com/nedbat/coveragepy
-    "autopep8",  # https://github.com/hhatto/autopep8
-    "pyupgrade",  # https://github.com/asottile/pyupgrade
-    "flake8",  # https://github.com/pycqa/flake8
-    "flake8-bugbear",  # https://github.com/PyCQA/flake8-bugbear
-    "pyflakes",  # https://github.com/PyCQA/pyflakes
-    "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
     "pip-audit",  # https://github.com/pypa/pip-audit
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
-
-    # https://github.com/akaihola/darker
-    # https://github.com/ikamensh/flynt
-    # https://github.com/pycqa/isort
-    # https://github.com/pygments/pygments
-    "darker[flynt, isort, color]",
 ]
 
 [project.urls]
@@ -104,27 +83,32 @@ search_paths = ['./manageprojects/']
 delete_obsolete_files = true
 
 
-[tool.darker]
-src = ['.']
-revision = "origin/main..."
-line_length = 119
-color = true
-skip_string_normalization = true
-diff = false
-check = false
-stdout = false
-isort = true
-log_level = "INFO"
+[tool.ruff]
+# https://docs.astral.sh/ruff/configuration/
+line-length = 120
+exclude = [
+  ".*/",
+]
 
 
-[tool.isort]
-# https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
-atomic=true
-profile='black'
-skip_glob=['.*', '*/htmlcov/*']
-known_first_party=['manageprojects']
-line_length=119
-lines_after_imports=2
+[tool.ruff.lint]
+preview = true  # Needed for some of the rules
+extend-select = [
+    "E", # pycodestyle: https://docs.astral.sh/ruff/rules/#error-e
+    "I", # isort: https://docs.astral.sh/ruff/rules/#isort-i
+]
+ignore = [
+    "E402", # https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/
+    "E731", # https://docs.astral.sh/ruff/rules/lambda-assignment/
+]
+
+[tool.ruff.lint.isort]
+# https://docs.astral.sh/ruff/rules/#isort-i
+lines-after-imports = 2
+force-sort-within-sections = true
+
+[tool.ruff.format]
+quote-style = "single"
 
 
 [tool.coverage.run]
