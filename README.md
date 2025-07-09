@@ -350,7 +350,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.21.3...main)
-  * 2025-05-27 - update requirements
+  * 2025-07-09 - Update requirements
 * [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
   * 2025-04-22 - Support getting the current version from hatchling
   * 2025-04-22 - replace setuptools with hatchling
