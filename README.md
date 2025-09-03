@@ -343,7 +343,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.22.0...main)
+* [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)
+  * 2025-09-03 - Make install/setup python script executeable after renew the code
   * 2025-09-03 - Update code style stuff to ruff
 * [v0.22.0](https://github.com/jedie/manageprojects/compare/v0.21.3...v0.22.0)
   * 2025-07-09 - Use ruff in "format-file" command

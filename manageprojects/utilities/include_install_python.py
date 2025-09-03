@@ -55,4 +55,5 @@ class IncludeInstallPythonBaseTestCase(TestCase):
             return
 
         self.DESTINATION_PATH.write_text(SOURCE_PATH.read_text())
+        self.DESTINATION_PATH.chmod(0o775)  # Make it executable
         self.fail(f'File "{self.DESTINATION_PATH}" was updated, please commit the changes')

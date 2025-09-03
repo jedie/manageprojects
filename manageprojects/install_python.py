@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
 """
-    DocWrite: install_python.md # Install Python Interpreter
+DocWrite: install_python.md # Install Python Interpreter
 
-    `install_python.py` downloads, builds and installs a Python interpreter, but:
-    - **only** if the system Python is not the required major version
-    - **only** once (if the required major version is not already build and installed)
+`install_python.py` downloads, builds and installs a Python interpreter, but:
+- **only** if the system Python is not the required major version
+- **only** once (if the required major version is not already build and installed)
 
-    Origin of this script is:
-    * https://github.com/jedie/manageprojects/blob/main/manageprojects/install_python.py
+Origin of this script is:
+* https://github.com/jedie/manageprojects/blob/main/manageprojects/install_python.py
 
-    Licensed under GPL-3.0-or-later (Feel free to copy and use it in your project)
+Licensed under GPL-3.0-or-later (Feel free to copy and use it in your project)
 """
+
 from __future__ import annotations
 
 import argparse
