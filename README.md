@@ -309,11 +309,10 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ build                       Build the manageproject (More a test of                              │
 │                             manageprojects.utilities.publish.build)                              │
-│ check-code-style            Check code style by calling darker + flake8                          │
 │ coverage                    Run tests and show coverage report.                                  │
-│ fix-code-style              Fix code style of all manageprojects source code files via darker    │
 │ git-hooks                   Setup our "pre-commit" git hooks                                     │
 │ install                     Install requirements and 'manageprojects' via pip as editable.       │
+│ lint                        Check/fix code style by run: "ruff check --fix"                      │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
 │ nox                         Run nox                                                              │
 │ pip-audit                   Run pip-audit check against current requirements files               │
@@ -344,6 +343,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.22.0...main)
+  * 2025-09-03 - Update code style stuff to ruff
 * [v0.22.0](https://github.com/jedie/manageprojects/compare/v0.21.3...v0.22.0)
   * 2025-07-09 - Use ruff in "format-file" command
   * 2025-07-09 - Remove "rich_traceback_install()" usage
@@ -354,11 +355,11 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
   * 2025-03-11 - Fix nox CLI call
   * 2025-03-11 - Update requirements and replace tox with nox
-* [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
-  * 2025-01-31 - Use cli_tools.path_utils.which
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.21.1](https://github.com/jedie/manageprojects/compare/v0.21.0...v0.21.1)
+  * 2025-01-31 - Use cli_tools.path_utils.which
 * [v0.21.0](https://github.com/jedie/manageprojects/compare/v0.20.0...v0.21.0)
   * 2025-01-17 - Prefere to build with "uv build"
   * 2025-01-17 - Update requirements

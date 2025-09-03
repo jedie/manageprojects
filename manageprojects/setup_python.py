@@ -15,6 +15,7 @@ import datetime
 import hashlib
 import json
 import logging
+from pathlib import Path
 import platform
 import re
 import shlex
@@ -24,7 +25,6 @@ import subprocess
 import sys
 import tempfile
 import time
-from pathlib import Path
 from urllib import request
 
 

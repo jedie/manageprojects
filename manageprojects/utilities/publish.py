@@ -1,10 +1,10 @@
+from collections.abc import Iterable
+from importlib.metadata import version
 import logging
+from pathlib import Path
 import shutil
 import sys
 import tempfile
-from collections.abc import Iterable
-from importlib.metadata import version
-from pathlib import Path
 
 from packaging.version import Version
 from rich import print  # noqa

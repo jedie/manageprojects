@@ -2,11 +2,11 @@ import inspect
 import json
 from pathlib import Path
 
-import yaml
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 from cli_base.cli_tools.test_utils.git_utils import init_git
 from cli_base.cli_tools.test_utils.logs import AssertLogs
+import yaml
 
 from manageprojects.cli_app.manage import clone_project
 from manageprojects.cookiecutter_templates import start_managed_project, update_managed_project

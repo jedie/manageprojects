@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 import dataclasses
 import subprocess
-from collections.abc import Callable, Sequence
 from unittest.mock import patch
 
 from bx_py_utils.test_utils.context_managers import MassContextManager

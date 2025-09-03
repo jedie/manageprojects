@@ -1,7 +1,7 @@
 import warnings
 
-import click
 from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRichClick, NoColorRichClickCli
+import click
 from click.testing import CliRunner, Result
 
 
