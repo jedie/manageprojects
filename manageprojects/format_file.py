@@ -1,6 +1,7 @@
 import dataclasses
-import subprocess
+import logging
 from pathlib import Path
+import subprocess
 
 from bx_py_utils.dict_utils import dict_get
 from cli_base.cli_tools.git import Git, GitError, NoGitRepoError
@@ -16,6 +17,8 @@ from manageprojects.exceptions import NoPyProjectTomlFound
 from manageprojects.utilities.pyproject_toml import TomlDocument, get_pyproject_toml
 
 
+logger = logging.getLogger(__name__)
+
 MAX_PY3_VER = 15
 
 
@@ -29,7 +32,7 @@ class ToolsExecutor(OriginalToolsExecutor):
 
 @dataclasses.dataclass
 class GitInfo:
-    cwd: Path
+    git: Git
     main_branch_name: str
 
 
@@ -54,7 +57,7 @@ class Config:
     @property
     def project_root_path(self) -> Path | None:
         if git_info := self.git_info:
-            if cwd := git_info.cwd:
+            if cwd := git_info.git.cwd:
                 return cwd
 
         if pyproject_toml_path := self.pyproject_info.pyproject_toml_path:
@@ -79,7 +82,7 @@ def get_git_info(file_path: Path) -> GitInfo | None:
         else:
             print(f'Git main branch name: {main_branch_name!r} from: {git.cwd}')
             return GitInfo(
-                cwd=git.cwd,
+                git=git,
                 main_branch_name=main_branch_name,
             )
 
@@ -158,87 +161,122 @@ def get_config(
     return config
 
 
-def run_pyupgrade(tools_executor, file_path, config):
-    pyver_arg = f'--{config.py_ver_str}-plus'
+def format_complete_file(tools_executor, file_path, config: Config):
     tools_executor.verbose_check_call(
-        'pyupgrade',
-        '--exit-zero-even-if-changed',
-        pyver_arg,
-        file_path,
-    )
-
-
-def run_autoflake(tools_executor, file_path, config, remove_all_unused_imports):
-    # TODO: Remove if isort can do the job: https://github.com/PyCQA/isort/issues/1105
-    args = ['autoflake', '--in-place']
-    if remove_all_unused_imports:
-        args.append('--remove-all-unused-imports')
-    args.append(file_path)
-    tools_executor.verbose_check_call(*args)
-
-
-def run_darker(tools_executor, file_path, config, darker_prefixes):
-    if darker_prefixes:
-        # darker/black will not fix e.g.:
-        #   "E302 expected 2 blank lines"
-        #   "E303 too many blank lines (4)"
-        # work-a-round: run autopep8 only for these fixes ;)
-        tools_executor.verbose_check_call(
-            'autopep8',
-            '--ignore-local-config',
-            '--select',
-            darker_prefixes,
-            f'--max-line-length={config.max_line_length}',
-            '--in-place',
-            str(file_path),
-        )
-
-    tools_executor.verbose_check_call(
-        'darker',
-        '--flynt',
-        '--isort',
-        '--skip-string-normalization',
-        '--revision',
-        f'{config.main_branch_name}...',
-        '--line-length',
-        str(config.max_line_length),
+        'ruff',
+        'format',
         '--target-version',
         config.py_ver_str,
         file_path,
     )
 
 
-def run_autopep8(tools_executor, file_path, config):
+def parse_ranges(git_diff_output: str) -> list:
+    line_changes = []
+    for line in git_diff_output.splitlines():
+        if not line.startswith('@@'):
+            continue
+
+        line_infos = line.split('@@')[1].strip().split(' ')
+        temp = []
+        for line_info in line_infos:
+            line_info = line_info.strip('+-')
+            if ',' in line_info:
+                start_line, line_count = map(int, line_info.split(','))
+            else:
+                start_line, line_count = int(line_info), 1
+
+            if start_line == 0:
+                start_line = 1  # ruff starts line numbers from 1, not 0
+
+            temp.append(start_line)
+            temp.append(start_line + line_count)
+        line_changes.append((min(temp), max(temp)))
+    return line_changes
+
+
+def merge_ranges(ranges: list, max_distance: int = 1) -> list:
+    """
+    >>> merge_ranges([(1,2), (3,4), (10,11), (20, 25), (21, 26)])
+    [(1, 4), (10, 11), (20, 26)]
+    """
+    merged = []
+    for start, end in sorted(ranges):
+        if merged and start - merged[-1][1] <= max_distance:
+            # Extend the last range if within max_distance
+            merged[-1] = (merged[-1][0], max(end, merged[-1][1]))
+        else:
+            # Otherwise, add a new range
+            merged.append((start, end))
+    return merged
+
+
+def format_only_changed_lines(tools_executor, file_path, config: Config, max_distance=2):
+    # Use darker after v3 release, see: https://github.com/akaihola/darker/milestones
+
+    git: Git = config.git_info.git
+    target = f'origin/{config.main_branch_name}'
+
+    git_diff_output = git.git_verbose_check_output('diff', target, '--unified=0', file_path)
+    logger.debug('Git diff output: %s', git_diff_output)
+    ranges = parse_ranges(git_diff_output)
+    print(f'All git diff code ranges: {ranges}')
+
+    if not ranges:
+        # TODO: Check if file is part of git repository:
+        #       If not, then format it. If yes, then skip.
+        tools_executor.verbose_check_call(
+            'ruff',
+            'format',
+            '--target-version',
+            config.py_ver_str,
+            file_path,
+            verbose=False,
+        )
+    else:
+        print('Apply code formatter only to changed lines (in reversed order):')
+        ranges = merge_ranges(ranges, max_distance=max_distance)
+        for start, end in reversed(ranges):
+            print(f'Processing range: {start} - {end}', end=' - ')
+            tools_executor.verbose_check_call(
+                'ruff',
+                'format',
+                '--target-version',
+                config.py_ver_str,
+                file_path,
+                f'--range={start}-{end}',
+                verbose=False,
+            )
+
+    print('\n\nFix imports and remove unused imports:')
     tools_executor.verbose_check_call(
-        'autopep8',
-        '--ignore-local-config',
-        '--max-line-length',
-        str(config.max_line_length),
-        '--aggressive',
-        '--aggressive',
-        '--in-place',
+        'ruff',
+        'check',
+        '--target-version',
+        config.py_ver_str,
+        '--select',
+        'I001,F401',  # I001: Import sorting (from isort) + F401: Unused imports (from pyflakes)
+        '--fix',
+        '--unsafe-fixes',
         file_path,
     )
 
 
-def run_flake8(tools_executor, file_path, config):
+def run_file_check(tools_executor, file_path, config: Config):
     tools_executor.verbose_check_call(
-        'flake8',
-        '--max-line-length',
-        str(config.max_line_length),
+        'ruff',
+        'check',
+        '--target-version',
+        config.py_ver_str,
         file_path,
     )
 
 
-def run_pyflakes(tools_executor, file_path, config):
-    tools_executor.verbose_check_call('pyflakes', file_path)
-
-
-def run_codespell(tools_executor, file_path, config):
+def run_codespell(tools_executor, file_path, config: Config):
     tools_executor.verbose_check_call('codespell', file_path)
 
 
-def run_mypy(tools_executor, file_path, config):
+def run_mypy(tools_executor, file_path, config: Config):
     tools_executor.verbose_check_call(
         'mypy',
         '--ignore-missing-imports',
@@ -249,21 +287,10 @@ def run_mypy(tools_executor, file_path, config):
     )
 
 
-def run_refurb(tools_executor, file_path, config):
-    tools_executor.verbose_check_call(
-        'refurb',
-        '--python-version',
-        f'{config.pyproject_info.py_min_ver.major}.{config.pyproject_info.py_min_ver.minor}',
-        file_path,
-    )
-
-
 def format_one_file(
     *,
     default_min_py_version: str,
     default_max_line_length: int,
-    darker_prefixes: str,
-    remove_all_unused_imports: bool,
     file_path: Path,
 ) -> None:
     file_path = file_path.resolve()
@@ -288,25 +315,16 @@ def format_one_file(
 
     print('\n')
 
-    run_pyupgrade(tools_executor, file_path, config)
-
-    run_autoflake(
-        tools_executor,
-        file_path,
-        config,
-        remove_all_unused_imports=remove_all_unused_imports,
-    )
-
     if config.main_branch_name:
-        run_darker(tools_executor, file_path, config, darker_prefixes)
+        # We have a Git repository, so we can format only changed lines
+        format_only_changed_lines(tools_executor, file_path, config)
     else:
-        run_autopep8(tools_executor, file_path, config)
+        # Run full formatting the whole file
+        format_complete_file(tools_executor, file_path, config)
 
-    run_flake8(tools_executor, file_path, config)
-    run_pyflakes(tools_executor, file_path, config)
+    run_file_check(tools_executor, file_path, config)
     run_codespell(tools_executor, file_path, config)
     run_mypy(tools_executor, file_path, config)
-    run_refurb(tools_executor, file_path, config)
 
     print('\n')
 

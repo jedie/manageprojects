@@ -267,18 +267,13 @@ Usage: ./cli.py format-file [OPTIONS] FILE_PATH
  like ".editorconfig" and "pyproject.toml"
 
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --py-version                     TEXT     Fallback Python version for darker/pyupgrade, if       │
-│                                           version is not defined in pyproject.toml               │
-│                                           [default: 3.10]                                        │
-│ --max-line-length            -l  INTEGER  Fallback max. line length for darker/isort etc., if    │
-│                                           not defined in .editorconfig                           │
-│                                           [default: 119]                                         │
-│ --darker-prefixes                TEXT     Apply prefixes via autopep8 before calling darker.     │
-│                                           [default: E301,E302,E303,E305,W391]                    │
-│ --remove-all-unused-imports               Remove all unused imports (not just those from the     │
-│                                           standard library) via autoflake                        │
-│                                           [default: True]                                        │
-│ --help                                    Show this message and exit.                            │
+│ --py-version           TEXT     Fallback Python version for darker/pyupgrade, if version is not  │
+│                                 defined in pyproject.toml                                        │
+│                                 [default: 3.10]                                                  │
+│ --max-line-length  -l  INTEGER  Fallback max. line length for darker/isort etc., if not defined  │
+│                                 in .editorconfig                                                 │
+│                                 [default: 119]                                                   │
+│ --help                          Show this message and exit.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated format-file help end ✂✂✂)
@@ -325,7 +320,7 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 │ publish                     Build and upload this project to PyPi                                │
 │ run-git-hooks               Run the installed "pre-commit" git hooks                             │
 │ test                        Run unittests                                                        │
-│ update                      Update "requirements*.txt" dependencies files                        │
+│ update                      Update dependencies (uv.lock) and git pre-commit hooks               │
 │ update-readme-history       Update project history base on git commits/tags in README.md         │
 │ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
 │                             files)                                                               │
@@ -349,7 +344,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.21.3...main)
+* [v0.22.0](https://github.com/jedie/manageprojects/compare/v0.21.3...v0.22.0)
+  * 2025-07-09 - Use ruff in "format-file" command
+  * 2025-07-09 - Remove "rich_traceback_install()" usage
   * 2025-07-09 - Update requirements
 * [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
   * 2025-04-22 - Support getting the current version from hatchling

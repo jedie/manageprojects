@@ -86,7 +86,7 @@ def pip_audit(verbosity: int):
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def update(verbosity: int):
     """
-    Update "requirements*.txt" dependencies files
+    Update dependencies (uv.lock) and git pre-commit hooks
     """
     setup_logging(verbosity=verbosity)
 

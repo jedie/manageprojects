@@ -16,6 +16,7 @@ from manageprojects.format_file import (
     get_editorconfig_max_line_length,
     get_git_info,
     get_pyproject_info,
+    parse_ranges,
 )
 from manageprojects.test_utils.subprocess import SimpleRunReturnCallback, SubprocessCallMock
 from manageprojects.tests.base import GIT_BIN_PARENT
@@ -24,6 +25,35 @@ from manageprojects.utilities.temp_path import TemporaryDirectory
 
 class FormatFileTestCase(TestCase):
     maxDiff = None
+
+    def test_parse_ranges(self):
+        git_diff_output = inspect.cleandoc("""
+            diff --git a/manageprojects/format_file.py b/manageprojects/format_file.py
+            index 0d480a8..1b29799 100644
+            --- a/manageprojects/format_file.py
+            +++ b/manageprojects/format_file.py
+            @@ -1,0 +2 @@ import dataclasses
+            +import re
+            @@ -32 +33 @@ class GitInfo:
+            -    cwd: Path
+            +    git: Git
+            @@ -293,6 +259,0 @@ def format_one_file(
+            -    run_autoflake(
+            -        tools_executor,
+            -        file_path,
+            -        config,
+            -        remove_all_unused_imports=remove_all_unused_imports,
+            -    )
+        """)
+        ranges = parse_ranges(git_diff_output)
+        self.assertEqual(
+            ranges,
+            [
+                (1, 3),
+                (32, 34),
+                (259, 299),
+            ],
+        )
 
     def test_get_git_info(self):
         with AssertLogs(self, loggers=('cli_base',)):
@@ -77,12 +107,12 @@ class FormatFileTestCase(TestCase):
 
             pyproject_toml.write_text(
                 inspect.cleandoc(
-                    '''
+                    """
                     [tool.poetry.dependencies]
                     foo=1
                     python = '>=3.11,<4.0.0'
                     bar=2
-                    '''
+                    """
                 )
             )
             self.assertEqual(
@@ -96,10 +126,10 @@ class FormatFileTestCase(TestCase):
 
             pyproject_toml.write_text(
                 inspect.cleandoc(
-                    '''
+                    """
                     [project]
                     requires-python = ">=3.99,<4"
-                    '''
+                    """
                 )
             )
             self.assertEqual(
@@ -132,7 +162,7 @@ class FormatFileTestCase(TestCase):
             self.assertEqual(
                 config,
                 Config(
-                    git_info=GitInfo(cwd=PACKAGE_ROOT, main_branch_name='main'),
+                    git_info=GitInfo(git=config.git_info.git, main_branch_name='main'),
                     pyproject_info=PyProjectInfo(
                         pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
                         py_min_ver=Version('3.11'),
@@ -156,16 +186,17 @@ class FormatFileTestCase(TestCase):
                 )
 
     def test_format_one_file(self):
-        with AssertLogs(self, loggers=('cli_base',)), SubprocessCallMock(
-            return_callback=SimpleRunReturnCallback(
-                stdout='* main',  # "git branch" call -> bach name found -> use Darker
-            )
-        ) as call_mock:
+        with (
+            AssertLogs(self, loggers=('cli_base',)),
+            SubprocessCallMock(
+                return_callback=SimpleRunReturnCallback(
+                    stdout='* main',  # "git branch" call -> bach name found -> use Darker
+                )
+            ) as call_mock,
+        ):
             format_one_file(
                 default_min_py_version='3.11',
                 default_max_line_length=123,
-                darker_prefixes='E456,E789',
-                remove_all_unused_imports=True,
                 file_path=Path(__file__),
             )
 
@@ -173,42 +204,20 @@ class FormatFileTestCase(TestCase):
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH, GIT_BIN_PARENT)),
             [
                 ['.../git', 'branch', '--no-color'],
+                ['.../git', 'diff', 'origin/main', '--unified=0', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'format', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
                 [
-                    '.../pyupgrade',
-                    '--exit-zero-even-if-changed',
-                    '--py311-plus',
-                    'manageprojects/tests/test_format_file.py',
-                ],
-                [
-                    '.../autoflake',
-                    '--in-place',
-                    '--remove-all-unused-imports',
-                    'manageprojects/tests/test_format_file.py',
-                ],
-                [
-                    '.../autopep8',
-                    '--ignore-local-config',
-                    '--select',
-                    'E456,E789',
-                    '--max-line-length=119',
-                    '--in-place',
-                    'manageprojects/tests/test_format_file.py',
-                ],
-                [
-                    '.../darker',
-                    '--flynt',
-                    '--isort',
-                    '--skip-string-normalization',
-                    '--revision',
-                    'main...',
-                    '--line-length',
-                    '119',
+                    '.../ruff',
+                    'check',
                     '--target-version',
                     'py311',
+                    '--select',
+                    'I001,F401',
+                    '--fix',
+                    '--unsafe-fixes',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
-                ['.../pyflakes', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'check', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
                 ['.../codespell', 'manageprojects/tests/test_format_file.py'],
                 [
                     '.../mypy',
@@ -218,46 +227,29 @@ class FormatFileTestCase(TestCase):
                     '--allow-redefinition',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../refurb', '--python-version', '3.11', 'manageprojects/tests/test_format_file.py'],
             ],
         )
 
-        with AssertLogs(self, loggers=('cli_base',)), SubprocessCallMock(
-            return_callback=SimpleRunReturnCallback(
-                stdout='',  # No git branch name found -> Don't use Darker -> use autopep8
-            )
-        ) as call_mock:
+        with (
+            AssertLogs(self, loggers=('cli_base',)),
+            SubprocessCallMock(
+                return_callback=SimpleRunReturnCallback(
+                    stdout='',  # No git branch name found -> Format the complete file
+                )
+            ) as call_mock,
+        ):
             format_one_file(
                 default_min_py_version='3.11',
                 default_max_line_length=123,
-                darker_prefixes='E456,E789',
                 file_path=Path(__file__),
-                remove_all_unused_imports=False,
             )
 
         self.assertEqual(
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH, GIT_BIN_PARENT)),
             [
                 ['.../git', 'branch', '--no-color'],
-                [
-                    '.../pyupgrade',
-                    '--exit-zero-even-if-changed',
-                    '--py311-plus',
-                    'manageprojects/tests/test_format_file.py',
-                ],
-                ['.../autoflake', '--in-place', 'manageprojects/tests/test_format_file.py'],
-                [
-                    '.../autopep8',  # <<< Instead of Darker!
-                    '--ignore-local-config',
-                    '--max-line-length',
-                    '119',
-                    '--aggressive',
-                    '--aggressive',
-                    '--in-place',
-                    'manageprojects/tests/test_format_file.py',
-                ],
-                ['.../flake8', '--max-line-length', '119', 'manageprojects/tests/test_format_file.py'],
-                ['.../pyflakes', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'format', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'check', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
                 ['.../codespell', 'manageprojects/tests/test_format_file.py'],
                 [
                     '.../mypy',
@@ -267,6 +259,5 @@ class FormatFileTestCase(TestCase):
                     '--allow-redefinition',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../refurb', '--python-version', '3.11', 'manageprojects/tests/test_format_file.py'],
             ],
         )

@@ -82,7 +82,6 @@ class ReadmeTestCase(BaseTestCase):
                 'Usage: ./cli.py format-file [OPTIONS] FILE_PATH',
                 '--py-version',
                 '--max-line-length',
-                '--darker-prefixes',
             ),
         )
         assert_cli_help_in_readme(text_block=stdout, marker='format-file help')
