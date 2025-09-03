@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 """
-    DocWrite: setup_python.md # Boot Redistributable Python
+DocWrite: setup_python.md # Boot Redistributable Python
 
-    This is a standalone script (one file and no dependencies) to download and setup
-    https://github.com/indygreg/python-build-standalone/ redistributable Python.
-    But only if it's needed!
+This is a standalone script (one file and no dependencies) to download and setup
+https://github.com/indygreg/python-build-standalone/ redistributable Python.
+But only if it's needed!
 """
+
 from __future__ import annotations
 
 import argparse
@@ -287,9 +288,9 @@ def setup_python(
     # Maybe ~/.local/bin/pythonX.XX is already installed, but ~/.local/bin/ is not in PATH:
     if not existing_python_bin and local_bin_path.is_file():
         if existing_version := get_python_version(local_bin_path):
-            assert existing_version.startswith(
-                major_version
-            ), f'{existing_version=} does not start with {major_version=}'
+            assert existing_version.startswith(major_version), (
+                f'{existing_version=} does not start with {major_version=}'
+            )
             existing_python_bin = local_bin_path
 
     logger.debug('Existing Python version: %s', existing_version)
