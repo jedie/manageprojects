@@ -1,8 +1,8 @@
-import rich_click as click
 from cli_base.cli_tools.dev_tools import run_coverage, run_nox, run_unittest_cli
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.cli_tools.test_utils.snapshot import UpdateTestSnapshotFiles
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
+import rich_click as click
 
 from manageprojects.cli_dev import PACKAGE_ROOT, cli
 

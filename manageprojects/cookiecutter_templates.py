@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 import subprocess
 import sys
-from pathlib import Path
 
 from cli_base.cli_tools.git import Git
 from rich import print as rprint

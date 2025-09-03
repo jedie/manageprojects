@@ -1,11 +1,11 @@
 import logging
 import tempfile
 
-import click
 from bx_py_utils.pyproject_toml import get_pyproject_config
 from cli_base.cli_tools.dev_tools import run_unittest_cli
 from cli_base.cli_tools.subprocess_utils import ToolsExecutor
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+import click
 
 import manageprojects
 from manageprojects.cli_dev import PACKAGE_ROOT, cli

@@ -1,9 +1,9 @@
 import filecmp
 import inspect
+from pathlib import Path
 import subprocess
 import sys
 import tempfile
-from pathlib import Path
 from unittest import TestCase
 
 from bx_py_utils.path import assert_is_file

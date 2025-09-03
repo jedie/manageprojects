@@ -1,11 +1,11 @@
 import logging
-import sys
 from pathlib import Path
+import sys
 
-import rich_click as click
 from cli_base.cli_tools import git_history
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
 from rich import print  # noqa
+import rich_click as click
 
 from manageprojects.cli_dev import cli
 

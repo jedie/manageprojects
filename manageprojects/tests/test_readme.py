@@ -43,8 +43,9 @@ class ReadmeTestCase(BaseTestCase):
             got=stdout,
             parts=(
                 'Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...',
-                ' check-code-style ',
+                ' lint ',
                 ' coverage ',
+                ' publish ',
                 constants.CLI_EPILOG,
             ),
         )

@@ -1,6 +1,6 @@
 import configparser
-import warnings
 from pathlib import Path
+import warnings
 
 from bx_py_utils.path import assert_is_dir, assert_is_file
 

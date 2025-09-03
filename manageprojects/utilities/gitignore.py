@@ -1,5 +1,5 @@
-import logging
 from functools import lru_cache
+import logging
 from pathlib import Path
 
 from pathspec import GitIgnoreSpec, PathSpec
