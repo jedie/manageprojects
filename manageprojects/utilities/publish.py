@@ -204,8 +204,12 @@ def check_version(*, module, package_path: Path, distribution_name: str | None =
     if not distribution_name:
         distribution_name = module.__name__
 
-    module_version = clean_version(module.__version__)
-    installed_version = clean_version(version(distribution_name))
+    if module_version := module.__version__:
+        module_version = clean_version(module_version)
+
+    if installed_version := version(distribution_name):
+        installed_version = clean_version(installed_version)
+
     if module_version != installed_version:
         exit_with_error(
             f'Version mismatch: current version {module_version} is not the installed one: {installed_version}',
