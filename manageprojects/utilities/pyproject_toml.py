@@ -3,9 +3,9 @@ import datetime
 import logging
 from pathlib import Path
 
+import tomlkit
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from cli_base.cli_tools.rich_utils import human_error
-import tomlkit
 from tomlkit import TOMLDocument
 from tomlkit.items import Table
 

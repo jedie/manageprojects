@@ -1,8 +1,8 @@
 import argparse
-from argparse import ArgumentParser
 import datetime
-from pathlib import Path
 import tempfile
+from argparse import ArgumentParser
+from pathlib import Path
 from unittest.mock import patch
 
 from bx_py_utils.doc_write.data_structures import MacroContext

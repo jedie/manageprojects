@@ -1,5 +1,5 @@
-from pathlib import Path, PosixPath
 import tempfile
+from pathlib import Path, PosixPath
 from unittest import mock
 from unittest.mock import MagicMock, patch
 

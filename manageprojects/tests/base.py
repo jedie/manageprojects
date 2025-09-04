@@ -1,8 +1,8 @@
-from collections.abc import Iterable
 import datetime
+import shutil
+from collections.abc import Iterable
 from pathlib import Path
 from pprint import pprint
-import shutil
 from unittest import TestCase
 
 from bx_py_utils.path import assert_is_file

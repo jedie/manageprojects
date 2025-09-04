@@ -19,7 +19,6 @@ import argparse
 import hashlib
 import logging
 import os
-from pathlib import Path
 import re
 import shlex
 import shutil
@@ -28,6 +27,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.request
+from pathlib import Path
 
 
 """DocWrite: install_python.md # Install Python Interpreter

@@ -2,10 +2,10 @@
     CLI for development
 """
 
-from collections.abc import Sequence
 import importlib
 import logging
 import sys
+from collections.abc import Sequence
 
 from bx_py_utils.path import assert_is_file
 from cli_base.autodiscover import import_all_files
