@@ -2,9 +2,9 @@
     CLI for usage
 """
 
-from collections.abc import Sequence
 import logging
 import sys
+from collections.abc import Sequence
 
 from cli_base.autodiscover import import_all_files
 from cli_base.cli_tools.version_info import print_version

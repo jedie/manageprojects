@@ -103,7 +103,6 @@ ignore = [
 [tool.ruff.lint.isort]
 # https://docs.astral.sh/ruff/settings/#lintisort
 lines-after-imports = 2
-force-sort-within-sections = true
 
 [tool.ruff.format]
 quote-style = "single"

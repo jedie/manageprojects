@@ -1,7 +1,7 @@
 import dataclasses
 import logging
-from pathlib import Path
 import subprocess
+from pathlib import Path
 
 from bx_py_utils.dict_utils import dict_get
 from cli_base.cli_tools.git import Git, GitError, NoGitRepoError

@@ -5,10 +5,10 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Annotated
 
 from bx_py_utils.path import assert_is_dir

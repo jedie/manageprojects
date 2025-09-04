@@ -1,7 +1,7 @@
 import inspect
-from pathlib import Path
 import sys
 import tomllib
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
 
