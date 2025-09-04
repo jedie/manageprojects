@@ -381,6 +381,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
+  * 2025-09-04 - Bugfix type error in publish version check
   * 2025-09-04 - ruff: remove "force-sort-within-sections = true" (Just use the default)
   * 2024-11-21 - Switch from click to tyro
 * [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)

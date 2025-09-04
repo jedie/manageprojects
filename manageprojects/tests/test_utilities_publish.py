@@ -2,21 +2,23 @@ import inspect
 import sys
 import tomllib
 from pathlib import Path
-from unittest import TestCase
 from unittest.mock import patch
 
+from bx_py_utils.test_utils.redirect import RedirectOut
 from cli_base.cli_tools import subprocess_utils
 from cli_base.cli_tools.test_utils.git_utils import init_git
 from cli_base.cli_tools.test_utils.logs import AssertLogs
+from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRich
 from packaging.version import Version
 
 import manageprojects
 from manageprojects.cli_dev import PACKAGE_ROOT
 from manageprojects.test_utils.subprocess import FakeStdout, SubprocessCallMock
-from manageprojects.tests.base import GIT_BIN_PARENT
+from manageprojects.tests.base import GIT_BIN_PARENT, BaseTestCase
 from manageprojects.utilities.publish import (
     PublisherGit,
     build,
+    check_version,
     clean_version,
     get_pyproject_toml_version,
     hatchling_dynamic_version,
@@ -25,7 +27,7 @@ from manageprojects.utilities.publish import (
 from manageprojects.utilities.temp_path import TemporaryDirectory
 
 
-class PublishTestCase(TestCase):
+class PublishTestCase(BaseTestCase):
     def test_build(self):
         def return_callback(popenargs, args, kwargs):
             return FakeStdout(stdout='Mocked run output')
@@ -216,3 +218,33 @@ class PublishTestCase(TestCase):
         )
         self.assertIsInstance(version, Version)
         self.assertEqual(version, Version(manageprojects.__version__))
+
+    def test_check_version(self):
+        # Enforce matching versions:
+        with patch('manageprojects.utilities.publish.version', return_value=manageprojects.__version__):
+            module_version = check_version(
+                module=manageprojects,
+                package_path=PACKAGE_ROOT,
+            )
+        self.assertEqual(module_version, Version(manageprojects.__version__))
+
+        # Error case:
+        with (
+            NoColorEnvRich(),
+            RedirectOut() as buffer,
+            self.assertRaises(SystemExit),
+            patch('manageprojects.utilities.publish.version', return_value='0.1.2'),
+        ):
+            module_version = check_version(
+                module=manageprojects,
+                package_path=PACKAGE_ROOT,
+            )
+        self.assertEqual(module_version, Version(manageprojects.__version__))
+        self.assertEqual(buffer.stderr, '')
+        self.assert_in_content(
+            got=buffer.stdout,
+            parts=(
+                f'Version mismatch: current version {manageprojects.__version__} is not the installed one: 0.1.2',
+                '(Hint: Install package and run publish again)',
+            ),
+        )
