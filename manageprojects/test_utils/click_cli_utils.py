@@ -1,6 +1,6 @@
 import warnings
 
-from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRichClick, NoColorRichClickCli
+from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRich
 import click
 from click.testing import CliRunner, Result
 
@@ -10,10 +10,12 @@ TERMINAL_WIDTH = 100
 
 def subprocess_cli(*, cli_bin, args, exit_on_error=True):
     warnings.warn(
-        'Migrate to: cli_base.cli_tools.test_utils.rich_test_utils.NoColorRichClickCli context manager !',
+        'Migrate to: NoColorRichClickCli context manager !',
         DeprecationWarning,
         stacklevel=2,
     )
+    from cli_base.cli_tools.test_utils.rich_click_test_utils import NoColorRichClickCli
+
     with NoColorRichClickCli() as cm:
         stdout = cm.invoke(cli_bin=cli_bin, args=args, exit_on_error=exit_on_error)
     return stdout
@@ -25,11 +27,16 @@ class ClickInvokeCliException(Exception):
 
 
 def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=True, **kwargs):
+    warnings.warn(
+        'Deprecated: Will be removed in future !',
+        DeprecationWarning,
+        stacklevel=2,
+    )
     assert isinstance(cli, click.Command)
 
     args = tuple([str(arg) for arg in args])  # e.g.: Path() -> str
 
-    with NoColorEnvRichClick(width=TERMINAL_WIDTH):
+    with NoColorEnvRich(width=TERMINAL_WIDTH):
         runner = CliRunner()
         result: Result = runner.invoke(cli=cli, args=args, **kwargs, color=False)
 

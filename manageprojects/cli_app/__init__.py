@@ -2,14 +2,14 @@
     CLI for usage
 """
 
+from collections.abc import Sequence
 import logging
 import sys
 
 from cli_base.autodiscover import import_all_files
 from cli_base.cli_tools.version_info import print_version
 from rich import print  # noqa
-import rich_click as click
-from rich_click import RichGroup
+from tyro.extras import SubcommandApp
 
 import manageprojects
 from manageprojects import constants
@@ -17,35 +17,25 @@ from manageprojects import constants
 
 logger = logging.getLogger(__name__)
 
+app = SubcommandApp()
 
-class ClickGroup(RichGroup):  # FIXME: How to set the "info_name" easier?
-    def make_context(self, info_name, *args, **kwargs):
-        info_name = './cli.py'
-        return super().make_context(info_name, *args, **kwargs)
-
-
-@click.group(
-    cls=ClickGroup,
-    epilog=constants.CLI_EPILOG,
-)
-def cli():
-    pass
-
-
-# Register all click commands, just by import all files in this package:
+# Register all CLI commands, just by import all files in this package:
 import_all_files(package=__package__, init_file=__file__)
 
 
-@cli.command()
+@app.command
 def version():
     """Print version and exit"""
     # Pseudo command, because the version always printed on every CLI call ;)
     sys.exit(0)
 
 
-def main():
+def main(args: Sequence[str] | None = None):
     print_version(manageprojects)
-
-    # Execute Click CLI:
-    cli.name = './cli.py'
-    cli()
+    app.cli(
+        prog='./cli.py',
+        description=constants.CLI_EPILOG,
+        use_underscores=False,  # use hyphens instead of underscores
+        sort_subcommands=True,
+        args=args,
+    )
