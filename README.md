@@ -380,6 +380,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.23.0...main)
+  * 2025-09-20 - Update requirements
 * [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
   * 2025-09-04 - Bugfix type error in publish version check
   * 2025-09-04 - ruff: remove "force-sort-within-sections = true" (Just use the default)
@@ -391,12 +393,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2025-07-09 - Use ruff in "format-file" command
   * 2025-07-09 - Remove "rich_traceback_install()" usage
   * 2025-07-09 - Update requirements
-* [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
-  * 2025-04-22 - Support getting the current version from hatchling
-  * 2025-04-22 - replace setuptools with hatchling
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
+  * 2025-04-22 - Support getting the current version from hatchling
+  * 2025-04-22 - replace setuptools with hatchling
 * [v0.21.2](https://github.com/jedie/manageprojects/compare/v0.21.1...v0.21.2)
   * 2025-03-11 - Fix nox CLI call
   * 2025-03-11 - Update requirements and replace tox with nox
