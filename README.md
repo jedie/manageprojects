@@ -37,7 +37,7 @@ The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
-usage: ./cli.py [-h] {clone-project,format-file,reverse,start-project,update-project,version,wiggle}
+usage: ./cli.py [-h] {clone-project,format-file,reverse,shell-completion,start-project,update-project,version,wiggle}
 
 
 
@@ -45,7 +45,7 @@ usage: ./cli.py [-h] {clone-project,format-file,reverse,start-project,update-pro
 │ -h, --help        show this help message and exit                                                                  │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ {clone-project,format-file,reverse,start-project,update-project,version,wiggle}                                    │
+│ {clone-project,format-file,reverse,shell-completion,start-project,update-project,version,wiggle}                   │
 │     clone-project                                                                                                  │
 │                   Clone existing project by replay the cookiecutter template in a new directory. e.g.:             │
 │                                                                                                                    │
@@ -58,6 +58,8 @@ usage: ./cli.py [-h] {clone-project,format-file,reverse,start-project,update-pro
 │                                                                                                                    │
 │                                                                                                                    │
 │                   ./cli.py reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/                           │
+│     shell-completion                                                                                               │
+│                   Setup shell completion for this CLI (Currently only for bash shell)                              │
 │     start-project                                                                                                  │
 │                   Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template       │
 │                   *must* be use git!                                                                               │
@@ -329,8 +331,8 @@ The output of `./dev-cli.py --help` looks like:
 [comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
 ```
 usage: ./dev-cli.py [-h]
-                    {coverage,git-hooks,install,lint,mypy,nox,pip-audit,publish,run-git-hooks,test,update,update-readm
-e-history,update-test-snapshot-files,version}
+                    {coverage,git-hooks,install,lint,mypy,nox,pip-audit,publish,run-git-hooks,shell-completion,test,up
+date,update-readme-history,update-test-snapshot-files,version}
 
 
 
@@ -338,8 +340,8 @@ e-history,update-test-snapshot-files,version}
 │ -h, --help        show this help message and exit                                                                  │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ {coverage,git-hooks,install,lint,mypy,nox,pip-audit,publish,run-git-hooks,test,update,update-readme-history,update │
-│ -test-snapshot-files,version}                                                                                      │
+│ {coverage,git-hooks,install,lint,mypy,nox,pip-audit,publish,run-git-hooks,shell-completion,test,update,update-read │
+│ me-history,update-test-snapshot-files,version}                                                                     │
 │     coverage      Run tests and show coverage report.                                                              │
 │     git-hooks     Setup our "pre-commit" git hooks                                                                 │
 │     install       Install requirements and 'manageprojects' via pip as editable.                                   │
@@ -350,6 +352,8 @@ e-history,update-test-snapshot-files,version}
 │     publish       Build and upload this project to PyPi                                                            │
 │     run-git-hooks                                                                                                  │
 │                   Run the installed "pre-commit" git hooks                                                         │
+│     shell-completion                                                                                               │
+│                   Setup shell completion for this CLI (Currently only for bash shell)                              │
 │     test          Run unittests                                                                                    │
 │     update        Update dependencies (uv.lock) and git pre-commit hooks                                           │
 │     update-readme-history                                                                                          │
@@ -380,7 +384,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.23.0...main)
+* [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
+  * 2025-09-22 - NEW: shell completion command for app/dev CLI
   * 2025-09-20 - Update requirements
 * [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
   * 2025-09-04 - Bugfix type error in publish version check
