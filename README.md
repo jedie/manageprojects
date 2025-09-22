@@ -385,6 +385,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
+  * 2025-09-22 - Add PyChram run configs
   * 2025-09-22 - NEW: shell completion command for app/dev CLI
   * 2025-09-20 - Update requirements
 * [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
