@@ -384,6 +384,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.24.0...main)
+  * 2025-10-13 - Update requirements
+  * 2025-10-13 - Apply template updates
 * [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
   * 2025-09-22 - Cleanup: Remove obsolete flak8 config
   * 2025-09-22 - Add PyChram run configs
@@ -396,13 +399,13 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 * [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)
   * 2025-09-03 - Make install/setup python script executeable after renew the code
   * 2025-09-03 - Update code style stuff to ruff
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.22.0](https://github.com/jedie/manageprojects/compare/v0.21.3...v0.22.0)
   * 2025-07-09 - Use ruff in "format-file" command
   * 2025-07-09 - Remove "rich_traceback_install()" usage
   * 2025-07-09 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.21.3](https://github.com/jedie/manageprojects/compare/v0.21.2...v0.21.3)
   * 2025-04-22 - Support getting the current version from hatchling
   * 2025-04-22 - replace setuptools with hatchling
