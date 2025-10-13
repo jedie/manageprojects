@@ -67,7 +67,9 @@ path = "manageprojects/__init__.py"
 requirements=["requirements.dev.txt"]
 strict=true
 require_hashes=true
-ignore-vuln=[]
+ignore-vuln=[
+    "GHSA-4xh5-x5gv-qwph",  # https://github.com/advisories/GHSA-4xh5-x5gv-qwph
+]
 
 
 [tool.cli_base]
@@ -165,6 +167,7 @@ applied_migrations = [
     "ff48b81", # 2024-11-09T19:08:01+01:00
     "38129ec", # 2025-02-12T17:41:38+01:00
     "9c976dd", # 2025-09-04T16:33:51+02:00
+    "4d9f75b", # 2025-10-13T12:11:18+02:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
