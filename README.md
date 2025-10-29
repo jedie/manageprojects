@@ -385,7 +385,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.24.0...main)
-  * 2025-10-13 - Update requirements
+  * 2025-10-29 - Update requirements
   * 2025-10-13 - Apply template updates
 * [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
   * 2025-09-22 - Cleanup: Remove obsolete flak8 config
