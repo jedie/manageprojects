@@ -197,8 +197,14 @@ def parse_ranges(git_diff_output: str) -> list:
 
 def merge_ranges(ranges: list, max_distance: int = 1) -> list:
     """
-    >>> merge_ranges([(1,2), (3,4), (10,11), (20, 25), (21, 26)])
+    >>> merge_ranges([(1,2), (3,4), (10,11), (20, 25), (21, 26)], max_distance=0)
+    [(1, 2), (3, 4), (10, 11), (20, 26)]
+    >>> merge_ranges([(1,2), (3,4), (10,11), (20, 25), (21, 26)], max_distance=1)
     [(1, 4), (10, 11), (20, 26)]
+    >>> merge_ranges([(1,2), (3,4), (10,11), (20, 25), (21, 26)], max_distance=8)
+    [(1, 11), (20, 26)]
+    >>> merge_ranges([(1,2), (3,4), (10,11), (20, 25), (21, 26)], max_distance=10)
+    [(1, 26)]
     """
     merged = []
     for start, end in sorted(ranges):
@@ -211,7 +217,7 @@ def merge_ranges(ranges: list, max_distance: int = 1) -> list:
     return merged
 
 
-def format_only_changed_lines(tools_executor, file_path, config: Config, max_distance=2):
+def format_only_changed_lines(tools_executor, file_path, config: Config, max_distance: int = 1):
     # Use darker after v3 release, see: https://github.com/akaihola/darker/milestones
 
     git: Git = config.git_info.git
@@ -292,6 +298,7 @@ def format_one_file(
     default_min_py_version: str,
     default_max_line_length: int,
     file_path: Path,
+    max_distance: int = 1,
 ) -> None:
     file_path = file_path.resolve()
     print(f'\nApply code formatter to: {file_path}')
@@ -317,7 +324,7 @@ def format_one_file(
 
     if config.main_branch_name:
         # We have a Git repository, so we can format only changed lines
-        format_only_changed_lines(tools_executor, file_path, config)
+        format_only_changed_lines(tools_executor, file_path, config, max_distance=max_distance)
     else:
         # Run full formatting the whole file
         format_complete_file(tools_executor, file_path, config)

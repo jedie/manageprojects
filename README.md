@@ -303,6 +303,8 @@ only used, if we can't get them from the project meta files like ".editorconfig"
 │                         (default: 3.10)                                                                            │
 │ --max-line-length INT   Fallback max. line length for darker/isort etc., if not defined in .editorconfig (default: │
 │                         119)                                                                                       │
+│ --max-distance INT      If we only format the changed lines: The maximum number of lines between two chunks that   │
+│                         can be merged. (default: 1)                                                                │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated format-file help end ✂✂✂)
@@ -384,7 +386,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.24.0...main)
+* [v0.25.0](https://github.com/jedie/manageprojects/compare/v0.24.0...v0.25.0)
+  * 2025-10-29 - format-file: Set default "max_distance" to 1 and add it to CLI
   * 2025-10-29 - Update requirements
   * 2025-10-13 - Apply template updates
 * [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
