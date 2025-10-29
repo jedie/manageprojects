@@ -298,6 +298,15 @@ def format_file(
         int,
         arg(help='Fallback max. line length for darker/isort etc., if not defined in .editorconfig'),
     ] = FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH,
+    max_distance: Annotated[
+        int,
+        arg(
+            help=(
+                'If we only format the changed lines:'
+                ' The maximum number of lines between two chunks that can be merged.'
+            )
+        ),
+    ] = 1,
 ):
     """
     Format and check the given python source code file with ruff, codespell and mypy.
@@ -310,6 +319,7 @@ def format_file(
         default_min_py_version=py_version,
         default_max_line_length=max_line_length,
         file_path=file_path,
+        max_distance=max_distance,
     )
 
 
