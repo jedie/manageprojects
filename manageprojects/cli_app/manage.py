@@ -29,7 +29,7 @@ from manageprojects.cookiecutter_templates import (
     update_managed_project,
 )
 from manageprojects.data_classes import CookiecutterResult
-from manageprojects.format_file import format_one_file
+from manageprojects.format_file import format_sources
 from manageprojects.utilities.log_utils import log_config
 
 
@@ -311,14 +311,16 @@ def format_file(
     """
     Format and check the given python source code file with ruff, codespell and mypy.
 
+    If the given file is a directory, all python files that are tracked as changed by git will be formatted.
+
     The optional fallback values will be only used, if we can't get them from the project meta files
     like ".editorconfig" and "pyproject.toml"
     """
     log_config(verbosity=verbosity, log_in_file=False)
-    format_one_file(
+    format_sources(
+        file_path=file_path,
         default_min_py_version=py_version,
         default_max_line_length=max_line_length,
-        file_path=file_path,
         max_distance=max_distance,
     )
 

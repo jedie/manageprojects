@@ -20,7 +20,7 @@ dependencies = [
     "codespell",  # https://github.com/codespell-project/codespell
     "mypy",  # https://github.com/python/mypy
 
-    "cli-base-utilities>=0.23.0",  # https://github.com/jedie/cli-base-utilities
+    "cli-base-utilities>=0.26.0",  # https://github.com/jedie/cli-base-utilities
     "tyro",  # https://github.com/brentyi/tyro
     "rich",  # https://github.com/Textualize/rich
 ]

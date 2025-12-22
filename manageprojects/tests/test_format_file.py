@@ -11,7 +11,7 @@ from manageprojects.format_file import (
     Config,
     GitInfo,
     PyProjectInfo,
-    format_one_file,
+    format_sources,
     get_config,
     get_editorconfig_max_line_length,
     get_git_info,
@@ -194,7 +194,7 @@ class FormatFileTestCase(TestCase):
                 )
             ) as call_mock,
         ):
-            format_one_file(
+            format_sources(
                 default_min_py_version='3.11',
                 default_max_line_length=123,
                 file_path=Path(__file__),
@@ -238,7 +238,7 @@ class FormatFileTestCase(TestCase):
                 )
             ) as call_mock,
         ):
-            format_one_file(
+            format_sources(
                 default_min_py_version='3.11',
                 default_max_line_length=123,
                 file_path=Path(__file__),
