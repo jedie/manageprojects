@@ -70,8 +70,10 @@ class Config:
 
 
 def get_git_info(file_path: Path) -> GitInfo | None:
+    if file_path.is_file():
+        file_path = file_path.parent
     try:
-        git = Git(cwd=file_path.parent, detect_root=True)
+        git = Git(cwd=file_path, detect_root=True)
     except NoGitRepoError:
         print('File is not under Git version control')
     else:
@@ -293,34 +295,18 @@ def run_mypy(tools_executor, file_path, config: Config):
     )
 
 
-def format_one_file(
-    *,
-    default_min_py_version: str,
-    default_max_line_length: int,
-    file_path: Path,
-    max_distance: int = 1,
-) -> None:
-    file_path = file_path.resolve()
-    print(f'\nApply code formatter to: {file_path}')
+def format_one_file(*, config: Config, file_path: Path, max_distance: int, tools_executor: ToolsExecutor):
     if file_path.suffix.lower() != '.py':
         print('Skip non-Python file ;)')
         return
 
-    abs_file_path = file_path.absolute()
+    print('\n')
 
+    abs_file_path = file_path.absolute()
     old_content = abs_file_path.read_bytes()
 
-    config = get_config(
-        abs_file_path,
-        default_min_py_version=default_min_py_version,
-        default_max_line_length=default_max_line_length,
-    )
     if cwd := config.project_root_path:
         file_path = abs_file_path.relative_to(cwd)
-
-    tools_executor = ToolsExecutor(cwd=config.project_root_path)
-
-    print('\n')
 
     if config.main_branch_name:
         # We have a Git repository, so we can format only changed lines
@@ -340,3 +326,41 @@ def format_one_file(
         print(f'[green bold]*** File [blue]{abs_file_path}[/blue] successfully updated. ***')
     else:
         print(f'[green bold]*** File [blue]{abs_file_path}[/blue] needs to changes, ok. ***')
+
+
+def format_sources(
+    *,
+    file_path: Path,
+    default_min_py_version: str,
+    default_max_line_length: int,
+    max_distance: int = 1,
+) -> None:
+    file_path = file_path.resolve()
+    print(f'\nApply code formatter to: {file_path}')
+
+    config = get_config(
+        file_path,
+        default_min_py_version=default_min_py_version,
+        default_max_line_length=default_max_line_length,
+    )
+    tools_executor = ToolsExecutor(cwd=config.project_root_path)
+
+    if file_path.is_dir():
+        print('\n\nFormat all changed files...')
+        git: Git = config.git_info.git
+        changed_files = git.changed_files(verbose=False)
+        for file_path in changed_files:
+            print(f'\n\nFormat changes in: {file_path=}')
+            format_one_file(
+                config=config,
+                file_path=file_path,
+                max_distance=max_distance,
+                tools_executor=tools_executor,
+            )
+    else:
+        format_one_file(
+            config=config,
+            file_path=file_path,
+            max_distance=max_distance,
+            tools_executor=tools_executor,
+        )
