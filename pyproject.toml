@@ -46,8 +46,8 @@ Documentation = "https://github.com/jedie/manageprojects"
 Source = "https://github.com/jedie/manageprojects"
 
 [project.scripts]
-manageprojects_app = "manageprojects.__main__:main"
-manageprojects_dev = "manageprojects.cli_dev:main"
+manageprojects = "manageprojects.__main__:main"
+_manageprojects_dev = "manageprojects.cli_dev:main"
 
 
 [build-system]

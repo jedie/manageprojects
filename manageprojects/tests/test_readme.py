@@ -38,7 +38,7 @@ class ReadmeTestCase(BaseTestCase):
         self.assert_in_content(
             got=stdout,
             parts=(
-                'usage: ./cli.py [-h]',
+                'usage: manageprojects [-h]',
                 ' version ',
                 'Print version and exit',
                 constants.CLI_EPILOG,
@@ -68,7 +68,7 @@ class ReadmeTestCase(BaseTestCase):
         self.assert_in_content(
             got=stdout,
             parts=(
-                'usage: ./cli.py start-project [-h] ',
+                'usage: manageprojects start-project [-h] ',
                 ' --directory ',
                 ' --input, --no-input ',
             ),
@@ -81,7 +81,7 @@ class ReadmeTestCase(BaseTestCase):
         self.assert_in_content(
             got=stdout,
             parts=(
-                'usage: ./cli.py update-project [-h] ',
+                'usage: manageprojects update-project [-h] ',
                 ' --input, --no-input ',
                 ' --cleanup, --no-cleanup ',
             ),
@@ -94,7 +94,7 @@ class ReadmeTestCase(BaseTestCase):
         self.assert_in_content(
             got=stdout,
             parts=(
-                'usage: ./cli.py format-file [-h] ',
+                'usage: manageprojects format-file [-h] ',
                 ' --py-version ',
                 ' --max-line-length ',
             ),
