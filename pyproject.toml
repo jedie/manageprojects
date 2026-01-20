@@ -18,7 +18,7 @@ dependencies = [
     # https://github.com/astral-sh/ruff
     "ruff",
     "codespell",  # https://github.com/codespell-project/codespell
-    "mypy",  # https://github.com/python/mypy
+    "ty", # https://docs.astral.sh/ty/
 
     "cli-base-utilities>=0.26.0",  # https://github.com/jedie/cli-base-utilities
     "tyro",  # https://github.com/brentyi/tyro
@@ -36,7 +36,6 @@ dev = [
     "coverage",  # https://github.com/nedbat/coveragepy
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
     "pip-audit",  # https://github.com/pypa/pip-audit
-    "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
     "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
@@ -130,13 +129,9 @@ exclude_lines = [
 ]
 
 
-[tool.mypy]
-warn_unused_configs = true
-ignore_missing_imports = true
-allow_redefinition = true  # https://github.com/python/mypy/issues/7165
-show_error_codes = true
-plugins = []
-exclude = ['.venv', 'tests']
+[tool.ty.src] # https://docs.astral.sh/ty/configuration/
+include = ["."]
+exclude = ["**/.venv/**", "**/__pycache__/**"]
 
 
 [manageprojects] # https://github.com/jedie/manageprojects

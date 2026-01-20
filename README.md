@@ -391,6 +391,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.26.0...main)
+  * 2026-01-20 - Replace "mypy" with "ty" in "format-file" command
   * 2026-01-20 - Update requirements
 * [v0.26.0](https://github.com/jedie/manageprojects/compare/v0.24.0...v0.26.0)
   * 2025-12-22 - Enhance "format-file": Format all changed files, if directory is given!
