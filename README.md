@@ -42,7 +42,7 @@ see: https://pipx.pypa.io/stable/docs/#pipx-upgrade
 
 
 
-The output of `./cli.py --help` looks like:
+The output of `manageprojects --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
@@ -57,8 +57,7 @@ usage: manageprojects [-h] {clone-project,format-file,reverse,shell-completion,s
 │ (required)                                                                                                           │
 │   • clone-project     Clone existing project by replay the cookiecutter template in a new directory. e.g.:           │
 │                                                                                                                      │
-│                                                                                                                      │
-│                       ./cli.py clone-project ~/foo/bar ~/cloned/                                                     │
+│                       manageprojects clone-project ~/foo/bar ~/cloned/                                               │
 │   • format-file       Format and check the given python source code file with ruff, codespell and mypy. If the given │
 │                       file is a directory, all python files that are tracked as changed by git will be formatted.    │
 │                                                                                                                      │
@@ -66,28 +65,24 @@ usage: manageprojects [-h] {clone-project,format-file,reverse,shell-completion,s
 │                       files like ".editorconfig" and "pyproject.toml"                                                │
 │   • reverse           Create a cookiecutter template from a managed project. e.g.:                                   │
 │                                                                                                                      │
-│                                                                                                                      │
-│                       ./cli.py reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/                         │
+│                       manageprojects reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/                   │
 │   • shell-completion  Setup shell completion for this CLI (Currently only for bash shell)                            │
 │   • start-project     Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template     │
 │                       *must* be use git!                                                                             │
 │                                                                                                                      │
 │                       e.g.:                                                                                          │
 │                                                                                                                      │
-│                                                                                                                      │
-│                       ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory            │
+│                       manageprojects start-project https://github.com/jedie/cookiecutter_templates/ --directory      │
 │                       piptools-python ~/foobar/                                                                      │
 │   • update-project    Update a existing project. e.g. update by overwrite (and merge changes manually via git):      │
 │                                                                                                                      │
-│                                                                                                                      │
-│                       ./cli.py update-project ~/foo/bar/                                                             │
+│                       manageprojects update-project ~/foo/bar/                                                       │
 │   • version           Print version and exit                                                                         │
 │   • wiggle            Run wiggle to merge *.rej in given directory. https://github.com/neilbrown/wiggle              │
 │                                                                                                                      │
 │                       e.g.:                                                                                          │
 │                                                                                                                      │
-│                                                                                                                      │
-│                       ./cli.py wiggle ~/my_managed_project/                                                          │
+│                       manageprojects wiggle ~/my_managed_project/                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
@@ -96,7 +91,7 @@ usage: manageprojects [-h] {clone-project,format-file,reverse,shell-completion,s
 
 #### start-project
 
-Help from `./cli.py start-project --help` Looks like:
+Help from `manageprojects start-project --help` Looks like:
 
 [comment]: <> (✂✂✂ auto generated start-project help start ✂✂✂)
 ```
@@ -106,8 +101,7 @@ Start a new "managed" project via a CookieCutter Template. Note: The CookieCutte
 
 e.g.:
 
-
-./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/foobar/
+manageprojects start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/foobar/
 
 ╭─ positional arguments ───────────────────────────────────────────────────────────────────────────────────────────────╮
 │ STR              The name of the CookieCutter Template. (required)                                                   │
@@ -138,7 +132,7 @@ e.g.:
 
 #### update-project
 
-Help from `./cli.py update-project --help` Looks like:
+Help from `manageprojects update-project --help` Looks like:
 
 [comment]: <> (✂✂✂ auto generated update-project help start ✂✂✂)
 ```
@@ -146,8 +140,7 @@ usage: manageprojects update-project [-h] [UPDATE-PROJECT OPTIONS]
 
 Update a existing project. e.g. update by overwrite (and merge changes manually via git):
 
-
-./cli.py update-project ~/foo/bar/
+manageprojects update-project ~/foo/bar/
 
 ╭─ positional arguments ───────────────────────────────────────────────────────────────────────────────────────────────╮
 │ PATH             project-path (required)                                                                             │
@@ -181,7 +174,7 @@ Update a existing project. e.g. update by overwrite (and merge changes manually 
 Use `start-project` command and a github url as Cookiecutter template, e.g.:
 
 ```bash
-~/manageprojects$ ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/my_new_project/
+~/manageprojects$ manageprojects start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/my_new_project/
 ~/manageprojects$ cd ~/my_new_project/your_cool_package/
 ~/my_new_project/your_cool_package/$ git init
 ~/my_new_project/your_cool_package/$ git add .
@@ -210,7 +203,7 @@ cookiecutter_directory = "piptools-python"
 If the source Cookiecutter changed, then you can apply these changes to your created project, e.g.:
 
 ```bash
-~/manageprojects$ ./cli.py update-project ~/my_new_project/your_cool_package/
+~/manageprojects$ manageprojects update-project ~/my_new_project/your_cool_package/
 ```
 
 After this, manageproject will update the own meta information in `pyproject.toml` by add `applied_migrations` with the information about the current Cookiecutter version, e.g.:
@@ -257,7 +250,7 @@ It tries to apply rejected patches by perform word-wise diffs.
 Just run `wiggle` via manageproject CLI, e.g.:
 
 ```bash
-~/manageprojects$ ./cli.py wiggle ~/my_new_project/your_cool_package/
+~/manageprojects$ manageprojects wiggle ~/my_new_project/your_cool_package/
 ```
 
 
@@ -272,7 +265,7 @@ So you doesn't have trouble with not applicable git patches ;)
 
 Just add `--overwrite`, e.g.:
 ```bash
-~/manageprojects$ ./cli.py update-project --overwrite ~/my_new_project/your_cool_package/
+~/manageprojects$ manageprojects update-project --overwrite ~/my_new_project/your_cool_package/
 ```
 
 
@@ -293,7 +286,7 @@ More information: [docs/install_python.md](https://github.com/jedie/manageprojec
 
 A existing managed project can be converted back to a Cookiecutter template, e.g.:
 ```bash
-~/manageprojects$ ./cli.py reverse ~/my_new_project/ ~/cookiecutter_template/
+~/manageprojects$ manageprojects reverse ~/my_new_project/ ~/cookiecutter_template/
 ```
 
 
@@ -349,7 +342,7 @@ e.g.:
 ```bash
 ~$ git clone https://github.com/jedie/manageprojects.git
 ~$ cd manageprojects
-~/manageprojects$ ./cli.py --help
+~/manageprojects$ manageprojects --help
 ```
 
 For developing manageprojects, there is the `dev-cli.py` with all development related commands.
@@ -409,7 +402,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [v0.27.0rc1](https://github.com/jedie/manageprojects/compare/v0.26.0...v0.27.0rc1)
+* [v0.27.0](https://github.com/jedie/manageprojects/compare/v0.26.0...v0.27.0)
+  * 2026-01-20 - Rename `./cli.py` to `manageprojects` in README/docstrings to match pipx usage
   * 2026-01-20 - Mention "pipx install manageprojects" usage
   * 2026-01-20 - Replace "mypy" with "ty" in "format-file" command
   * 2026-01-20 - Update requirements
