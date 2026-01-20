@@ -390,6 +390,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.26.0...main)
+  * 2026-01-20 - Update requirements
 * [v0.26.0](https://github.com/jedie/manageprojects/compare/v0.24.0...v0.26.0)
   * 2025-12-22 - Enhance "format-file": Format all changed files, if directory is given!
   * 2025-10-29 - format-file: Set default "max_distance" to 1 and add it to CLI
@@ -404,12 +406,12 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2025-09-04 - Bugfix type error in publish version check
   * 2025-09-04 - ruff: remove "force-sort-within-sections = true" (Just use the default)
   * 2024-11-21 - Switch from click to tyro
-* [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)
-  * 2025-09-03 - Make install/setup python script executeable after renew the code
-  * 2025-09-03 - Update code style stuff to ruff
 
 <details><summary>Expand older history entries ...</summary>
 
+* [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)
+  * 2025-09-03 - Make install/setup python script executeable after renew the code
+  * 2025-09-03 - Update code style stuff to ruff
 * [v0.22.0](https://github.com/jedie/manageprojects/compare/v0.21.3...v0.22.0)
   * 2025-07-09 - Use ruff in "format-file" command
   * 2025-07-09 - Remove "rich_traceback_install()" usage
