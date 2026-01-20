@@ -10,6 +10,7 @@ from editorconfig import EditorConfigError, get_properties
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
 from rich import print  # noqa
+from rich.console import Console
 from rich.pretty import pprint
 
 from manageprojects.constants import FORMAT_PY_FILE_DEFAULT_MAX_LINE_LENGTH, FORMAT_PY_FILE_DEFAULT_MIN_PYTHON_VERSION
@@ -284,15 +285,15 @@ def run_codespell(tools_executor, file_path, config: Config):
     tools_executor.verbose_check_call('codespell', file_path)
 
 
-def run_mypy(tools_executor, file_path, config: Config):
-    tools_executor.verbose_check_call(
-        'mypy',
-        '--ignore-missing-imports',
-        '--follow-imports',
-        'skip',
-        '--allow-redefinition',  # https://github.com/python/mypy/issues/7165
-        str(file_path),
-    )
+def run_ty(tools_executor, file_path, config: Config):
+    console = Console()
+    if console.color_system:
+        # It seems tha "ty" doesn't detect terminal colors properly, but Rich does it well
+        extra_args = ('--color', 'always')
+    else:
+        extra_args = ()
+
+    tools_executor.verbose_check_call('ty', 'check', *extra_args, str(file_path))
 
 
 def format_one_file(*, config: Config, file_path: Path, max_distance: int, tools_executor: ToolsExecutor):
@@ -317,7 +318,7 @@ def format_one_file(*, config: Config, file_path: Path, max_distance: int, tools
 
     run_file_check(tools_executor, file_path, config)
     run_codespell(tools_executor, file_path, config)
-    run_mypy(tools_executor, file_path, config)
+    run_ty(tools_executor, file_path, config)
 
     print('\n')
 

@@ -219,14 +219,7 @@ class FormatFileTestCase(TestCase):
                 ],
                 ['.../ruff', 'check', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
                 ['.../codespell', 'manageprojects/tests/test_format_file.py'],
-                [
-                    '.../mypy',
-                    '--ignore-missing-imports',
-                    '--follow-imports',
-                    'skip',
-                    '--allow-redefinition',
-                    'manageprojects/tests/test_format_file.py',
-                ],
+                ['.../ty', 'check', 'manageprojects/tests/test_format_file.py'],
             ],
         )
 
@@ -251,13 +244,6 @@ class FormatFileTestCase(TestCase):
                 ['.../ruff', 'format', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
                 ['.../ruff', 'check', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
                 ['.../codespell', 'manageprojects/tests/test_format_file.py'],
-                [
-                    '.../mypy',
-                    '--ignore-missing-imports',
-                    '--follow-imports',
-                    'skip',
-                    '--allow-redefinition',
-                    'manageprojects/tests/test_format_file.py',
-                ],
+                ['.../ty', 'check', 'manageprojects/tests/test_format_file.py'],
             ],
         )
