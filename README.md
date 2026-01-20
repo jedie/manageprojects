@@ -22,22 +22,31 @@ Read below the `Helper` section.
 
 Documentation: [docs/](https://github.com/jedie/manageprojects/blob/main/docs/) (WIP)
 
+
 ## install
 
-Currently just clone the project and just start the cli (that will create a virtualenv and installs every dependencies)
+You can use [pipx](https://pipx.pypa.io/stable/installation/) to install and use PyHardLinkBackup, e.g.:
 
-e.g.:
 ```bash
-~$ git clone https://github.com/jedie/manageprojects.git
-~$ cd manageprojects
-~/manageprojects$ ./cli.py --help
+sudo apt install pipx
+
+pipx install manageprojects
 ```
+After this you can call the CLI via `manageprojects` command.
+
+To upgrade an existing installation, use:
+```bash
+pipx upgrade PyHardLinkBackup
+```
+see: https://pipx.pypa.io/stable/docs/#pipx-upgrade
+
+
 
 The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
-usage: ./cli.py [-h] {clone-project,format-file,reverse,shell-completion,start-project,update-project,version,wiggle}
+usage: manageprojects [-h] {clone-project,format-file,reverse,shell-completion,start-project,update-project,version,wiggle}
 
 
 
@@ -91,7 +100,7 @@ Help from `./cli.py start-project --help` Looks like:
 
 [comment]: <> (✂✂✂ auto generated start-project help start ✂✂✂)
 ```
-usage: ./cli.py start-project [-h] [START-PROJECT OPTIONS]
+usage: manageprojects start-project [-h] [START-PROJECT OPTIONS]
 
 Start a new "managed" project via a CookieCutter Template. Note: The CookieCutter Template *must* be use git!
 
@@ -133,7 +142,7 @@ Help from `./cli.py update-project --help` Looks like:
 
 [comment]: <> (✂✂✂ auto generated update-project help start ✂✂✂)
 ```
-usage: ./cli.py update-project [-h] [UPDATE-PROJECT OPTIONS]
+usage: manageprojects update-project [-h] [UPDATE-PROJECT OPTIONS]
 
 Update a existing project. e.g. update by overwrite (and merge changes manually via git):
 
@@ -294,7 +303,7 @@ You can use `format-file` as "Action on save" or manual action in your IDE to fi
 
 [comment]: <> (✂✂✂ auto generated format-file help start ✂✂✂)
 ```
-usage: ./cli.py format-file [-h] PATH [-v] [--py-version STR] [--max-line-length INT] [--max-distance INT]
+usage: manageprojects format-file [-h] PATH [-v] [--py-version STR] [--max-line-length INT] [--max-distance INT]
 
 Format and check the given python source code file with ruff, codespell and mypy. If the given file is a directory, all python files that are tracked as changed by git will be formatted.
 
@@ -333,7 +342,17 @@ Some checks result in a hard exit, but some can be manually confirmed from the u
 
 ## development
 
-For developing manageprojects, there is the `dev-cli.py`.
+Just clone the project and just start the cli's `dev-cli.py` or `cli.py`
+(both will create a virtualenv and installs every dependencies)
+
+e.g.:
+```bash
+~$ git clone https://github.com/jedie/manageprojects.git
+~$ cd manageprojects
+~/manageprojects$ ./cli.py --help
+```
+
+For developing manageprojects, there is the `dev-cli.py` with all development related commands.
 
 The output of `./dev-cli.py --help` looks like:
 
@@ -390,7 +409,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.26.0...main)
+* [v0.27.0rc1](https://github.com/jedie/manageprojects/compare/v0.26.0...v0.27.0rc1)
+  * 2026-01-20 - Mention "pipx install manageprojects" usage
   * 2026-01-20 - Replace "mypy" with "ty" in "format-file" command
   * 2026-01-20 - Update requirements
 * [v0.26.0](https://github.com/jedie/manageprojects/compare/v0.24.0...v0.26.0)
