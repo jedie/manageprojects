@@ -86,7 +86,7 @@ def start_project(
 
     e.g.:
 
-    ./cli.py start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/foobar/
+    manageprojects start-project https://github.com/jedie/cookiecutter_templates/ --directory piptools-python ~/foobar/
     """
     log_config(verbosity, log_in_file=True)
     print(f'Start project with template: {template!r}')
@@ -153,7 +153,7 @@ def update_project(
 
     e.g. update by overwrite (and merge changes manually via git):
 
-    ./cli.py update-project ~/foo/bar/
+    manageprojects update-project ~/foo/bar/
     """
     log_config(verbosity, log_in_file=True)
     print(f'Update project: "{project_path}"...')
@@ -204,7 +204,7 @@ def clone_project(
 
     e.g.:
 
-    ./cli.py clone-project ~/foo/bar ~/cloned/
+    manageprojects clone-project ~/foo/bar ~/cloned/
     """
     log_config(verbosity=verbosity)
     return clone_managed_project(
@@ -230,7 +230,7 @@ def reverse(
 
     e.g.:
 
-    ./cli.py reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/
+    manageprojects reverse ~/my_managed_project/ ~/my_new_cookiecutter_template/
     """
     log_config(verbosity)
     return reverse_managed_project(
@@ -253,7 +253,7 @@ def wiggle(
 
     e.g.:
 
-    ./cli.py wiggle ~/my_managed_project/
+    manageprojects wiggle ~/my_managed_project/
     """
     wiggle_bin = shutil.which('wiggle')
     if not wiggle_bin:
