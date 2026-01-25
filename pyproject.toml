@@ -7,7 +7,7 @@ readme = "README.md"
 authors = [
     {name = 'Jens Diemer', email = 'mamageprojects@jensdiemer.de'}
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "cookiecutter>=2.4.0",  # https://github.com/cookiecutter/cookiecutter
     "tomlkit",
@@ -20,7 +20,7 @@ dependencies = [
     "codespell",  # https://github.com/codespell-project/codespell
     "ty", # https://docs.astral.sh/ty/
 
-    "cli-base-utilities>=0.26.0",  # https://github.com/jedie/cli-base-utilities
+    "cli-base-utilities>=0.27.1",  # https://github.com/jedie/cli-base-utilities
     "tyro",  # https://github.com/brentyi/tyro
     "rich",  # https://github.com/Textualize/rich
 ]
@@ -47,7 +47,14 @@ Source = "https://github.com/jedie/manageprojects"
 
 [project.scripts]
 manageprojects = "manageprojects.__main__:main"
-_manageprojects_dev = "manageprojects.cli_dev:main"
+
+
+[tool.bx_py_utils.doc_write]
+docstring_prefix = 'DocWrite:'
+macro_prefix = 'DocWriteMacro:'
+output_base_path = './docs/'
+search_paths = ['./manageprojects/']
+delete_obsolete_files = true
 
 
 [build-system]
@@ -62,25 +69,12 @@ path = "manageprojects/__init__.py"
 
 
 [tool.cli_base.pip_audit]
-# https://github.com/jedie/cli-base-utilities/blob/main/docs/pip_audit.md
-requirements=["requirements.dev.txt"]
 strict=true
 require_hashes=true
-ignore-vuln=[
-    "GHSA-4xh5-x5gv-qwph",  # https://github.com/advisories/GHSA-4xh5-x5gv-qwph
-]
-
+ignore-vuln=[]
 
 [tool.cli_base]
 version_module_name = "manageprojects"  # Used by "update-readme-history" git hook
-
-
-[tool.bx_py_utils.doc_write]
-docstring_prefix = 'DocWrite:'
-macro_prefix = 'DocWriteMacro:'
-output_base_path = './docs/'
-search_paths = ['./manageprojects/']
-delete_obsolete_files = true
 
 
 [tool.ruff]
@@ -163,6 +157,7 @@ applied_migrations = [
     "38129ec", # 2025-02-12T17:41:38+01:00
     "9c976dd", # 2025-09-04T16:33:51+02:00
     "4d9f75b", # 2025-10-13T12:11:18+02:00
+    "b5ec83f", # 2026-01-25T20:17:13+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]

@@ -4,6 +4,7 @@ from unittest import mock
 from unittest.mock import MagicMock, patch
 
 from bx_py_utils.test_utils.redirect import RedirectOut
+from cli_base.cli_tools.test_utils.assertion import assert_in
 from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRich
 
 from manageprojects import cli_app, cli_dev
@@ -48,9 +49,9 @@ class CliTestCase(BaseTestCase):
             directory='uv-python',
             config_file=None,
         )
-        self.assertEqual(buffer.stderr, '')
-        self.assert_in_content(
-            got=buffer.stdout,
+        # self.assertEqual(redirected_out.stderr, '') https://github.com/editorconfig/editorconfig-core-py/issues/96
+        assert_in(
+            content=buffer.stdout,
             parts=(
                 'https://github.com/jedie/cookiecutter_templates/',
                 'foobar',
@@ -76,9 +77,9 @@ class CliTestCase(BaseTestCase):
             cleanup=True,
             input=False,
         )
-        self.assertEqual(buffer.stderr, '')
-        self.assert_in_content(
-            got=buffer.stdout,
+        # self.assertEqual(redirected_out.stderr, '') https://github.com/editorconfig/editorconfig-core-py/issues/96
+        assert_in(
+            content=buffer.stdout,
             parts=(
                 f'Update project: "{tempdir}"...',
                 f'Managed project "{tempdir}" updated, ok.',
@@ -98,14 +99,14 @@ class CliTestCase(BaseTestCase):
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH,)),
             [
                 ['.../uv', 'sync'],
-                ['.../pip', 'install', '--no-deps', '-e', '.'],
+                ['.../uv', 'pip', 'install', '--no-deps', '-e', '.'],
             ],
         )
         self.assertEqual(buffer.stderr, '')
-        self.assert_in_content(
-            got=buffer.stdout,
+        assert_in(
+            content=buffer.stdout,
             parts=(
-                '/manageprojects$ .venv/bin/uv sync',
-                '/manageprojects$ .venv/bin/pip install --no-deps -e .',
+                '/bin/uv sync',
+                '/bin/uv pip install --no-deps -e .',
             ),
         )

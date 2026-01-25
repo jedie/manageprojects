@@ -23,7 +23,7 @@ class TemporaryDirectory:
     def __enter__(self) -> Path:
         temp_name = tempfile.mkdtemp(prefix=self.prefix, suffix=self.suffix, dir=self.dir)
         self.temp_path = Path(temp_name)
-        return self.temp_path
+        return self.temp_path.resolve()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type:

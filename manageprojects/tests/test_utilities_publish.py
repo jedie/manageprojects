@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from bx_py_utils.test_utils.redirect import RedirectOut
 from cli_base.cli_tools import subprocess_utils
+from cli_base.cli_tools.test_utils.assertion import assert_in
 from cli_base.cli_tools.test_utils.git_utils import init_git
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRich
@@ -241,8 +242,8 @@ class PublishTestCase(BaseTestCase):
             )
         self.assertEqual(module_version, Version(manageprojects.__version__))
         self.assertEqual(buffer.stderr, '')
-        self.assert_in_content(
-            got=buffer.stdout,
+        assert_in(
+            content=buffer.stdout,
             parts=(
                 f'Version mismatch: current version {manageprojects.__version__} is not the installed one: 0.1.2',
                 '(Hint: Install package and run publish again)',
