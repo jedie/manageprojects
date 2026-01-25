@@ -2,24 +2,18 @@ import logging
 import shutil
 import sys
 import tempfile
+import tomllib
 from collections.abc import Iterable
-from importlib.metadata import version
+from importlib.metadata import distribution, version
 from pathlib import Path
-
-from packaging.version import Version
-from rich import print  # noqa
-
-
-try:
-    import tomllib  # New in Python 3.11
-except ImportError:
-    import tomli as tomllib
 
 from bx_py_utils.dict_utils import dict_get
 from bx_py_utils.path import assert_is_file
 from cli_base.cli_tools.git import Git, GitError
 from cli_base.cli_tools.path_utils import which
 from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
+from packaging.version import Version
+from rich import print  # noqa
 
 
 logger = logging.getLogger(__name__)
@@ -46,6 +40,12 @@ def confirm(txt):
     if input().lower() not in ('y', 'j'):
         print('[cyan]Bye.\n')
         sys.exit(-1)
+
+
+def verbose_rmtree(path: Path) -> None:
+    if path.exists():
+        print(f'remove old "{path.name}"...', end='')
+        shutil.rmtree(path)
 
 
 class PublisherGit:
@@ -211,8 +211,16 @@ def check_version(*, module, package_path: Path, distribution_name: str | None =
         installed_version = clean_version(installed_version)
 
     if module_version != installed_version:
+        try:
+            distribution_instance = distribution(distribution_name)
+            installed_path = distribution_instance._path
+        except Exception as err:
+            installed_path = f'can not determine installed path: {err}'
         exit_with_error(
-            f'Version mismatch: current version {module_version} is not the installed one: {installed_version}',
+            txt=(
+                f'Version mismatch: current version {module_version} ({module.__file__})'
+                f' is not the installed one: {installed_version} ({installed_path})'
+            ),
             hint='Install package and run publish again',
         )
 
@@ -234,13 +242,8 @@ def check_version(*, module, package_path: Path, distribution_name: str | None =
 def build(package_path) -> None:
     print('\nCleanup old builds...', end='')
 
-    def rmtree(path):
-        if path.exists():
-            print(f'remove old "{path.name}"...', end='')
-            shutil.rmtree(path)
-
-    rmtree(package_path / 'dist')
-    rmtree(package_path / 'build')
+    verbose_rmtree(package_path / 'dist')
+    verbose_rmtree(package_path / 'build')
     print('OK')
 
     if Path(package_path / 'poetry.lock').is_file():
@@ -280,6 +283,9 @@ def publish_package(
     Designed to be useful for external packages.
     Some checks result in a hard exit, but some can be manually confirmed from the user to continue publishing.
     """
+    for egg_info_path in package_path.glob('*.egg-info'):
+        verbose_rmtree(egg_info_path)
+
     # Version number correct?
     version: Version = check_version(module=module, package_path=package_path, distribution_name=distribution_name)
     if version.is_devrelease or version.is_prerelease:

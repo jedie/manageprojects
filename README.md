@@ -409,6 +409,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.27.1](https://github.com/jedie/manageprojects/compare/v0.27.0...v0.27.1)
+  * 2026-01-25 - Expand publish version mismatch error and remove *.egg-info
   * 2026-01-25 - coverage: Exclude 'cli.py', 'dev-cli.py', 'noxfile.py'
   * 2026-01-25 - Use "uv" direct in CLI scripts and set min. Python to v3.12
 * [v0.27.0](https://github.com/jedie/manageprojects/compare/v0.26.0...v0.27.0)
