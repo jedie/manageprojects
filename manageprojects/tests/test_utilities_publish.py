@@ -1,4 +1,5 @@
 import inspect
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -243,9 +244,10 @@ class PublishTestCase(BaseTestCase):
         self.assertEqual(module_version, Version(manageprojects.__version__))
         self.assertEqual(buffer.stderr, '')
         assert_in(
-            content=buffer.stdout,
+            content=re.sub(r'\s+', ' ', buffer.stdout),
             parts=(
-                f'Version mismatch: current version {manageprojects.__version__} is not the installed one: 0.1.2',
+                f'Version mismatch: current version {manageprojects.__version__}',
+                'is not the installed one: 0.1.2',
                 '(Hint: Install package and run publish again)',
             ),
         )
