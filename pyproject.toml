@@ -111,7 +111,7 @@ source = ['.']
 command_line = '-m unittest --verbose --locals --buffer'
 
 [tool.coverage.report]
-omit = ['.*', '*/tests/*']
+omit = ['.*', '*/tests/*', 'cli.py', 'dev-cli.py', 'noxfile.py']
 skip_empty = true
 fail_under = 30
 show_missing = true
