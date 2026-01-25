@@ -6,6 +6,7 @@ import yaml
 from bx_py_utils.path import assert_is_dir, assert_is_file
 from bx_py_utils.test_utils.datetime import parse_dt
 from bx_py_utils.test_utils.redirect import RedirectOut
+from cli_base.cli_tools.test_utils.assertion import assert_in
 from cli_base.cli_tools.test_utils.git_utils import init_git
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 
@@ -120,7 +121,10 @@ class CookiecutterTemplatesTestCase(BaseTestCase):
             )
             self.assertEqual(buffer.stderr, '')
             end_path = cloned_path / 'a_dir_name'
-            self.assert_in_content(got=buffer.stdout, parts=(f'{project_path} successfully cloned to {end_path}',))
+            assert_in(
+                content=buffer.stdout,
+                parts=(f'{project_path} successfully cloned to {end_path}',),
+            )
 
             # pyproject.toml created?
             with AssertLogs(self, loggers=('manageprojects',)) as logs:

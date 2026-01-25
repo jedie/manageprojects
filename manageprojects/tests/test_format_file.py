@@ -2,6 +2,7 @@ import inspect
 from pathlib import Path
 from unittest import TestCase
 
+from bx_py_utils.test_utils.redirect import RedirectOut
 from cli_base.cli_tools.test_utils.logs import AssertLogs
 from packaging.version import Version
 
@@ -56,16 +57,17 @@ class FormatFileTestCase(TestCase):
         )
 
     def test_get_git_info(self):
-        with AssertLogs(self, loggers=('cli_base',)):
+        with RedirectOut() as redirected_out, AssertLogs(self, loggers=('cli_base',)):
             git_info = get_git_info(file_path=Path(__file__))
             self.assertIsInstance(git_info, GitInfo)
             self.assertEqual(git_info.main_branch_name, 'main')
 
             with TemporaryDirectory(prefix='test_get_main_branch_name') as temp_path:
                 self.assertIsNone(get_git_info(file_path=temp_path))
+        self.assertEqual(redirected_out.stderr, '')
 
     def test_get_pyproject_info(self):
-        with TemporaryDirectory(prefix='test_get_pyproject_info') as temp_path:
+        with RedirectOut() as redirected_out, TemporaryDirectory(prefix='test_get_pyproject_info') as temp_path:
             self.assertEqual(
                 get_pyproject_info(temp_path, default_min_py_version='1.2.3'),
                 PyProjectInfo(
@@ -145,18 +147,20 @@ class FormatFileTestCase(TestCase):
             get_pyproject_info(file_path=Path(__file__), default_min_py_version='3.7'),
             PyProjectInfo(
                 pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
-                py_min_ver=Version('3.11'),
-                raw_py_ver_req='>=3.11',
+                py_min_ver=Version('3.12'),
+                raw_py_ver_req='>=3.12',
             ),
         )
+        self.assertEqual(redirected_out.stderr, '')
 
     def test_get_editorconfig_max_line_length(self):
         self.assertEqual(get_editorconfig_max_line_length(file_path=Path(__file__)), 119)
-        with TemporaryDirectory(prefix='test_get_main_branch_name') as temp_path:
+        with RedirectOut(), TemporaryDirectory(prefix='test_get_main_branch_name') as temp_path:
             self.assertIsNone(get_editorconfig_max_line_length(file_path=temp_path))
+        # self.assertEqual(redirected_out.stderr, '') https://github.com/editorconfig/editorconfig-core-py/issues/96
 
     def test_get_config(self):
-        with AssertLogs(self, loggers=('cli_base',)):
+        with RedirectOut(), AssertLogs(self, loggers=('cli_base',)):
             config = get_config(file_path=Path(__file__))
             self.assertIsInstance(config, Config)
             self.assertEqual(
@@ -165,8 +169,8 @@ class FormatFileTestCase(TestCase):
                     git_info=GitInfo(git=config.git_info.git, main_branch_name='main'),
                     pyproject_info=PyProjectInfo(
                         pyproject_toml_path=PACKAGE_ROOT / 'pyproject.toml',
-                        py_min_ver=Version('3.11'),
-                        raw_py_ver_req='>=3.11',
+                        py_min_ver=Version('3.12'),
+                        raw_py_ver_req='>=3.12',
                     ),
                     max_line_length=119,
                 ),
@@ -184,9 +188,11 @@ class FormatFileTestCase(TestCase):
                         max_line_length=119,
                     ),
                 )
+        # self.assertEqual(redirected_out.stderr, '') https://github.com/editorconfig/editorconfig-core-py/issues/96
 
     def test_format_one_file(self):
         with (
+            RedirectOut(),
             AssertLogs(self, loggers=('cli_base',)),
             SubprocessCallMock(
                 return_callback=SimpleRunReturnCallback(
@@ -199,31 +205,32 @@ class FormatFileTestCase(TestCase):
                 default_max_line_length=123,
                 file_path=Path(__file__),
             )
-
+        # self.assertEqual(redirected_out.stderr, '') https://github.com/editorconfig/editorconfig-core-py/issues/96
         self.assertEqual(
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH, GIT_BIN_PARENT)),
             [
                 ['.../git', 'branch', '--no-color'],
                 ['.../git', 'diff', 'origin/main', '--unified=0', 'manageprojects/tests/test_format_file.py'],
-                ['.../ruff', 'format', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'format', '--target-version', 'py312', 'manageprojects/tests/test_format_file.py'],
                 [
                     '.../ruff',
                     'check',
                     '--target-version',
-                    'py311',
+                    'py312',
                     '--select',
                     'I001,F401',
                     '--fix',
                     '--unsafe-fixes',
                     'manageprojects/tests/test_format_file.py',
                 ],
-                ['.../ruff', 'check', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'check', '--target-version', 'py312', 'manageprojects/tests/test_format_file.py'],
                 ['.../codespell', 'manageprojects/tests/test_format_file.py'],
                 ['.../ty', 'check', 'manageprojects/tests/test_format_file.py'],
             ],
         )
 
         with (
+            RedirectOut(),
             AssertLogs(self, loggers=('cli_base',)),
             SubprocessCallMock(
                 return_callback=SimpleRunReturnCallback(
@@ -236,13 +243,13 @@ class FormatFileTestCase(TestCase):
                 default_max_line_length=123,
                 file_path=Path(__file__),
             )
-
+        # self.assertEqual(redirected_out.stderr, '') https://github.com/editorconfig/editorconfig-core-py/issues/96
         self.assertEqual(
             call_mock.get_popenargs(rstrip_paths=(PY_BIN_PATH, GIT_BIN_PARENT)),
             [
                 ['.../git', 'branch', '--no-color'],
-                ['.../ruff', 'format', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
-                ['.../ruff', 'check', '--target-version', 'py311', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'format', '--target-version', 'py312', 'manageprojects/tests/test_format_file.py'],
+                ['.../ruff', 'check', '--target-version', 'py312', 'manageprojects/tests/test_format_file.py'],
                 ['.../codespell', 'manageprojects/tests/test_format_file.py'],
                 ['.../ty', 'check', 'manageprojects/tests/test_format_file.py'],
             ],

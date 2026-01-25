@@ -5,7 +5,6 @@
 import logging
 import sys
 from collections.abc import Sequence
-from pathlib import Path
 
 from cli_base.autodiscover import import_all_files
 from cli_base.cli_tools.version_info import print_version
@@ -33,9 +32,8 @@ def version():
 
 def main(args: Sequence[str] | None = None):
     print_version(manageprojects)
-    prog = Path(sys.argv[0]).name
     app.cli(
-        prog=prog,
+        prog='manageprojects',  # Enforce program name if pipx used
         description=constants.CLI_EPILOG,
         use_underscores=False,  # use hyphens instead of underscores
         sort_subcommands=True,

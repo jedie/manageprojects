@@ -333,12 +333,18 @@ Build and upload (with twine) a project to PyPi with many pre-checks:
 
 Some checks result in a hard exit, but some can be manually confirmed from the user to continue publishing.
 
-## development
 
-Just clone the project and just start the cli's `dev-cli.py` or `cli.py`
-(both will create a virtualenv and installs every dependencies)
+## start development
 
-e.g.:
+At least `uv` is needed. Install e.g.: via pipx:
+```bash
+apt-get install pipx
+pipx install uv
+```
+
+Clone the project and just start the CLI help commands.
+A virtual environment will be created/updated automatically.
+
 ```bash
 ~$ git clone https://github.com/jedie/manageprojects.git
 ~$ cd manageprojects
@@ -402,6 +408,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.27.1](https://github.com/jedie/manageprojects/compare/v0.27.0...v0.27.1)
+  * 2026-01-25 - Use "uv" direct in CLI scripts and set min. Python to v3.12
 * [v0.27.0](https://github.com/jedie/manageprojects/compare/v0.26.0...v0.27.0)
   * 2026-01-20 - Rename `./cli.py` to `manageprojects` in README/docstrings to match pipx usage
   * 2026-01-20 - Mention "pipx install manageprojects" usage
@@ -417,13 +425,13 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2025-09-22 - Add PyChram run configs
   * 2025-09-22 - NEW: shell completion command for app/dev CLI
   * 2025-09-20 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
   * 2025-09-04 - Bugfix type error in publish version check
   * 2025-09-04 - ruff: remove "force-sort-within-sections = true" (Just use the default)
   * 2024-11-21 - Switch from click to tyro
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.22.1](https://github.com/jedie/manageprojects/compare/v0.22.0...v0.22.1)
   * 2025-09-03 - Make install/setup python script executeable after renew the code
   * 2025-09-03 - Update code style stuff to ruff
