@@ -408,6 +408,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [v0.27.2](https://github.com/jedie/manageprojects/compare/v0.27.1...v0.27.2)
+  * 2026-01-26 - Bugfix if cli.py called from other working directory
 * [v0.27.1](https://github.com/jedie/manageprojects/compare/v0.27.0...v0.27.1)
   * 2026-01-25 - Expand publish version mismatch error and remove *.egg-info
   * 2026-01-25 - coverage: Exclude 'cli.py', 'dev-cli.py', 'noxfile.py'
@@ -422,14 +424,14 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2025-10-29 - format-file: Set default "max_distance" to 1 and add it to CLI
   * 2025-10-29 - Update requirements
   * 2025-10-13 - Apply template updates
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
   * 2025-09-22 - Cleanup: Remove obsolete flak8 config
   * 2025-09-22 - Add PyChram run configs
   * 2025-09-22 - NEW: shell completion command for app/dev CLI
   * 2025-09-20 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.23.0](https://github.com/jedie/manageprojects/compare/v0.22.1...v0.23.0)
   * 2025-09-04 - Bugfix type error in publish version check
   * 2025-09-04 - ruff: remove "force-sort-within-sections = true" (Just use the default)
