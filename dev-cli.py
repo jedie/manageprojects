@@ -41,7 +41,11 @@ def verbose_check_call(*popen_args):
         'UV_VENV': VIRTUAL_ENV,
         **os.environ,
     }
-    return subprocess.check_call(popen_args, env=env)
+    return subprocess.check_call(
+        popen_args,
+        env=env,
+        cwd=Path(__file__).parent,  # Needed if called from other working directory
+    )
 
 
 def main(argv):
