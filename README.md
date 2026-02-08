@@ -408,6 +408,9 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.27.2...main)
+  * 2026-02-08 - bugfix nox rerun and include cli files in coverage
+  * 2026-02-08 - Add basic tests for cli scripts
 * [v0.27.2](https://github.com/jedie/manageprojects/compare/v0.27.1...v0.27.2)
   * 2026-01-26 - Bugfix if cli.py called from other working directory
 * [v0.27.1](https://github.com/jedie/manageprojects/compare/v0.27.0...v0.27.1)
@@ -419,14 +422,14 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2026-01-20 - Mention "pipx install manageprojects" usage
   * 2026-01-20 - Replace "mypy" with "ty" in "format-file" command
   * 2026-01-20 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.26.0](https://github.com/jedie/manageprojects/compare/v0.24.0...v0.26.0)
   * 2025-12-22 - Enhance "format-file": Format all changed files, if directory is given!
   * 2025-10-29 - format-file: Set default "max_distance" to 1 and add it to CLI
   * 2025-10-29 - Update requirements
   * 2025-10-13 - Apply template updates
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.24.0](https://github.com/jedie/manageprojects/compare/v0.23.0...v0.24.0)
   * 2025-09-22 - Cleanup: Remove obsolete flak8 config
   * 2025-09-22 - Add PyChram run configs
