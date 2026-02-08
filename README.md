@@ -409,6 +409,7 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.27.2...main)
+  * 2026-02-08 - bugfix nox rerun and include cli files in coverage
   * 2026-02-08 - Add basic tests for cli scripts
 * [v0.27.2](https://github.com/jedie/manageprojects/compare/v0.27.1...v0.27.2)
   * 2026-01-26 - Bugfix if cli.py called from other working directory
