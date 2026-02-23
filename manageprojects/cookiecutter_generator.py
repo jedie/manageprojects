@@ -5,7 +5,7 @@ from pathlib import Path
 
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.git import Git
-from rich import print  # noqa
+from rich import print
 from rich.pretty import pprint
 
 

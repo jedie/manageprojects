@@ -13,7 +13,7 @@ from cli_base.cli_tools.git import Git, GitError
 from cli_base.cli_tools.path_utils import which
 from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
 from packaging.version import Version
-from rich import print  # noqa
+from rich import print
 
 
 logger = logging.getLogger(__name__)

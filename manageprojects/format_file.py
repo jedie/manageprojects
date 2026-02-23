@@ -9,7 +9,7 @@ from cli_base.cli_tools.subprocess_utils import ToolsExecutor as OriginalToolsEx
 from editorconfig import EditorConfigError, get_properties
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
-from rich import print  # noqa
+from rich import print
 from rich.console import Console
 from rich.pretty import pprint
 
