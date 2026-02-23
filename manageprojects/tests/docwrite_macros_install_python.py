@@ -46,7 +46,7 @@ def supported_python_versions(macro_context: MacroContext):
     yield '\n## GPG Key Information:\n'
 
     def timestamp2isoformat(timestamp: str) -> str:
-        date = datetime.date.fromtimestamp(int(timestamp))
+        date = datetime.datetime.fromtimestamp(int(timestamp), tz=datetime.UTC).date()
         return date.isoformat()
 
     with tempfile.TemporaryDirectory() as temp_dir:

@@ -116,9 +116,9 @@ def get_latest_versions(*, html, major_version) -> str:
     return latest_versions
 
 
-def run(args, **kwargs):
+def run(args, check=True, **kwargs):
     logger.debug('Running: %s (%s)', shlex.join(str(arg) for arg in args), kwargs)
-    return subprocess.run(args, **kwargs)
+    return subprocess.run(args, check=check, **kwargs)
 
 
 def run_build_step(args, *, step: str, cwd: Path) -> None:
@@ -190,12 +190,15 @@ def install_python(
     for try_version in (major_version, '3'):
         filename = f'python{try_version}'
         logger.debug('Checking %s...', filename)
-        if python3bin := shutil.which(filename):
-            if (full_version := get_python_version(python3bin)) and full_version.startswith(major_version):
-                logger.info('Python version already installed: Return path %r of it.', python3bin)
-                """DocWrite: install_python.md ## Workflow - 1. Check system Python
-                The script just returns the path to the system Python interpreter."""
-                return Path(python3bin)
+        if (
+            (python3bin := shutil.which(filename))
+            and (full_version := get_python_version(python3bin))
+            and full_version.startswith(major_version)
+        ):
+            logger.info('Python version already installed: Return path %r of it.', python3bin)
+            """DocWrite: install_python.md ## Workflow - 1. Check system Python
+            The script just returns the path to the system Python interpreter."""
+            return Path(python3bin)
 
     """DocWrite: install_python.md ## Workflow - 2. Get latest Python release
     We fetch the latest Python release from the Python FTP server, from:

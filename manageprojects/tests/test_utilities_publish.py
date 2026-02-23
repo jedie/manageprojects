@@ -137,7 +137,7 @@ class PublishTestCase(BaseTestCase):
     def test_publisher_git(self):
         with AssertLogs(self, loggers=('cli_base',)), TemporaryDirectory(prefix='test_publisher_git') as temp_path:
             Path(temp_path, '1.txt').touch()
-            git, first_hash = init_git(temp_path, comment='The initial commit ;)')
+            git, _first_hash = init_git(temp_path, comment='The initial commit ;)')
 
             git.tag('v0.0.1', message='one', verbose=False)
 

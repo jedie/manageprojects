@@ -40,7 +40,7 @@ class UpdateByOverwriteTestCase(BaseTestCase):
             config_file_path.parent.mkdir(parents=True)
             config_file_path.write_text(json.dumps(cookiecutter_context))
 
-            project_git, project_from_rev = init_git(project_path, comment='Git init project.')
+            project_git, _project_from_rev = init_git(project_path, comment='Git init project.')
             dst_file_path.write_text(
                 inspect.cleandoc(
                     '''

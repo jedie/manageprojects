@@ -105,7 +105,7 @@ def generate_template_patch(
         print(f'Compile cookiecutter template in the current version here: {compiled_to_path}')
         print('Use extra context:')
         print(extra_context)
-        to_rev_context, to_rev_dst_path, to_rev_repo_path = execute_cookiecutter(
+        _to_rev_context, to_rev_dst_path, to_rev_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_to_path,
@@ -153,7 +153,7 @@ def generate_template_patch(
         )
         print('Use extra context:')
         print(extra_context)
-        from_rev_context, from_rev_dst_path, from_repo_path = execute_cookiecutter(
+        _from_rev_context, from_rev_dst_path, from_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=compiled_from_path,

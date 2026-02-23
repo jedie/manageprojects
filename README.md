@@ -409,6 +409,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/jedie/manageprojects/compare/v0.27.2...main)
+  * 2026-02-23 - Manually code changes to get ruff v0.15.2 pass
+  * 2026-02-23 - Apply ruff v0.15.2 updates
   * 2026-02-23 - Update requirements
   * 2026-02-08 - bugfix nox rerun and include cli files in coverage
   * 2026-02-08 - Add basic tests for cli scripts

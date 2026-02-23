@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import shutil
+from collections.abc import Generator
 from pathlib import Path
+from typing import Any
 
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.git import Git
@@ -9,7 +11,7 @@ from rich import print
 from rich.pretty import pprint
 
 
-def iter_context(*, context: dict, prefix='') -> tuple | None:
+def iter_context(*, context: dict, prefix='') -> Generator[tuple[str, Any], None, None]:
     for key, value in context.items():
         if key.startswith('_'):
             continue
@@ -21,9 +23,7 @@ def iter_context(*, context: dict, prefix='') -> tuple | None:
 
 
 def generate_reverse_info(*, cookiecutter_context: dict) -> tuple:
-    reverse_info = [
-        (value, '{{ %s }}' % key) for key, value in iter_context(context=cookiecutter_context)
-    ]
+    reverse_info = [(value, f'{{{{ {key} }}}}') for key, value in iter_context(context=cookiecutter_context)]
     reverse_info.sort(key=lambda x: len(x[0]), reverse=True)
     return tuple(reverse_info)
 
@@ -64,8 +64,7 @@ def build_dst_path(
     new_path = replace_path(path=rel_path, reverse_info=reverse_info, verbosity=verbosity)
     if verbosity > 1:
         print(f'-> {new_path}')
-    dst_path = destination / new_path
-    return dst_path
+    return destination / new_path
 
 
 def copy_replaced(src_path, dst_path, reverse_info: tuple, verbosity: int = 0):
