@@ -9,7 +9,7 @@ from cli_base.cli_tools.subprocess_utils import ToolsExecutor as OriginalToolsEx
 from editorconfig import EditorConfigError, get_properties
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
-from rich import print  # noqa
+from rich import print
 from rich.console import Console
 from rich.pretty import pprint
 
@@ -57,9 +57,8 @@ class Config:
 
     @property
     def project_root_path(self) -> Path | None:
-        if git_info := self.git_info:
-            if cwd := git_info.git.cwd:
-                return cwd
+        if (git_info := self.git_info) and (cwd := git_info.git.cwd):
+            return cwd
 
         if pyproject_toml_path := self.pyproject_info.pyproject_toml_path:
             return pyproject_toml_path.parent
@@ -128,9 +127,8 @@ def get_pyproject_info(file_path: Path, default_min_py_version: str) -> PyProjec
         # python = '>=3.9,<4.0.0'
         pyproject_info.raw_py_ver_req = raw_py_ver_req
 
-    if pyproject_info.raw_py_ver_req:
-        if py_min_ver := get_py_min_version(pyproject_info.raw_py_ver_req):
-            pyproject_info.py_min_ver = py_min_ver
+    if pyproject_info.raw_py_ver_req and (py_min_ver := get_py_min_version(pyproject_info.raw_py_ver_req)):
+        pyproject_info.py_min_ver = py_min_ver
 
     return pyproject_info
 

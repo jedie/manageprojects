@@ -55,8 +55,7 @@ def _get_editor_config_options(file_path):
     except ImportError as err:
         raise ImportError(f'Please add "EditorConfig" to your dev-dependencies! Origin error: {err}')
 
-    options = get_properties(file_path)
-    return options
+    return get_properties(file_path)
 
 
 def get_py_max_line_length(package_root) -> int:

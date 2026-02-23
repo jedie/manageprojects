@@ -7,8 +7,6 @@ class NoManageprojectsMeta(Exception):
     A existing 'pyproject.toml' file does not contain [manageprojects] information
     """
 
-    pass
-
 
 class NoPyProjectTomlFound(FileNotFoundError):
     pass
