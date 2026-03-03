@@ -47,10 +47,8 @@ def log_config(
         log_format = '%(asctime)s %(levelname)s %(name)s.%(funcName)s %(lineno)d | %(message)s'
 
     if log_in_file:
-        log_file = tempfile.NamedTemporaryFile(
-            prefix='manageprojects_', suffix='.log', delete=False
-        )
-        log_filename = log_file.name
+        with tempfile.NamedTemporaryFile(prefix='manageprojects_', suffix='.log', delete=False) as log_file:
+            log_filename = log_file.name
     else:
         log_filename = None
 

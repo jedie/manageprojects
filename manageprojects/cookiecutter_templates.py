@@ -74,14 +74,13 @@ def start_managed_project(
     toml.create_or_update_cookiecutter_context(context=cookiecutter_context)
     toml.save()
 
-    result = CookiecutterResult(
+    return CookiecutterResult(
         destination_path=destination_path,
         git_path=git.cwd,
         git_hash=current_hash,
         commit_date=commit_date,
         cookiecutter_context=cookiecutter_context,
     )
-    return result
 
 
 def update_managed_project(
@@ -211,7 +210,7 @@ def clone_managed_project(
 
     print('Use extra context:')
     rprint(extra_context)
-    new_context, destination_path, repo_path = execute_cookiecutter(
+    _new_context, destination_path, repo_path = execute_cookiecutter(
         template=cookiecutter_template,
         directory=cookiecutter_directory,
         output_dir=destination,

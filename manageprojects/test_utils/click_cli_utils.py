@@ -17,8 +17,7 @@ def subprocess_cli(*, cli_bin, args, exit_on_error=True):
     from cli_base.cli_tools.test_utils.rich_click_test_utils import NoColorRichClickCli
 
     with NoColorRichClickCli() as cm:
-        stdout = cm.invoke(cli_bin=cli_bin, args=args, exit_on_error=exit_on_error)
-    return stdout
+        return cm.invoke(cli_bin=cli_bin, args=args, exit_on_error=exit_on_error)
 
 
 class ClickInvokeCliException(Exception):
@@ -34,7 +33,7 @@ def invoke_click(cli, *args, expected_stderr='', expected_exit_code=0, strip=Tru
     )
     assert isinstance(cli, click.Command)
 
-    args = tuple([str(arg) for arg in args])  # e.g.: Path() -> str
+    args = tuple(str(arg) for arg in args)  # e.g.: Path() -> str
 
     with NoColorEnvRich(width=TERMINAL_WIDTH):
         runner = CliRunner()

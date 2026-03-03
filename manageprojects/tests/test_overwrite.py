@@ -40,7 +40,7 @@ class UpdateByOverwriteTestCase(BaseTestCase):
             config_file_path.parent.mkdir(parents=True)
             config_file_path.write_text(json.dumps(cookiecutter_context))
 
-            project_git, project_from_rev = init_git(project_path, comment='Git init project.')
+            project_git, _project_from_rev = init_git(project_path, comment='Git init project.')
             dst_file_path.write_text(
                 inspect.cleandoc(
                     '''
@@ -124,16 +124,15 @@ class UpdateByOverwriteTestCase(BaseTestCase):
             self.assertFalse(patch_file_path.exists())
 
             # Don't overwrite if destination project git is not clean:
-            with RedirectOut() as buffer:
-                with self.assertRaises(SystemExit), AssertLogs(self):
-                    update_managed_project(
-                        project_path=project_path,
-                        overwrite=True,  # Update by overwrite
-                        password=None,
-                        config_file=config_file_path,
-                        cleanup=False,  # Keep temp files if this test fails, for better debugging
-                        input=False,  # No user input in tests ;)
-                    )
+            with RedirectOut() as buffer, self.assertRaises(SystemExit), AssertLogs(self):
+                update_managed_project(
+                    project_path=project_path,
+                    overwrite=True,  # Update by overwrite
+                    password=None,
+                    config_file=config_file_path,
+                    cleanup=False,  # Keep temp files if this test fails, for better debugging
+                    input=False,  # No user input in tests ;)
+                )
             self.assertIn('Abort', buffer.stderr)
             self.assertIn('is not clean', buffer.stderr)
             self.assertIn('?? pyproject.toml', buffer.stdout)
@@ -142,16 +141,15 @@ class UpdateByOverwriteTestCase(BaseTestCase):
             project_git.add('.', verbose=False)
             project_git.commit('add pyproject.toml', verbose=False)
 
-            with RedirectOut() as buffer:
-                with AssertLogs(self) as logs:
-                    result = update_managed_project(
-                        project_path=project_path,
-                        overwrite=True,  # Update by overwrite
-                        password=None,
-                        config_file=config_file_path,
-                        cleanup=False,  # Keep temp files if this test fails, for better debugging
-                        input=False,  # No user input in tests ;)
-                    )
+            with RedirectOut() as buffer, AssertLogs(self) as logs:
+                result = update_managed_project(
+                    project_path=project_path,
+                    overwrite=True,  # Update by overwrite
+                    password=None,
+                    config_file=config_file_path,
+                    cleanup=False,  # Keep temp files if this test fails, for better debugging
+                    input=False,  # No user input in tests ;)
+                )
             self.assertEqual(buffer.stderr, '')
             self.assertIn('Update by overwrite', buffer.stdout)
             self.assertIn('UPDATE file', buffer.stdout)

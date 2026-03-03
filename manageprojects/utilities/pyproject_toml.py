@@ -56,9 +56,8 @@ def find_pyproject_toml(file_path: Path) -> Path | None:
     if pyproject_toml.is_file():
         return pyproject_toml
 
-    if parent_path := file_path.parent:
-        if parent_path != file_path:
-            return find_pyproject_toml(parent_path)
+    if (parent_path := file_path.parent) and parent_path != file_path:
+        return find_pyproject_toml(parent_path)
 
     return None
 

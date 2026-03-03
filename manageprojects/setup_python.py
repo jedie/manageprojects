@@ -145,9 +145,9 @@ def removesuffix(text: str, suffix: str) -> str:
     return text[: -len(suffix)]
 
 
-def run(args, **kwargs):
+def run(args, check=True, **kwargs):
     logger.debug('Running: %s (%s)', shlex.join(str(arg) for arg in args), kwargs)
-    return subprocess.run(args, **kwargs)
+    return subprocess.run(args, check=check, **kwargs)
 
 
 def verbose_check_output(args) -> str:
@@ -286,12 +286,13 @@ def setup_python(
 
     local_bin_path = Path.home() / '.local' / 'bin' / final_file_name
     # Maybe ~/.local/bin/pythonX.XX is already installed, but ~/.local/bin/ is not in PATH:
-    if not existing_python_bin and local_bin_path.is_file():
-        if existing_version := get_python_version(local_bin_path):
-            assert existing_version.startswith(major_version), (
-                f'{existing_version=} does not start with {major_version=}'
-            )
-            existing_python_bin = local_bin_path
+    if (
+        not existing_python_bin
+        and local_bin_path.is_file()
+        and (existing_version := get_python_version(local_bin_path))
+    ):
+        assert existing_version.startswith(major_version), f'{existing_version=} does not start with {major_version=}'
+        existing_python_bin = local_bin_path
 
     logger.debug('Existing Python version: %s', existing_version)
 
@@ -445,19 +446,19 @@ def setup_python(
         """DocWrite: setup_python.md ## Workflow - 5. Add info JSON
         We add the file `info.json` with all relevant information."""
         info_file_path = src_path / 'info.json'
-        info = dict(
-            download_by=__file__,
-            download_dt=datetime.datetime.now().isoformat(),
-            download_filters=filters,
-            major_version=major_version,
-            tag=tag,
-            archive_url=archive_info.url,
-            hash_url=hash_url,
-            archive_hash_name=HASH_NAME,
-            archive_hash_value=hash_value,
-            python_version_info=python_version_info,
-            pip_version_info=pip_version_into,
-        )
+        info = {
+            'download_by': __file__,
+            'download_dt': datetime.datetime.now(datetime.UTC).isoformat(),
+            'download_filters': filters,
+            'major_version': major_version,
+            'tag': tag,
+            'archive_url': archive_info.url,
+            'hash_url': hash_url,
+            'archive_hash_name': HASH_NAME,
+            'archive_hash_value': hash_value,
+            'python_version_info': python_version_info,
+            'pip_version_info': pip_version_into,
+        }
         info_file_path.write_text(json.dumps(info, indent=4, ensure_ascii=False))
 
         """DocWrite: setup_python.md ## Workflow - 6. Setup Python

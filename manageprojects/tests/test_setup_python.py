@@ -19,7 +19,7 @@ class SetupPythonTestCase(TestCase):
         self.assertIsInstance(python_path, Path)
         assert_is_file(python_path)
 
-        process = subprocess.run([str(python_path), '-V'], capture_output=True, text=True)
+        process = subprocess.run([str(python_path), '-V'], capture_output=True, text=True, check=True)
         self.assertEqual(process.returncode, 0)
         output = process.stdout.strip()
         assert output.startswith(f'Python {major_version}.'), f'{output=}'

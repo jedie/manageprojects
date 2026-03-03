@@ -36,7 +36,7 @@ def get_repo_path(
         config_file=config_file,
         default_config=None,
     )
-    repo_dir, cleanup = determine_repo_dir(
+    repo_dir, _cleanup = determine_repo_dir(
         template=template,
         directory=directory,
         abbreviations=config_dict['abbreviations'],

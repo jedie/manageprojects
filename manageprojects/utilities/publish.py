@@ -13,7 +13,7 @@ from cli_base.cli_tools.git import Git, GitError
 from cli_base.cli_tools.path_utils import which
 from cli_base.cli_tools.subprocess_utils import verbose_check_call, verbose_check_output
 from packaging.version import Version
-from rich import print  # noqa
+from rich import print
 
 
 logger = logging.getLogger(__name__)
@@ -150,32 +150,30 @@ def clean_version(version: str) -> Version:
 
 def setuptools_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Path) -> Version | None:
     dynamic = dict_get(pyproject_toml, 'project', 'dynamic')
-    if dynamic and 'version' in dynamic:
-        if dict_get(pyproject_toml, 'tool', 'setuptools', 'dynamic', 'version'):
-            # Project used "dynamic metadata" from setuptools for the version
-            from setuptools.config.pyprojecttoml import read_configuration
+    if dynamic and 'version' in dynamic and dict_get(pyproject_toml, 'tool', 'setuptools', 'dynamic', 'version'):
+        # Project used "dynamic metadata" from setuptools for the version
+        from setuptools.config.pyprojecttoml import read_configuration
 
-            setuptools_pyproject_toml = read_configuration(pyproject_toml_path)
-            if ver_str := dict_get(setuptools_pyproject_toml, 'project', 'version'):
-                return clean_version(ver_str)
+        setuptools_pyproject_toml = read_configuration(pyproject_toml_path)
+        if ver_str := dict_get(setuptools_pyproject_toml, 'project', 'version'):
+            return clean_version(ver_str)
 
 
 def hatchling_dynamic_version(*, pyproject_toml: dict, pyproject_toml_path: Path) -> Version | None:
     dynamic = dict_get(pyproject_toml, 'project', 'dynamic')
-    if dynamic and 'version' in dynamic:
-        if dict_get(pyproject_toml, 'tool', 'hatch', 'version', 'path'):
-            # Project used "dynamic metadata" from hatchling for the version
+    if dynamic and 'version' in dynamic and dict_get(pyproject_toml, 'tool', 'hatch', 'version', 'path'):
+        # Project used "dynamic metadata" from hatchling for the version
 
-            from hatchling.metadata.core import ProjectMetadata
-            from hatchling.plugin.manager import PluginManager
+        from hatchling.metadata.core import ProjectMetadata
+        from hatchling.plugin.manager import PluginManager
 
-            plugin_manager = PluginManager()
-            metadata = ProjectMetadata(root=pyproject_toml_path.parent, plugin_manager=plugin_manager)
-            version = metadata.hatch.version
-            source = version.source
-            version_data = source.get_version_data()
-            if ver_str := version_data.get('version'):
-                return clean_version(ver_str)
+        plugin_manager = PluginManager()
+        metadata = ProjectMetadata(root=pyproject_toml_path.parent, plugin_manager=plugin_manager)
+        version = metadata.hatch.version
+        source = version.source
+        version_data = source.get_version_data()
+        if ver_str := version_data.get('version'):
+            return clean_version(ver_str)
 
 
 def get_pyproject_toml_version(package_path: Path) -> Version | None:
@@ -214,7 +212,7 @@ def check_version(*, module, package_path: Path, distribution_name: str | None =
         try:
             distribution_instance = distribution(distribution_name)
             installed_path = distribution_instance._path
-        except Exception as err:
+        except Exception as err:  # noqa: BLE001
             installed_path = f'can not determine installed path: {err}'
         exit_with_error(
             txt=(

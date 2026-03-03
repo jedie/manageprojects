@@ -23,7 +23,7 @@ class CliTestCase(BaseTestCase):
             git_path=Path('git-path'),
             git_hash='1234',
             commit_date=None,
-            cookiecutter_context=dict(foo=1, bar=2),
+            cookiecutter_context={'foo': 1, 'bar': 2},
         )
         with (
             NoColorEnvRich(),

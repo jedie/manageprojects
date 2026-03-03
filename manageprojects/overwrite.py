@@ -47,7 +47,7 @@ def overwrite_project(
         print(f'Compile cookiecutter template in the current version here: {temp_path}')
         print('Use extra context:')
         print(extra_context)
-        to_rev_context, to_rev_dst_path, to_rev_repo_path = execute_cookiecutter(
+        _to_rev_context, to_rev_dst_path, to_rev_repo_path = execute_cookiecutter(
             template=template,
             directory=directory,
             output_dir=temp_path,

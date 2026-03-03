@@ -14,7 +14,7 @@ from typing import Annotated
 from bx_py_utils.path import assert_is_dir
 from cli_base.cli_tools.subprocess_utils import verbose_check_call
 from cli_base.tyro_commands import TyroVerbosityArgType
-from rich import print  # noqa
+from rich import print
 from tyro.conf import arg
 
 from manageprojects.cli_app import app
