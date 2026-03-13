@@ -34,8 +34,10 @@ def exit_with_error(txt, hint=None):
     sys.exit(-1)
 
 
-def confirm(txt):
+def confirm(txt, hint=None):
     print(f' [red]->[/red] [yellow]{txt}[/yellow]')
+    if hint:
+        print(f'[cyan](Hint: {hint})')
     print('>>>> [bold]Publish anyhow? (Y/N)', end=' ')
     if input().lower() not in ('y', 'j'):
         print('[cyan]Bye.\n')
@@ -214,7 +216,7 @@ def check_version(*, module, package_path: Path, distribution_name: str | None =
             installed_path = distribution_instance._path
         except Exception as err:  # noqa: BLE001
             installed_path = f'can not determine installed path: {err}'
-        exit_with_error(
+        confirm(
             txt=(
                 f'Version mismatch: current version {module_version} ({module.__file__})'
                 f' is not the installed one: {installed_version} ({installed_path})'
@@ -226,7 +228,7 @@ def check_version(*, module, package_path: Path, distribution_name: str | None =
     if not pyproject_version:
         confirm('Can not get package version from pyproject.toml')
     elif pyproject_version != installed_version:
-        exit_with_error(
+        confirm(
             (
                 f'Version mismatch:'
                 f' pyproject.toml version {pyproject_version} is not the installed one: {installed_version}'
