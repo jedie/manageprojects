@@ -408,7 +408,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.27.2...main)
+* [v0.27.3](https://github.com/jedie/manageprojects/compare/v0.27.2...v0.27.3)
+  * 2026-03-13 - publish: Allow version mismatch after confirm
   * 2026-03-13 - Update requirements
   * 2026-03-03 - Update absolute path to own ".venv" directory
   * 2026-02-23 - Manually code changes to get ruff v0.15.2 pass

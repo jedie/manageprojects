@@ -235,6 +235,7 @@ class PublishTestCase(BaseTestCase):
             NoColorEnvRich(),
             RedirectOut() as buffer,
             self.assertRaises(SystemExit),
+            patch('manageprojects.utilities.publish.input', return_value='n') as confirm_mock,
             patch('manageprojects.utilities.publish.version', return_value='0.1.2'),
         ):
             module_version = check_version(
@@ -249,5 +250,7 @@ class PublishTestCase(BaseTestCase):
                 f'Version mismatch: current version {manageprojects.__version__}',
                 'is not the installed one: 0.1.2',
                 '(Hint: Install package and run publish again)',
+                'Bye.',
             ),
         )
+        confirm_mock.assert_called()
