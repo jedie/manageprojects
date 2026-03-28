@@ -408,6 +408,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/jedie/manageprojects/compare/v0.27.3...main)
+  * 2026-03-28 - Apply update from cookiecutter templates + update requirements
 * [v0.27.3](https://github.com/jedie/manageprojects/compare/v0.27.2...v0.27.3)
   * 2026-03-13 - publish: Allow version mismatch after confirm
   * 2026-03-13 - Update requirements
@@ -422,14 +424,14 @@ See also git tags: https://github.com/jedie/manageprojects/tags
   * 2026-01-25 - Expand publish version mismatch error and remove *.egg-info
   * 2026-01-25 - coverage: Exclude 'cli.py', 'dev-cli.py', 'noxfile.py'
   * 2026-01-25 - Use "uv" direct in CLI scripts and set min. Python to v3.12
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.27.0](https://github.com/jedie/manageprojects/compare/v0.26.0...v0.27.0)
   * 2026-01-20 - Rename `./cli.py` to `manageprojects` in README/docstrings to match pipx usage
   * 2026-01-20 - Mention "pipx install manageprojects" usage
   * 2026-01-20 - Replace "mypy" with "ty" in "format-file" command
   * 2026-01-20 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.26.0](https://github.com/jedie/manageprojects/compare/v0.24.0...v0.26.0)
   * 2025-12-22 - Enhance "format-file": Format all changed files, if directory is given!
   * 2025-10-29 - format-file: Set default "max_distance" to 1 and add it to CLI
