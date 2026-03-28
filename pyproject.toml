@@ -105,8 +105,6 @@ extend-select = [
 ignore = [
     "E402", # https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/
     "E731", # https://docs.astral.sh/ruff/rules/lambda-assignment/
-    "PLW1508", # Invalid type for environment variable default
-    "C408", # Unnecessary `dict()` call (rewrite as a literal)
 ]
 
 [tool.ruff.lint.isort]
