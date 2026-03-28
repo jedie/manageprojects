@@ -41,6 +41,27 @@ dev = [
     "typeguard",  # https://github.com/agronholm/typeguard/
 ]
 
+
+[tool.uv]
+# Don't install bleed-edge versions of dependencies, to avoid undetected issues and supply chain attacks.
+exclude-newer = "1 week"
+
+# Exclude own packages from the "exclude-newer" rule and
+# add external packages temporarily to fix known issues or current CVEs
+# TODO: Remove requests - v2.33.0 fixed CVE-2026-25645
+exclude-newer-package = { requests = "2026-03-25T18:00:00Z", cryptography="2026-03-27T00:00:00Z" }
+
+
+[tool.cli_base.pip_audit]
+strict=true
+require_hashes=true
+ignore-vuln=[
+    "CVE-2026-4539", # https://github.com/pygments/pygments/issues/3058#issuecomment-4127344972
+]
+
+[tool.cli_base]
+version_module_name = "manageprojects"  # Used by "update-readme-history" git hook
+
 [project.urls]
 Documentation = "https://github.com/jedie/manageprojects"
 Source = "https://github.com/jedie/manageprojects"
@@ -66,15 +87,6 @@ packages = ["manageprojects"]
 
 [tool.hatch.version]
 path = "manageprojects/__init__.py"
-
-
-[tool.cli_base.pip_audit]
-strict=true
-require_hashes=true
-ignore-vuln=[]
-
-[tool.cli_base]
-version_module_name = "manageprojects"  # Used by "update-readme-history" git hook
 
 
 [tool.ruff]
@@ -158,6 +170,7 @@ applied_migrations = [
     "9c976dd", # 2025-09-04T16:33:51+02:00
     "4d9f75b", # 2025-10-13T12:11:18+02:00
     "b5ec83f", # 2026-01-25T20:17:13+01:00
+    "3876500", # 2026-03-26T19:19:21+01:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
