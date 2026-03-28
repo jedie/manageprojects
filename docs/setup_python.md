@@ -1,5 +1,7 @@
 # Boot Redistributable Python
 
+WARNING: This script is deprecated and will be removed in a future release!
+
 This is a standalone script (one file and no dependencies) to download and setup
 https://github.com/indygreg/python-build-standalone/ redistributable Python.
 But only if it's needed!

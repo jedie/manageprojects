@@ -3,6 +3,8 @@
 """
 DocWrite: setup_python.md # Boot Redistributable Python
 
+WARNING: This script is deprecated and will be removed in a future release!
+
 This is a standalone script (one file and no dependencies) to download and setup
 https://github.com/indygreg/python-build-standalone/ redistributable Python.
 But only if it's needed!
@@ -25,6 +27,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import warnings
 from pathlib import Path
 from urllib import request
 
@@ -255,6 +258,11 @@ def setup_python(
     The download will be only done, if the system Python is not the same major version as requested
     and if the local Python is not up-to-date.
     """
+    warnings.warn(
+        '"setup_python" is deprecated and will be removed in a future release!',
+        DeprecationWarning,
+        stacklevel=2,
+    )
     logger.info('Requested major Python version: %s', major_version)
 
     final_file_name = f'python{major_version}'

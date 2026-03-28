@@ -408,7 +408,8 @@ See also git tags: https://github.com/jedie/manageprojects/tags
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/jedie/manageprojects/compare/v0.27.3...main)
+* [v0.28.0](https://github.com/jedie/manageprojects/compare/v0.27.3...v0.28.0)
+  * 2026-03-28 - Deprecate setup_python: will be removed in a future release!
   * 2026-03-28 - Apply update from cookiecutter templates + update requirements
 * [v0.27.3](https://github.com/jedie/manageprojects/compare/v0.27.2...v0.27.3)
   * 2026-03-13 - publish: Allow version mismatch after confirm
